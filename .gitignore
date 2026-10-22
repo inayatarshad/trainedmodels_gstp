@@ -2,8 +2,8 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 .pytest_cache/
-runs/
-data/
+/runs/
+/data/
 # model weights are large: keep them in Drive / GitHub Releases, not in git
 *.pt
 *.onnx
