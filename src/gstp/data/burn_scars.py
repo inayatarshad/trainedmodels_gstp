@@ -38,8 +38,11 @@ def build_samples(root: str | Path, folder: str) -> list[Sample]:
         raise FileNotFoundError(f"'{folder}' folder not found under {root} (did you extract the archive?)")
     samples = []
     for img in sorted(dirs[0].rglob("*merged*.tif")):
-        mask = img.with_name(img.name.replace("merged", "mask"))
-        if not mask.exists():
+        # Release naming: <stem>_merged.tif  /  <stem>.mask.tif  (older copies use <stem>_mask.tif)
+        candidates = [img.with_name(img.name.replace("_merged.tif", ".mask.tif")),
+                      img.with_name(img.name.replace("merged", "mask"))]
+        mask = next((m for m in candidates if m.exists()), None)
+        if mask is None:
             continue
         samples.append(
             Sample(

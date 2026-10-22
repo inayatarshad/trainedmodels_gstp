@@ -129,7 +129,7 @@ def test_burn_scar_and_forest_indexers(tmp_path):
         for i in range(3):
             stem = f"subsetted_512x512_HLS.S30.T10SDH.20202{i}8.v1.4"
             _write_tif(tmp_path / "burn" / split / f"{stem}_merged.tif", rng.uniform(0, 0.4, (6, 32, 32)))
-            _write_tif(tmp_path / "burn" / split / f"{stem}_mask.tif", (rng.random((32, 32)) > 0.8).astype(np.int16), "int16")
+            _write_tif(tmp_path / "burn" / split / f"{stem}.mask.tif", (rng.random((32, 32)) > 0.8).astype(np.int16), "int16")
     s = burn_scars.build_samples(tmp_path / "burn", "training")
     assert len(s) == 3 and s[0].meta["tile"] == "T10SDH"
     tr, va = split_samples(s, 0.34, group_key=lambda x: x.meta["tile"])
