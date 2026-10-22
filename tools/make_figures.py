@@ -67,6 +67,36 @@ def agriculture():
     print("agriculture figures ->", out)
 
 
+def wildfires():
+    t = json.loads((R / "wildfires/test_burn_scar.json").read_text())["test"]["at_chosen_threshold"]
+    b = json.loads((R / "wildfires/baselines.json").read_text())["NBR threshold"]
+    h = json.loads((R / "wildfires/train_summary.json").read_text())
+    out = R / "wildfires/figures"; out.mkdir(parents=True, exist_ok=True)
+
+    keys = [("iou", "IoU (burn scar)"), ("f1", "F1"), ("precision", "Precision"), ("recall", "Recall")]
+    x = np.arange(len(keys)); w = 0.36
+    fig, ax = plt.subplots(figsize=(8.2, 4.4))
+    m = [100 * t[k] for k, _ in keys]; n = [100 * b["test"][k] for k, _ in keys]
+    ax.bar(x - w / 2, m, w, color="#c2410c", label="U-Net (6 bands)")
+    ax.bar(x + w / 2, n, w, color="#b8c2d1", label=f"NBR threshold (< {b['threshold']:.2f})")
+    for i in range(len(keys)):
+        ax.text(x[i] - w / 2, m[i] + 1.2, f"{m[i]:.1f}", ha="center", fontsize=10, color=INK)
+        ax.text(x[i] + w / 2, n[i] + 1.2, f"{n[i]:.1f}", ha="center", fontsize=10, color=MUTED)
+    ax.set_xticks(x, [l for _, l in keys]); ax.set_ylim(0, 112); ax.set_ylabel("% on held-out test set")
+    ax.set_title("Burn-scar mapping: learned model vs classic NBR threshold\n264 unseen test chips (HLS Burn Scars)", color=INK)
+    ax.legend(frameon=False, loc="upper center", ncol=2, bbox_to_anchor=(0.5, 1.0))
+    fig.tight_layout(); fig.savefig(out / "model_vs_nbr.png", dpi=200); plt.close(fig)
+
+    ep = [x["epoch"] for x in h["history"]]
+    fig, ax = plt.subplots(1, 2, figsize=(11, 3.8))
+    ax[0].plot(ep, [x["train_loss"] for x in h["history"]], color=INK, lw=2); ax[0].set(title="Training loss (BCE + Dice)", xlabel="epoch")
+    ax[1].plot(ep, [x["val_iou"] for x in h["history"]], color="#c2410c", lw=2)
+    ax[1].set(title="Validation IoU (burn scar)", xlabel="epoch", ylim=(0, 1))
+    fig.suptitle(f"U-Net / ResNet-34 on HLS Burn Scars — {h['epochs_run']} epochs, {h['train_time_s']/60:.0f} min on a {h['gpu']}", color=INK)
+    fig.tight_layout(); fig.savefig(out / "training_curves.png", dpi=200); plt.close(fig)
+    print("wildfire figures ->", out)
+
+
 if __name__ == "__main__":
     for name in sys.argv[1:] or ["agriculture"]:
         globals()[name]()
