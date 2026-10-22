@@ -44,8 +44,16 @@ def main():
     out += ["## Segmentation models (% , positive class)", "",
             "| Module | Model | Test split | IoU | F1 | Precision | Recall |", "|---|---|---|---|---|---|---|"]
     rows = []
-    rows += seg_rows("floods", "Floods", {"U-Net S2": "test_flood_s2.json", "U-Net S1": "test_flood_s1.json",
-                                          "U-Net S1+S2": "test_flood_s1s2.json"})
+    fl = load("floods/test_floods.json")
+    if fl:
+        for key, lab in (("s1s2", "U-Net radar+optical"), ("s2", "U-Net optical (S2)"), ("s1", "U-Net radar (S1)")):
+            for split in ("test", "bolivia"):
+                m = fl["models"][key][split]
+                rows.append(f"| Floods | {lab} | {split} | {pct(m['iou'])} | {pct(m['f1'])} | {pct(m['precision'])} | {pct(m['recall'])} |")
+        for bname, b in (load("floods/baselines.json") or {}).items():
+            for split in ("test", "bolivia"):
+                m = b[split]
+                rows.append(f"| Floods | baseline: {bname} | {split} | {pct(m['iou'])} | {pct(m['f1'])} | {pct(m['precision'])} | {pct(m['recall'])} |")
     rows += seg_rows("wildfires", "Wildfires", {"U-Net": "test_burn_scar.json"})
     rows += seg_rows("forestry", "Forestry", {"U-Net": "test_forest.json"})
     out += rows or ["| _pending first training run_ | | | | | | |"]

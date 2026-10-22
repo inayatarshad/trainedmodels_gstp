@@ -23,7 +23,7 @@ Full tables: [`results/RESULTS.md`](results/RESULTS.md) · Report: [`docs/GSTP_H
 |---|---|---|---|---|---|
 | Agriculture | Land-use classification (10 classes) | ResNet-18, Sentinel-2 pretrained (SSL4EO-S12) | **99.19 % accuracy**, macro-F1 99.16 % (5,400 images) | — | ✅ Done |
 | Wildfires | Burn-scar segmentation | U-Net / ResNet-34, 6 bands | **IoU 0.805**, F1 0.892 (264 chips) | NBR threshold: IoU 0.450, F1 0.621 | ✅ Done |
-| Floods | Water segmentation (S1 / S2 / S1+S2) | U-Net / ResNet-34 | test + unseen Bolivia event | MNDWI / VV-dB threshold | 🔄 Training |
+| Floods | Water segmentation (radar / optical / both) | U-Net / ResNet-34 | **IoU 0.838** radar+optical (90 chips); optical 0.798 on the unseen Bolivia event | MNDWI: 0.773 · radar VV threshold: 0.463 | ✅ Done |
 | Forestry | Forest segmentation → forest loss | U-Net / ResNet-34, R-G-B-NIR | — | NDVI threshold | ⏳ Next |
 | Air quality | Next-day NO₂ and PM2.5 forecast, 60 sites | LightGBM | — | Persistence | ⏳ Next |
 

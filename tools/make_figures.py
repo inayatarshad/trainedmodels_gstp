@@ -97,6 +97,42 @@ def wildfires():
     print("wildfire figures ->", out)
 
 
+def floods():
+    d = json.loads((R / "floods/test_floods.json").read_text())["models"]
+    b = json.loads((R / "floods/baselines.json").read_text())
+    vi = json.loads((R / "floods/val_iou_history.json").read_text())
+    out = R / "floods/figures"; out.mkdir(parents=True, exist_ok=True)
+    rows = [("U-Net radar + optical", d["s1s2"], "#1d4ed8"), ("U-Net optical (S2)", d["s2"], "#3b82f6"),
+            ("MNDWI threshold (optical)", b["MNDWI threshold (S2)"], "#b8c2d1"),
+            ("U-Net radar (S1)", d["s1"], "#0f766e"), ("VV threshold (radar)", b["VV backscatter threshold (S1)"], "#d5dae3")]
+    fig, ax = plt.subplots(figsize=(9.5, 4.6)); x = np.arange(2); w = 0.16
+    for i, (name, r, c) in enumerate(rows):
+        vals = [100 * r["test"]["iou"], 100 * r["bolivia"]["iou"]]
+        bars = ax.bar(x + (i - 2) * w, vals, w, color=c, label=name)
+        for xx, v in zip(x + (i - 2) * w, vals):
+            ax.text(xx, v + 1, f"{v:.0f}", ha="center", fontsize=9, color=INK)
+    ax.set_xticks(x, ["Test split (90 chips, 10 events)", "Bolivia — event never seen (15 chips)"])
+    ax.set_ylim(0, 105); ax.set_ylabel("Water IoU (%)")
+    ax.set_title("Flood-water segmentation: learned models vs classic index thresholds", color=INK)
+    ax.legend(frameon=False, fontsize=9, ncol=2, loc="upper center", bbox_to_anchor=(0.5, -0.12))
+    fig.tight_layout(); fig.savefig(out / "models_vs_thresholds.png", dpi=200); plt.close(fig)
+
+    ev = sorted(d["s1s2"]["per_event_test_iou"])
+    fig, ax = plt.subplots(figsize=(9.5, 3.8)); x = np.arange(len(ev)); w = 0.27
+    for i, (m, lab, c) in enumerate([("s1s2", "radar + optical", "#1d4ed8"), ("s2", "optical", "#3b82f6"), ("s1", "radar", "#0f766e")]):
+        ax.bar(x + (i - 1) * w, [100 * d[m]["per_event_test_iou"][e] for e in ev], w, color=c, label=lab)
+    ax.set_xticks(x, ev, rotation=0, fontsize=9); ax.set_ylim(0, 100); ax.set_ylabel("Water IoU (%)")
+    ax.set_title("Test IoU per flood event", color=INK); ax.legend(frameon=False, fontsize=9, ncol=3)
+    fig.tight_layout(); fig.savefig(out / "per_event_iou.png", dpi=200); plt.close(fig)
+
+    fig, ax = plt.subplots(figsize=(7.5, 3.6))
+    for m, lab, c in [("s1s2", "radar + optical", "#1d4ed8"), ("s2", "optical", "#3b82f6"), ("s1", "radar", "#0f766e")]:
+        ax.plot(range(1, len(vi[m]) + 1), vi[m], color=c, lw=2, label=lab)
+    ax.set(title="Validation IoU per epoch (early stopping)", xlabel="epoch", ylim=(0, 1)); ax.legend(frameon=False)
+    fig.tight_layout(); fig.savefig(out / "training_curves.png", dpi=200); plt.close(fig)
+    print("flood figures ->", out)
+
+
 if __name__ == "__main__":
     for name in sys.argv[1:] or ["agriculture"]:
         globals()[name]()

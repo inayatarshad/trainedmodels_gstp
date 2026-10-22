@@ -1,0 +1,116 @@
+{
+  "gpu": "Tesla T4",
+  "split": {
+    "train": 252,
+    "val": 89,
+    "test": 90,
+    "bolivia": 15
+  },
+  "models": {
+    "s1s2": {
+      "test": {
+        "n_chips": 90,
+        "iou": 0.8377523588635285,
+        "f1": 0.911714089031666,
+        "precision": 0.9199184471112435,
+        "recall": 0.9036547796269435,
+        "miou": 0.9067649114184289
+      },
+      "bolivia": {
+        "n_chips": 15,
+        "iou": 0.7105774460143962,
+        "f1": 0.830804179804924,
+        "precision": 0.9515230789442118,
+        "recall": 0.7372676758847624,
+        "miou": 0.8280529284580901
+      },
+      "per_event_test_iou": {
+        "Ghana": 0.5954,
+        "India": 0.8887,
+        "Mekong": 0.9236,
+        "Nigeria": 0.9331,
+        "Pakistan": 0.7416,
+        "Paraguay": 0.7351,
+        "Somalia": 0.8057,
+        "Spain": 0.8325,
+        "Sri-Lanka": 0.93,
+        "USA": 0.7662
+      },
+      "threshold": 0.4,
+      "best_epoch": 46,
+      "epochs_run": 58,
+      "train_time_s": 945.7,
+      "bands": 14
+    },
+    "s2": {
+      "test": {
+        "n_chips": 90,
+        "iou": 0.8199443043366613,
+        "f1": 0.901065271484247,
+        "precision": 0.9050035693732055,
+        "recall": 0.897161101609017,
+        "miou": 0.896094893548437
+      },
+      "bolivia": {
+        "n_chips": 15,
+        "iou": 0.7979458423333858,
+        "f1": 0.887619441637693,
+        "precision": 0.9188509950371683,
+        "recall": 0.8584412044039537,
+        "miou": 0.8790170491248546
+      },
+      "per_event_test_iou": {
+        "Ghana": 0.6066,
+        "India": 0.8777,
+        "Mekong": 0.9192,
+        "Nigeria": 0.9285,
+        "Pakistan": 0.7885,
+        "Paraguay": 0.5925,
+        "Somalia": 0.7916,
+        "Spain": 0.8216,
+        "Sri-Lanka": 0.9224,
+        "USA": 0.7749
+      },
+      "threshold": 0.45,
+      "best_epoch": 22,
+      "epochs_run": 34,
+      "train_time_s": 467.1,
+      "bands": 12
+    },
+    "s1": {
+      "test": {
+        "n_chips": 90,
+        "iou": 0.6787761033306096,
+        "f1": 0.8086559035287089,
+        "precision": 0.8366602922157155,
+        "recall": 0.782465503091839,
+        "miou": 0.8141853730844044
+      },
+      "bolivia": {
+        "n_chips": 15,
+        "iou": 0.7060188487966057,
+        "f1": 0.8276800098599361,
+        "precision": 0.823217541870336,
+        "recall": 0.8321911215067017,
+        "miou": 0.8210305454235091
+      },
+      "per_event_test_iou": {
+        "Ghana": 0.5516,
+        "India": 0.6763,
+        "Mekong": 0.8409,
+        "Nigeria": 0.8845,
+        "Pakistan": 0.26,
+        "Paraguay": 0.6715,
+        "Somalia": 0.5494,
+        "Spain": 0.7219,
+        "Sri-Lanka": 0.8169,
+        "USA": 0.5718
+      },
+      "threshold": 0.4,
+      "best_epoch": 48,
+      "epochs_run": 60,
+      "train_time_s": 318.3,
+      "bands": 2
+    }
+  }
+}
