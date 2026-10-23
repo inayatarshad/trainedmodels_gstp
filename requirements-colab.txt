@@ -12,3 +12,4 @@ lightgbm>=4.0
 onnx>=1.16
 onnxscript>=0.1
 onnxruntime>=1.18
+gdown>=5.1

@@ -694,6 +694,32 @@ for ev in EVENTS["wildfires"]:
 pd.DataFrame(rows).to_csv(RESULTS / "wildfires.csv", index=False)
 pd.DataFrame(rows)
 '''),
+        md("## Wildfires (flames) — active-fire model on every Sentinel-2 image taken during each fire"),
+        code(r'''
+af_m, af_cfg, af_thr = load_seg(CKPT_DIR / "wildfires_active_fire" / "active_fire_best.pt")
+afx = af_cfg["extra"]; rows = []
+for ev in EVENTS["active_fire"]:
+    site = SITES[ev["site"]]
+    try:
+        scenes = INF.load_s2_scenes(site["bbox"], ev["during"], afx["sentinel2_bands"], resolution=30)
+        best = None
+        for date, refl, valid, sid in scenes:
+            prob = INF.sliding_window_probs(af_m, normalise(refl, "zscore", afx["stats"]), tile=256, overlap=32, device=DEV)
+            fire = (prob >= af_thr) & valid
+            rows.append({"site": site["label"], "event": ev["event"], "date": date, "scene": sid,
+                         "fire_pixels": int(fire.sum()), "fire_area_km2": INF.area_km2(fire, 30), "valid_fraction": float(valid.mean())})
+            if best is None or fire.sum() > best[2].sum():
+                best = (date, refl, fire)
+        if best is not None:
+            fc = np.dstack([best[1][0], best[1][1], best[1][2]]); fc = np.clip(fc / np.percentile(fc, 99), 0, 1)
+            save_map([fc, viz.overlay(fc, best[2], (1.0, 0.9, 0.0), alpha=0.8)], [f"SWIR2/SWIR1/Blue {best[0]}", "detected flames (yellow)"],
+                     f"{site['label']} — {ev['event']}", RESULTS / "maps" / f"activefire_{site['id']}.png")
+        print("✓", site["id"], len(scenes), "scenes")
+    except Exception as e:
+        print("✗", site["id"], e)
+pd.DataFrame(rows).to_csv(RESULTS / "active_fire.csv", index=False)
+pd.DataFrame(rows).sort_values("fire_pixels", ascending=False).head(15)
+'''),
         md("## Forestry — forest cover in two years and the loss between them"),
         code(r'''
 forest_m, _, forest_thr = load_seg(CKPT_DIR / "forestry" / "forest_best.pt")
@@ -754,6 +780,155 @@ print("Results zip:", archive)
     ],
 )
 
+# ─────────────────────────────────────────────────────────────── 07 Active fire (flames)
+ACTIVE_FIRE = nb(
+    "07 · Wildfires — active-fire (flame) segmentation (Landsat-8 Active Fire)",
+    """**CRISP module:** Wildfires · **Task:** find burning pixels — flames — in a single image, so a fire can be flagged
+while it is happening · **Model:** U-Net / ResNet-34 on SWIR-2, SWIR-1, Blue (Landsat-8 bands 7-6-2 = Sentinel-2 B12-B11-B02)
+
+Data: Pereira et al. (2021), *Active fire detection in Landsat-8 imagery*, ISPRS J. Photogramm. Remote Sens., CC BY 4.0.
+Training labels are the 'voting' masks of three classic active-fire algorithms (Schroeder, Murphy, Kumar-Roy).
+The **test set is the hand-labelled subset**: the model and each classic algorithm are scored against human
+annotations on the same patches. Scenes in the hand-labelled set are removed from training.
+Runtime on a T4: ~15 min download/unzip + ~40 min training.""",
+    [
+        code(r'''
+MODULE = "wildfires_active_fire"
+from gstp.data import active_fire as AF
+from gstp.data.segmentation import SegDataset, split_samples, read_sample_image
+from gstp.data.raster import compute_band_stats, read_mask, IGNORE_INDEX
+from gstp.models import build_unet, count_parameters, export_onnx
+from gstp.metrics import BinarySegMeter
+from gstp import train_seg, viz
+from gstp.utils import save_json
+import numpy as np, pandas as pd, torch, zipfile, glob
+
+DATA = WORK / "data" / "activefire"
+RESULTS = REPO / "results" / MODULE
+CKPT_DIR = DRIVE / MODULE
+for p in (DATA / "compressed", RESULTS / "figures", CKPT_DIR):
+    p.mkdir(parents=True, exist_ok=True)
+pre = AF.l8_dn_to_toa
+'''),
+        md("## 1. Download: hand-labelled test set + four regions for training (~22 GB, Google Drive via gdown)"),
+        code(r'''
+import gdown
+MANUAL = {"landsat_patches": "1uZnc65_GRFdAoavGoUKkJfeVQOUI8lVg", "masks_patches": "1RCURItVvqsT_oMxlhB5NYiRp8SJ9_xZ3",
+          "manual_annotations_patches": "1LdsX-rH5hy_82jfc1akO8p4n0_N8lRgf"}
+REGIONS = {"Oceania": "1xHYTICHKU0u3-kIrq-pM9k0YaeQt60Bt", "North_America2": "1zW_pEIggJ5Li7uQX9XKMfHkcgL3kiUoi",
+           "Asia4": "1lyR6y6u8tSozfv3AQJ1PuUcdR0BU9yUk", "Asia2": "1w_wv0_QZhnH9jO1ygJg6ssTrXupIbTHp"}
+MAN_DIR = DATA / "manual"
+for name, fid in MANUAL.items():
+    z = DATA / "compressed" / f"{name}.zip"
+    if not (MAN_DIR / name).exists():
+        if not z.exists():
+            gdown.download(id=fid, output=str(z), quiet=True)
+        zipfile.ZipFile(z).extractall(MAN_DIR / name)
+print("manual set ready:", sum(1 for _ in MAN_DIR.rglob("*.tif")), "tifs")
+'''),
+        code(r'''
+import shutil
+img_dir, mask_dir = DATA / "images" / "patches", DATA / "masks" / "patches"
+vote_dir, inter_dir = DATA / "masks" / "voting", DATA / "masks" / "intersection"
+for d in (img_dir, mask_dir, vote_dir, inter_dir):
+    d.mkdir(parents=True, exist_ok=True)
+for region, fid in REGIONS.items():
+    done = DATA / f"{region}.done"
+    if done.exists():
+        continue
+    z = DATA / "compressed" / f"{region}.zip"
+    if not z.exists():
+        print("downloading", region); gdown.download(id=fid, output=str(z), quiet=True)
+    tmp = DATA / "tmp"; shutil.rmtree(tmp, ignore_errors=True); tmp.mkdir()
+    zipfile.ZipFile(z).extractall(tmp)
+    for inner in glob.glob(str(tmp / "**" / "*.zip"), recursive=True):
+        if inner.endswith("masks_derivates.zip"):
+            with zipfile.ZipFile(inner) as zf:
+                for n in zf.namelist():
+                    if n.lower().endswith(".tif") and "_voting_" in n.lower():
+                        zf.extract(n, vote_dir)
+        elif inner.endswith("masks.zip"):
+            zipfile.ZipFile(inner).extractall(mask_dir)
+        else:
+            zipfile.ZipFile(inner).extractall(img_dir)
+    shutil.rmtree(tmp); z.unlink(); done.touch()        # free disk as we go
+for d in (img_dir, vote_dir):                            # flatten any nested folders
+    for f in list(d.rglob("*.tif")):
+        if f.parent != d:
+            f.rename(d / f.name)
+print({"images": len(list(img_dir.glob("*.tif"))), "voting masks": len(list(vote_dir.glob("*.tif")))})
+'''),
+        md("## 2. Build the splits (test scenes removed from training)"),
+        code(r'''
+test, ALGO, rep_man = AF.build_manual_index(MAN_DIR)
+print(rep_man)
+assert rep_man["paired"] > 0, "Hand-labelled patches not paired — inspect MAN_DIR layout"
+test_scenes = {s.meta["scene"] for s in test}
+samples, rep_tr = AF.build_training_index(DATA, max_fire=5000, nonfire_ratio=0.5, exclude_scenes=test_scenes)
+print(rep_tr)
+assert rep_tr["fire_patches"] > 500, "Too few fire patches — check the voting-mask names"
+train, val = split_samples(samples, 0.12, seed=42, group_key=lambda s: s.meta["scene"])
+print(f"train {len(train)} | val {len(val)} | test (hand-labelled) {len(test)}")
+stats = compute_band_stats(train, lambda s: pre(read_sample_image(s)), nodata=0)
+print("band means (TOA reflectance, SWIR2/SWIR1/Blue):", np.round(stats["mean"], 4))
+save_json({"stats": stats, "manual": rep_man, "train_index": rep_tr}, RESULTS / "data_report.json")
+'''),
+        md("## 3. Train"),
+        code(r'''
+cfg = train_seg.SegTrainConfig(name="active_fire", in_channels=3, bands=AF.S2_EQUIVALENT, epochs=25, batch_size=16,
+                               crop_size=None, lr=3e-4, patience=8,
+                               extra={"norm": "zscore", "stats": stats, "input": "TOA reflectance",
+                                      "landsat8_bands": AF.L8_BANDS, "sentinel2_bands": AF.S2_EQUIVALENT,
+                                      "resolution_m": 30, "dataset": "Landsat-8 Active Fire (Pereira et al. 2021)"})
+tr = SegDataset(train, "zscore", stats, nodata=0, train=True, pre=pre)
+va = SegDataset(val, "zscore", stats, nodata=0, pre=pre)
+model = build_unet(3)
+print(f"{count_parameters(model)/1e6:.1f} M parameters")
+summary = train_seg.train(model, tr, va, cfg, CKPT_DIR)
+viz.training_curves(summary["history"], title="active_fire", path=RESULTS / "figures" / "curves.png");
+'''),
+        md("## 4. Test once against the hand-labelled patches — model vs the three classic algorithms"),
+        code(r'''
+thr = summary["chosen_threshold"]
+te = SegDataset(test, "zscore", stats, nodata=0, pre=pre)
+report = train_seg.test_report(model, {"test": te}, thr, RESULTS / "test_active_fire.json")
+rows = [{"method": "U-Net (SWIR2, SWIR1, Blue)", **report["test"]["at_chosen_threshold"]}]
+algo_scores = {}
+for a in ("Schroeder", "Murphy", "Kumar-Roy", "Voting", "Intersection"):
+    m = BinarySegMeter([0.5])
+    for s in test:
+        gt = read_mask(s.mask); valid = gt != IGNORE_INDEX
+        p = AF.strip_tokens(Path(s.sources[0][0]).name).lower()
+        pred = read_mask(ALGO[a][p]) == 1 if p in ALGO[a] else np.zeros_like(gt, bool)
+        m.update(pred.astype(np.float32), gt == 1, valid)
+    algo_scores[a] = m.compute(); rows.append({"method": f"{a} algorithm", **algo_scores[a]})
+save_json(algo_scores, RESULTS / "baselines.json")
+table = pd.DataFrame(rows)[["method", "iou", "f1", "precision", "recall"]].rename(columns={"iou": "IoU (fire)"})
+table.to_csv(RESULTS / "results_table.csv", index=False)
+table.style.format(precision=3).hide(axis="index")
+'''),
+        code(r'''
+raw = SegDataset(test, "none", nodata=0, pre=pre)
+fire_rich = np.argsort([-(te.load(i)[1] == 1).sum() for i in range(len(te))])[:4]
+ex = []
+for i in fire_rich:
+    x, y = te.load(i)
+    with torch.no_grad():
+        p = torch.sigmoid(model.eval()(torch.from_numpy(x)[None].to(get_device()))).squeeze().cpu().numpy()
+    ex.append({"rgb": viz.rgb(raw.load(i)[0], (0, 1, 2)), "mask": y, "prob": p, "thr": thr, "name": te.samples[i].id[-24:]})
+viz.prediction_grid(ex, "Active fire — hand-labelled test patches (false colour SWIR2/SWIR1/Blue)",
+                    RESULTS / "figures" / "examples_test.png", color=(1.0, 0.85, 0.0))
+export_onnx(model, 3, 256, str(CKPT_DIR / "active_fire.onnx"))
+import json
+print("GSTPJSON" + json.dumps({"test": report["test"]["at_chosen_threshold"], "n_test": len(test), "thr": thr,
+      "algos": algo_scores, "split": [len(train), len(val), len(test)], "data": rep_tr, "manual": rep_man,
+      "ep": [summary["best_epoch"], summary["epochs_run"], summary["train_time_s"]],
+      "hist": [[h["epoch"], round(h["train_loss"], 4), round(h["val_iou"], 4)] for h in summary["history"]]}, default=float) + "GSTPEND")
+'''),
+        code(FINISH),
+    ],
+)
+
 NOTEBOOKS = {
     "01_floods_sen1floods11.ipynb": FLOODS,
     "02_wildfires_burn_scars.ipynb": WILDFIRES,
@@ -761,6 +936,7 @@ NOTEBOOKS = {
     "04_agriculture_landuse_eurosat.ipynb": AGRI,
     "05_air_quality_forecasting.ipynb": AIR,
     "06_apply_to_crisp_sites.ipynb": CRISP,
+    "07_wildfires_active_fire.ipynb": ACTIVE_FIRE,
 }
 
 if __name__ == "__main__":

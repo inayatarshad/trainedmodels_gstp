@@ -213,3 +213,28 @@ def test_classifier_training_end_to_end(tmp_path):
     rep = train_cls.test_report(model, train_cls.ScaledDataset(FakeEuroSAT(24, 2), cfg.scale, False), cfg,
                                 tmp_path / "t.json")
     assert summ["epochs_run"] == 2 and 0 <= rep["accuracy"] <= 1 and len(rep["confusion_matrix"]) == 3
+
+
+def test_active_fire_naming_and_pairing(tmp_path):
+    import numpy as np, rasterio
+    from rasterio.transform import from_origin
+    from gstp.data import active_fire as AF
+
+    def w(p, arr):
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with rasterio.open(p, "w", driver="GTiff", height=arr.shape[-2], width=arr.shape[-1], count=arr.shape[0],
+                           dtype=arr.dtype, transform=from_origin(0, 0, 30, 30)) as d:
+            d.write(arr)
+
+    img = np.full((10, 8, 8), 20000, np.uint16)
+    m = np.zeros((1, 8, 8), np.uint8); m[0, 2, 2] = 1
+    w(tmp_path / "images/patches/LC08_A_p00001.tif", img)
+    w(tmp_path / "images/patches/LC08_A_p00002.tif", img)
+    w(tmp_path / "images/patches/LC08_T_p00001.tif", img)
+    w(tmp_path / "masks/voting/LC08_A_Voting_p00001.tif", m)
+    assert AF.strip_tokens("LC08_A_Kumar-Roy_p00001.tif") == "LC08_A_p00001.tif"
+    assert AF.scene_of("LC08_A_v1_p00001.tif") == "LC08_A"
+    s, rep = AF.build_training_index(tmp_path, nonfire_ratio=1.0, exclude_scenes={"LC08_T"})
+    assert rep["fire_patches"] == 1 and rep["nonfire_patches"] == 1
+    assert {x.meta["scene"] for x in s} == {"LC08_A"}
+    assert abs(float(AF.l8_dn_to_toa(np.array([20000]))[0]) - 0.3) < 1e-6

@@ -1,25 +1,100 @@
 {
   "_about": "Real events / seasons at CRISP sites used to apply the trained models (notebook 06). Windows are deliberately a few weeks wide; the loader picks the clearest scenes inside each window. Dates are public-record event dates; see docs/ for references.",
   "floods": [
-    {"site": "sukkur-indus", "event": "2022 Pakistan monsoon floods", "pre": "2022-06-01/2022-06-25", "post": "2022-08-28/2022-09-12"},
-    {"site": "valencia-huerta", "event": "October 2024 DANA flash floods, Valencia", "pre": "2024-10-01/2024-10-25", "post": "2024-10-30/2024-11-06"},
-    {"site": "lokoja-niger", "event": "2022 Niger-Benue confluence floods", "pre": "2022-03-01/2022-03-31", "post": "2022-10-05/2022-10-25"},
-    {"site": "sirajganj-jamuna", "event": "July 2020 Jamuna River floods", "pre": "2020-03-01/2020-03-31", "post": "2020-07-15/2020-07-31"},
-    {"site": "can-tho-mekong", "event": "Mekong Delta high-water season 2022", "pre": "2022-04-01/2022-04-30", "post": "2022-10-01/2022-10-25"},
-    {"site": "ahr-valley", "event": "July 2021 Ahr Valley flash flood", "pre": "2021-06-15/2021-07-10", "post": "2021-07-15/2021-07-21"}
+    {
+      "site": "sukkur-indus",
+      "event": "2022 Pakistan monsoon floods",
+      "pre": "2022-06-01/2022-06-25",
+      "post": "2022-08-28/2022-09-12"
+    },
+    {
+      "site": "valencia-huerta",
+      "event": "October 2024 DANA flash floods, Valencia",
+      "pre": "2024-10-01/2024-10-25",
+      "post": "2024-10-30/2024-11-06"
+    },
+    {
+      "site": "lokoja-niger",
+      "event": "2022 Niger-Benue confluence floods",
+      "pre": "2022-03-01/2022-03-31",
+      "post": "2022-10-05/2022-10-25"
+    },
+    {
+      "site": "sirajganj-jamuna",
+      "event": "July 2020 Jamuna River floods",
+      "pre": "2020-03-01/2020-03-31",
+      "post": "2020-07-15/2020-07-31"
+    },
+    {
+      "site": "can-tho-mekong",
+      "event": "Mekong Delta high-water season 2022",
+      "pre": "2022-04-01/2022-04-30",
+      "post": "2022-10-01/2022-10-25"
+    },
+    {
+      "site": "ahr-valley",
+      "event": "July 2021 Ahr Valley flash flood",
+      "pre": "2021-06-15/2021-07-10",
+      "post": "2021-07-15/2021-07-21"
+    }
   ],
   "wildfires": [
-    {"site": "pedrogao-grande", "event": "June 2017 Pedrógão Grande fire", "pre": "2017-05-10/2017-06-15", "post": "2017-06-25/2017-08-15"},
-    {"site": "sonoma-california", "event": "October 2017 Tubbs fire", "pre": "2017-09-01/2017-10-05", "post": "2017-10-20/2017-12-15"},
-    {"site": "attica-penteli", "event": "August 2024 Varnavas-Penteli fire", "pre": "2024-07-10/2024-08-08", "post": "2024-08-16/2024-09-20"},
-    {"site": "kelowna-okanagan", "event": "August 2023 McDougall Creek fire", "pre": "2023-07-10/2023-08-14", "post": "2023-08-28/2023-10-10"},
-    {"site": "blue-mountains", "event": "2019-20 Black Summer fires (Grose Valley)", "pre": "2019-08-15/2019-10-15", "post": "2020-01-20/2020-03-31"}
+    {
+      "site": "pedrogao-grande",
+      "event": "June 2017 Pedrógão Grande fire",
+      "pre": "2017-05-10/2017-06-15",
+      "post": "2017-06-25/2017-08-15"
+    },
+    {
+      "site": "sonoma-california",
+      "event": "October 2017 Tubbs fire",
+      "pre": "2017-09-01/2017-10-05",
+      "post": "2017-10-20/2017-12-15"
+    },
+    {
+      "site": "attica-penteli",
+      "event": "August 2024 Varnavas-Penteli fire",
+      "pre": "2024-07-10/2024-08-08",
+      "post": "2024-08-16/2024-09-20"
+    },
+    {
+      "site": "kelowna-okanagan",
+      "event": "August 2023 McDougall Creek fire",
+      "pre": "2023-07-10/2023-08-14",
+      "post": "2023-08-28/2023-10-10"
+    },
+    {
+      "site": "blue-mountains",
+      "event": "2019-20 Black Summer fires (Grose Valley)",
+      "pre": "2019-08-15/2019-10-15",
+      "post": "2020-01-20/2020-03-31"
+    }
   ],
   "forestry": [
-    {"site": "para-novo-progresso", "event": "Forest change 2019 -> 2024 (dry season)", "before": "2019-06-01/2019-09-30", "after": "2024-06-01/2024-09-30"},
-    {"site": "kalimantan-peat", "event": "Forest change 2018 -> 2024 (dry season)", "before": "2018-06-01/2018-09-30", "after": "2024-06-01/2024-09-30"},
-    {"site": "yangambi-congo", "event": "Forest change 2018 -> 2024 (Dec-Feb dry season)", "before": "2018-12-01/2019-02-28", "after": "2023-12-01/2024-02-29"},
-    {"site": "dalarna-boreal", "event": "Forest change 2018 -> 2024 (summer)", "before": "2018-06-01/2018-08-31", "after": "2024-06-01/2024-08-31"}
+    {
+      "site": "para-novo-progresso",
+      "event": "Forest change 2019 -> 2024 (dry season)",
+      "before": "2019-06-01/2019-09-30",
+      "after": "2024-06-01/2024-09-30"
+    },
+    {
+      "site": "kalimantan-peat",
+      "event": "Forest change 2018 -> 2024 (dry season)",
+      "before": "2018-06-01/2018-09-30",
+      "after": "2024-06-01/2024-09-30"
+    },
+    {
+      "site": "yangambi-congo",
+      "event": "Forest change 2018 -> 2024 (Dec-Feb dry season)",
+      "before": "2018-12-01/2019-02-28",
+      "after": "2023-12-01/2024-02-29"
+    },
+    {
+      "site": "dalarna-boreal",
+      "event": "Forest change 2018 -> 2024 (summer)",
+      "before": "2018-06-01/2018-08-31",
+      "after": "2024-06-01/2024-08-31"
+    }
   ],
   "agriculture": {
     "default_window": "2025-06-01/2025-08-31",
@@ -31,5 +106,32 @@
       "poltava-wheat": "2025-05-01/2025-06-30",
       "wagga-riverina": "2025-08-15/2025-10-31"
     }
-  }
+  },
+  "active_fire": [
+    {
+      "site": "pedrogao-grande",
+      "event": "June 2017 Pedrógão Grande fire",
+      "during": "2017-06-17/2017-06-26"
+    },
+    {
+      "site": "sonoma-california",
+      "event": "October 2017 Tubbs fire",
+      "during": "2017-10-08/2017-10-20"
+    },
+    {
+      "site": "attica-penteli",
+      "event": "August 2024 Varnavas-Penteli fire",
+      "during": "2024-08-10/2024-08-15"
+    },
+    {
+      "site": "kelowna-okanagan",
+      "event": "August 2023 McDougall Creek fire",
+      "during": "2023-08-15/2023-08-30"
+    },
+    {
+      "site": "blue-mountains",
+      "event": "2019-20 Black Summer fires (Grose Valley)",
+      "during": "2019-11-25/2020-01-10"
+    }
+  ]
 }
