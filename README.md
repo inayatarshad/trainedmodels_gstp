@@ -22,11 +22,15 @@ Full tables: [`results/RESULTS.md`](results/RESULTS.md) · Report: [`docs/GSTP_H
 | Module | Task | Model | Test result | Classic index baseline | Status |
 |---|---|---|---|---|---|
 | Agriculture | Land-use classification (10 classes) | ResNet-18, Sentinel-2 pretrained (SSL4EO-S12) | **99.19 % accuracy**, macro-F1 99.16 % (5,400 images) | — | ✅ Done |
-| Wildfires | Burn-scar segmentation | U-Net / ResNet-34, 6 bands | **IoU 0.805**, F1 0.892 (264 chips) | NBR threshold: IoU 0.450, F1 0.621 | ✅ Done |
+| Wildfires — flames | Active-fire segmentation | U-Net / ResNet-34, SWIR-2 · SWIR-1 · Blue | **IoU 0.774**, F1 0.872 (100 hand-labelled patches, 10 unseen scenes) | Best classic algorithm (Murphy): IoU 0.745 · Schroeder 0.664 · Kumar-Roy 0.619 | ✅ Done |
+| Wildfires — burn scars (after the fire) | Burn-scar segmentation | U-Net / ResNet-34, 6 bands | **IoU 0.805**, F1 0.892 (264 chips) | NBR threshold: IoU 0.450, F1 0.621 | ✅ Done |
 | Floods | Water segmentation (radar / optical / both) | U-Net / ResNet-34 | **IoU 0.838** radar+optical (90 chips); optical 0.798 on the unseen Bolivia event | MNDWI: 0.773 · radar VV threshold: 0.463 | ✅ Done |
 | Forestry | Forest segmentation → forest loss | U-Net / ResNet-34, R-G-B-NIR | **IoU 0.929**, F1 0.963 (200 images; Amazon 0.957, Atlantic 0.887) | NDVI threshold: IoU 0.738, F1 0.849 | ✅ Done |
 | Air quality | Next-day NO₂ and PM2.5 forecast, 60 sites | LightGBM | **NO₂ MAE 2.01 µg/m³** (39 % lower error than persistence, better at all 60 sites); PM2.5 MAE 3.95 (18 % lower) | Persistence: NO₂ 3.31, PM2.5 4.82 | ✅ Done |
 
+<p align="center">
+  <img src="results/wildfires_active_fire/figures/model_vs_algorithms.png" width="88%" alt="Active-fire model vs classic fire algorithms">
+</p>
 <p align="center">
   <img src="results/wildfires/figures/model_vs_nbr.png" width="48%" alt="Burn-scar model vs NBR threshold">
   <img src="results/agriculture/figures/confusion_matrix.png" width="40%" alt="Agriculture confusion matrix">
@@ -39,7 +43,7 @@ Full tables: [`results/RESULTS.md`](results/RESULTS.md) · Report: [`docs/GSTP_H
 | Module | Task chosen | Reasoning |
 |---|---|---|
 | **Floods** | **Segmentation** | Responders need flood *extent* (where, how many km²), not a yes/no label. Trained on radar (Sentinel-1) because floods happen under cloud, on optical (Sentinel-2) for clear-sky accuracy, and on both fused. |
-| **Wildfires** | **Segmentation** (burned area), before/after change at application time | Burn scars are spatial; CRISP's NBR rule already works per pixel, so a pixel model is a like-for-like upgrade. |
+| **Wildfires** | **Segmentation of active fire (flames)**; burn-scar segmentation kept as a second model | An onboard warning is only useful while the fire is burning, so the main model finds flame pixels in a single image (SWIR bands, which see through smoke). Burn scars only appear after the fire; that model stays for damage mapping. |
 | **Forestry** | **Segmentation**, then **change** between two dates | Forest cover maps from two years give forest *loss* directly; one model serves both. |
 | **Agriculture** | **Patch classification** (land use) | Crop health is only meaningful over cropland. The classifier maps where the farmland is, which is the mask CRISP's NDVI crop-health readings should use. Labelled crop-*stress* imagery does not exist at scale, so stress stays an index/forecast task. |
 | **Air quality** | **Time-series forecasting** | A Sentinel-5P pixel is ~5 km wide — a CRISP site is a handful of pixels, so there is no image structure to segment. The useful product is a forecast. |
@@ -51,7 +55,8 @@ Full tables: [`results/RESULTS.md`](results/RESULTS.md) · Report: [`docs/GSTP_H
 | Module | Dataset | Size | Labels | Licence |
 |---|---|---|---|---|
 | Floods | [Sen1Floods11](https://github.com/cloudtostreet/Sen1Floods11) (Bonafilia et al., 2020) | 446 chips, 512², 10 m, 11 events / 6 continents | hand-labelled water | CC BY 4.0 |
-| Wildfires | [HLS Burn Scars](https://huggingface.co/datasets/ibm-nasa-geospatial/hls_burn_scars) (NASA / IBM, 2023) | 804 chips, 512², 30 m | burn-scar masks | CC BY 4.0 |
+| Wildfires — flames | [Landsat-8 Active Fire](https://github.com/pereira-gha/activefire) (Pereira et al., 2021) | 3 regions used (Oceania, North America 1, Asia 4): 5,000 fire + 2,500 fire-free patches, 256², 30 m; 100 hand-labelled test patches | trained on the algorithms' majority vote; tested on hand labels | CC BY 4.0 |
+| Wildfires — burn scars | [HLS Burn Scars](https://huggingface.co/datasets/ibm-nasa-geospatial/hls_burn_scars) (NASA / IBM, 2023) | 804 chips, 512², 30 m | burn-scar masks | CC BY 4.0 |
 | Forestry | [Amazon & Atlantic Forest](https://zenodo.org/records/4498086) (Bragagnolo et al., 2021) | ~1,180 images, 512², 10 m | forest masks | CC BY 4.0 |
 | Agriculture | [EuroSAT-MS](https://github.com/phelber/EuroSAT) (Helber et al., 2019) via TorchGeo | 27,000 patches, 64², 13 bands | 10 land-use classes | MIT |
 | Air quality | [CAMS](https://atmosphere.copernicus.eu/) global composition + ERA5 weather, via [Open-Meteo](https://open-meteo.com/) | 60 sites × ~4 years daily | — (forecast target) | CC BY 4.0 / CAMS licence |
@@ -91,8 +96,9 @@ notebooks/                run these in Google Colab (T4 GPU), in order
   04_agriculture_landuse_eurosat.ipynb
   05_air_quality_forecasting.ipynb
   06_apply_to_crisp_sites.ipynb
+  07_wildfires_active_fire.ipynb
 src/gstp/                 shared library used by every notebook
-  data/                   dataset readers (Sen1Floods11, HLS Burn Scars, forest masks) + normalisation
+  data/                   dataset readers (Sen1Floods11, HLS Burn Scars, Landsat-8 Active Fire, forest masks) + normalisation
   models.py               U-Net and Sentinel-2-pretrained ResNet factories, ONNX export
   losses.py               BCE + Dice with ignored no-data pixels
   metrics.py              IoU / F1 / precision / recall, classification and regression scores
@@ -130,6 +136,7 @@ All training runs in **Google Colab** — nothing trains on a local machine.
 | 04 Agriculture | ~25 min | ~2 GB |
 | 05 Air quality | ~10 min (CPU) | API |
 | 06 CRISP sites | 20–40 min | imagery on demand |
+| 07 Wildfires — flames | ~50 min | ~15 GB (zips deleted after unzipping) |
 
 If the repository is private, upload a zip of it to `MyDrive/trainedmodels_gstp.zip`; the setup cell falls back to it.
 
@@ -146,6 +153,11 @@ These are stated up front so the results are read correctly:
 * **Processing-level differences at application time.** Sen1Floods11 optical chips are L1C (top of atmosphere) while
   CRISP-side imagery is L2A (surface reflectance); its radar chips are GRD σ⁰ while the Planetary Computer serves RTC γ⁰.
   Both are handled in code and documented, but small accuracy changes are expected.
+* **Flame model: sensor and labels.** It is trained on Landsat-8 and applied to Sentinel-2 through the matching
+  SWIR-2 / SWIR-1 / Blue bands (Landsat converted to top-of-atmosphere reflectance, Sentinel-2 L2A used as the closest
+  available product). Its training labels come from the classic algorithms' majority vote, and the hand-labelled test set
+  is small (100 patches, 10 scenes), so the 3-point IoU gain over Murphy should be read as "at least as good, with far
+  fewer false alarms" (precision 84 % vs 77 %), not as a large margin.
 * **Geography of training data.** The burn-scar data cover the USA and the forest data cover Brazil; Spanish and UK
   sites are outside those distributions. The flood data are global, and the Bolivia score measures transfer.
 * **Air-quality target is CAMS model output, not ground-station measurements.** It assimilates satellite data
@@ -166,7 +178,7 @@ against the test sets above. The U-Nets (~24 M parameters) and ResNet-18 (~11 M)
 
 ## References
 
-Bonafilia et al., *Sen1Floods11*, CVPR Workshops 2020 · Phillips et al., *HLS Foundation Burn Scar Dataset*, 2023 ·
+Bonafilia et al., *Sen1Floods11*, CVPR Workshops 2020 · Pereira et al., *Active fire detection in Landsat-8 imagery: a large-scale dataset and a deep-learning study*, ISPRS J. Photogramm. 2021 · Phillips et al., *HLS Foundation Burn Scar Dataset*, 2023 ·
 Bragagnolo et al., *Amazon and Atlantic Forest image datasets for semantic segmentation*, Zenodo 2021 ·
 Helber et al., *EuroSAT*, IEEE JSTARS 2019 · Wang et al., *SSL4EO-S12*, 2022 · Ronneberger et al., *U-Net*, MICCAI 2015 ·
 Stewart et al., *TorchGeo*, 2022 · Ke et al., *LightGBM*, NeurIPS 2017 · Copernicus Atmosphere Monitoring Service (CAMS).

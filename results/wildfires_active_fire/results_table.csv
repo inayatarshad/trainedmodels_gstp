@@ -1,0 +1,7 @@
+method,IoU (fire),f1,precision,recall
+"U-Net (SWIR2, SWIR1, Blue)",0.7738,0.8725,0.8393,0.9084
+Schroeder algorithm,0.6639,0.7980,0.9242,0.7021
+Murphy algorithm,0.7451,0.8539,0.7683,0.9609
+Kumar-Roy algorithm,0.6192,0.7649,0.8668,0.6844
+Voting algorithm,0.7151,0.8339,0.8815,0.7911
+Intersection algorithm,0.5514,0.7108,0.9284,0.5759

@@ -187,6 +187,42 @@ def air_quality():
     print("air-quality figures ->", out)
 
 
+def active_fire():
+    d = R / "wildfires_active_fire"
+    t = json.loads((d / "test_active_fire.json").read_text())["test"]["at_chosen_threshold"]
+    b = json.loads((d / "baselines.json").read_text())
+    h = json.loads((d / "train_summary.json").read_text())
+    out = d / "figures"; out.mkdir(parents=True, exist_ok=True)
+
+    rows = [("U-Net\n(learned)", t, "#d97706")] + [(f"{a}\n(classic)", b[a], "#b8c2d1") for a in ("Murphy", "Schroeder", "Kumar-Roy")]
+    fig, ax = plt.subplots(1, 2, figsize=(12, 4.6), gridspec_kw={"width_ratios": [1, 1.25]})
+    v = [100 * r[1]["iou"] for r in rows]
+    bars = ax[0].bar(range(len(rows)), v, color=[r[2] for r in rows])
+    for i, val in enumerate(v):
+        ax[0].text(i, val + 1.2, f"{val:.1f}", ha="center", fontsize=11, color=INK)
+    ax[0].set_xticks(range(len(rows)), [r[0] for r in rows]); ax[0].set_ylim(0, 100)
+    ax[0].set_ylabel("IoU on fire pixels (%)"); ax[0].set_title("Overlap with hand-drawn fire outlines", color=INK)
+    for r, mk in zip(rows, ["o", "s", "^", "D"]):
+        ax[1].scatter(100 * r[1]["recall"], 100 * r[1]["precision"], s=140, marker=mk, color=r[2] if r[2] != "#b8c2d1" else MUTED,
+                      edgecolor=INK, zorder=3)
+        ax[1].annotate(r[0].replace("\n", " "), (100 * r[1]["recall"], 100 * r[1]["precision"]), textcoords="offset points",
+                       xytext=(8, -4), fontsize=10, color=INK)
+    ax[1].set(xlim=(60, 100), ylim=(70, 100), xlabel="Recall: fire pixels found (%)", ylabel="Precision: detections that are fire (%)")
+    ax[1].set_title("Finding fire vs avoiding false alarms", color=INK); ax[1].grid(alpha=0.25)
+    fig.suptitle("Active-fire (flame) detection: learned model vs classic Landsat-8 fire algorithms\n"
+                 "100 hand-labelled test patches from 10 scenes never used in training", color=INK)
+    fig.tight_layout(); fig.savefig(out / "model_vs_algorithms.png", dpi=200); plt.close(fig)
+
+    ep = [x["epoch"] for x in h["history"]]
+    fig, ax = plt.subplots(1, 2, figsize=(11, 3.8))
+    ax[0].plot(ep, [x["train_loss"] for x in h["history"]], color=INK, lw=2); ax[0].set(title="Training loss (BCE + Dice)", xlabel="epoch")
+    ax[1].plot(ep, [x["val_iou"] for x in h["history"]], color="#d97706", lw=2)
+    ax[1].set(title="Validation IoU (fire pixels)", xlabel="epoch", ylim=(0, 1))
+    fig.suptitle(f"U-Net / ResNet-34 on Landsat-8 Active Fire — {h['epochs_run']} epochs, {h['train_time_s']/60:.0f} min on a {h['gpu']}", color=INK)
+    fig.tight_layout(); fig.savefig(out / "training_curves.png", dpi=200); plt.close(fig)
+    print("active-fire figures ->", out)
+
+
 if __name__ == "__main__":
     for name in sys.argv[1:] or ["agriculture"]:
         globals()[name]()

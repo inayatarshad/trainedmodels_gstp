@@ -1,0 +1,141 @@
+{
+  "name": "active_fire",
+  "best_epoch": 21,
+  "epochs_run": 25,
+  "train_time_s": 2740.4,
+  "chosen_threshold": 0.6,
+  "val_at_chosen": {
+    "iou": 0.7541899441340782,
+    "f1": 0.8598726114649682
+  },
+  "git_commit": "c25e925",
+  "finished_utc": "2026-10-23T18:30:35Z",
+  "gpu": "Tesla T4",
+  "history": [
+    {
+      "epoch": 1,
+      "val_iou": 0.0034,
+      "train_loss": 0.7689
+    },
+    {
+      "epoch": 2,
+      "val_iou": 0.0951,
+      "train_loss": 0.5589
+    },
+    {
+      "epoch": 3,
+      "val_iou": 0.3079,
+      "train_loss": 0.5031
+    },
+    {
+      "epoch": 4,
+      "val_iou": 0.6245,
+      "train_loss": 0.3598
+    },
+    {
+      "epoch": 5,
+      "val_iou": 0.6721,
+      "train_loss": 0.1391
+    },
+    {
+      "epoch": 6,
+      "val_iou": 0.6797,
+      "train_loss": 0.1159
+    },
+    {
+      "epoch": 7,
+      "val_iou": 0.7047,
+      "train_loss": 0.1088
+    },
+    {
+      "epoch": 8,
+      "val_iou": 0.7131,
+      "train_loss": 0.1037
+    },
+    {
+      "epoch": 9,
+      "val_iou": 0.7234,
+      "train_loss": 0.0997
+    },
+    {
+      "epoch": 10,
+      "val_iou": 0.7099,
+      "train_loss": 0.0966
+    },
+    {
+      "epoch": 11,
+      "val_iou": 0.7125,
+      "train_loss": 0.0944
+    },
+    {
+      "epoch": 12,
+      "val_iou": 0.7246,
+      "train_loss": 0.0923
+    },
+    {
+      "epoch": 13,
+      "val_iou": 0.7182,
+      "train_loss": 0.091
+    },
+    {
+      "epoch": 14,
+      "val_iou": 0.7375,
+      "train_loss": 0.087
+    },
+    {
+      "epoch": 15,
+      "val_iou": 0.7314,
+      "train_loss": 0.0854
+    },
+    {
+      "epoch": 16,
+      "val_iou": 0.7385,
+      "train_loss": 0.0875
+    },
+    {
+      "epoch": 17,
+      "val_iou": 0.7418,
+      "train_loss": 0.0831
+    },
+    {
+      "epoch": 18,
+      "val_iou": 0.7382,
+      "train_loss": 0.0811
+    },
+    {
+      "epoch": 19,
+      "val_iou": 0.7462,
+      "train_loss": 0.0807
+    },
+    {
+      "epoch": 20,
+      "val_iou": 0.748,
+      "train_loss": 0.0794
+    },
+    {
+      "epoch": 21,
+      "val_iou": 0.7526,
+      "train_loss": 0.0775
+    },
+    {
+      "epoch": 22,
+      "val_iou": 0.7494,
+      "train_loss": 0.0792
+    },
+    {
+      "epoch": 23,
+      "val_iou": 0.7488,
+      "train_loss": 0.0775
+    },
+    {
+      "epoch": 24,
+      "val_iou": 0.7469,
+      "train_loss": 0.0771
+    },
+    {
+      "epoch": 25,
+      "val_iou": 0.7494,
+      "train_loss": 0.0771
+    }
+  ]
+}
