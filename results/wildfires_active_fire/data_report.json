@@ -1,0 +1,37 @@
+{
+  "stats": {
+    "mean": [
+      0.08601661771535873,
+      0.14749956130981445,
+      0.11298872530460358
+    ],
+    "std": [
+      0.07321713119745255,
+      0.09636414051055908,
+      0.09086310863494873
+    ]
+  },
+  "manual": {
+    "manual_masks": 100,
+    "images": 9044,
+    "paired": 100,
+    "scenes": 10
+  },
+  "train_index": {
+    "images": 12878,
+    "voting_masks": 6870,
+    "fire_patches": 5000,
+    "nonfire_patches": 2500,
+    "excluded_scenes": 10
+  },
+  "regions_used": [
+    "Oceania",
+    "North_America1",
+    "Asia4"
+  ],
+  "split": {
+    "train": 6591,
+    "val": 909,
+    "test_hand_labelled": 100
+  }
+}

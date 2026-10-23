@@ -54,7 +54,13 @@ def main():
             for split in ("test", "bolivia"):
                 m = b[split]
                 rows.append(f"| Floods | baseline: {bname} | {split} | {pct(m['iou'])} | {pct(m['f1'])} | {pct(m['precision'])} | {pct(m['recall'])} |")
-    rows += seg_rows("wildfires", "Wildfires", {"U-Net": "test_burn_scar.json"})
+    af = load("wildfires_active_fire/test_active_fire.json")
+    if af:
+        m = af["test"]["at_chosen_threshold"]
+        rows.append(f"| Wildfires — flames | U-Net (SWIR2, SWIR1, Blue) | hand-labelled | {pct(m['iou'])} | {pct(m['f1'])} | {pct(m['precision'])} | {pct(m['recall'])} |")
+        for bname, m in (load("wildfires_active_fire/baselines.json") or {}).items():
+            rows.append(f"| Wildfires — flames | baseline: {bname} algorithm | hand-labelled | {pct(m['iou'])} | {pct(m['f1'])} | {pct(m['precision'])} | {pct(m['recall'])} |")
+    rows += seg_rows("wildfires", "Wildfires — burn scars", {"U-Net": "test_burn_scar.json"})
     rows += seg_rows("forestry", "Forestry", {"U-Net": "test_forest.json"})
     out += rows or ["| _pending first training run_ | | | | | | |"]
 

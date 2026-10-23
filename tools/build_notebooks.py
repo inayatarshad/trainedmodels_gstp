@@ -810,13 +810,15 @@ for p in (DATA / "compressed", RESULTS / "figures", CKPT_DIR):
     p.mkdir(parents=True, exist_ok=True)
 pre = AF.l8_dn_to_toa
 '''),
-        md("## 1. Download: hand-labelled test set + four regions for training (~22 GB, Google Drive via gdown)"),
+        md("## 1. Download: hand-labelled test set + three regions for training (~15 GB from Google Drive)"),
         code(r'''
 import gdown
 MANUAL = {"landsat_patches": "1uZnc65_GRFdAoavGoUKkJfeVQOUI8lVg", "masks_patches": "1RCURItVvqsT_oMxlhB5NYiRp8SJ9_xZ3",
           "manual_annotations_patches": "1LdsX-rH5hy_82jfc1akO8p4n0_N8lRgf"}
-REGIONS = {"Oceania": "1xHYTICHKU0u3-kIrq-pM9k0YaeQt60Bt", "North_America2": "1zW_pEIggJ5Li7uQX9XKMfHkcgL3kiUoi",
-           "Asia4": "1lyR6y6u8tSozfv3AQJ1PuUcdR0BU9yUk", "Asia2": "1w_wv0_QZhnH9jO1ygJg6ssTrXupIbTHp"}
+REGIONS = {"Oceania": "1xHYTICHKU0u3-kIrq-pM9k0YaeQt60Bt", "North_America1": "1zW_pEIggJ5Li7uQX9XKMfHkcgL3kiUoi",
+           "Asia4": "1lyR6y6u8tSozfv3AQJ1PuUcdR0BU9yUk"}
+# Asia2 ("1w_wv0_QZhnH9jO1ygJg6ssTrXupIbTHp", 9.7 GB) is left out: the three regions above already give >6,800 fire
+# patches, and adding it overflows the free Colab disk.
 MAN_DIR = DATA / "manual"
 
 _drive = None
@@ -863,6 +865,7 @@ for name, fid in MANUAL.items():
         if not z.exists():
             print("downloading", name); fetch(fid, z)
         zipfile.ZipFile(z).extractall(MAN_DIR / name)
+        z.unlink()                                          # free disk
 print("manual set ready:", sum(1 for _ in MAN_DIR.rglob("*.tif")), "tifs")
 '''),
         code(r'''
