@@ -71,6 +71,26 @@ def load_s2(bbox, date_range, bands, resolution=10, max_cloud=30, max_items=6):
     return comp, valid, info
 
 
+def load_s2_scenes(bbox, date_range, bands, resolution=30, max_cloud=80, max_items=12):
+    """Every Sentinel-2 L2A acquisition in the window as a separate image (no compositing:
+    flames are short-lived, so a median would erase them). Returns a list of
+    (date, reflectance array [C,H,W], valid mask, item id), clearest first."""
+    import odc.stac
+
+    items = search("sentinel-2-l2a", bbox, date_range, max_cloud)
+    items = sorted(items, key=lambda it: it.properties.get("eo:cloud_cover", 100))[:max_items]
+    out = []
+    for it in items:
+        ds = odc.stac.load([it], bands=list(bands), bbox=bbox, resolution=resolution, crs="utm")
+        a = np.stack([ds[b].isel(time=0).values for b in bands]).astype(np.float32)
+        valid = np.all(a > 0, axis=0)
+        date = str(ds.time.values[0])[:10]
+        if date >= "2022-01-25":
+            a = a - 1000.0
+        out.append((date, np.clip(a, 0, None) / 10000.0, valid, it.id))
+    return out
+
+
 def load_s1_db(bbox, date_range, resolution=10):
     """Sentinel-1 RTC VV/VH in dB, from the scene closest to the start of date_range."""
     import odc.stac

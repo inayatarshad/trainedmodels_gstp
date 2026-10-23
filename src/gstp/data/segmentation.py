@@ -70,8 +70,12 @@ class SegDataset:
         train: bool = False,
         crop_size: int | None = None,
         seed: int = 0,
+        pre=None,
     ):
+        """pre: optional function applied to the raw image before normalisation
+        (e.g. Landsat-8 digital numbers -> top-of-atmosphere reflectance)."""
         self.samples = samples
+        self.pre = pre
         self.norm = norm
         self.stats = stats
         self.nodata = nodata
@@ -90,6 +94,8 @@ class SegDataset:
             raise ValueError(f"{s.id}: mask {mask.shape} != image {img.shape[1:]}")
         mask = mask.copy()
         mask[~valid] = IGNORE_INDEX
+        if self.pre is not None:
+            img = self.pre(img)
         img = normalise(img, self.norm, self.stats)
         img[:, ~valid] = 0.0
         return img, mask
