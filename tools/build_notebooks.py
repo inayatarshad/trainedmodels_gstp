@@ -818,11 +818,50 @@ MANUAL = {"landsat_patches": "1uZnc65_GRFdAoavGoUKkJfeVQOUI8lVg", "masks_patches
 REGIONS = {"Oceania": "1xHYTICHKU0u3-kIrq-pM9k0YaeQt60Bt", "North_America2": "1zW_pEIggJ5Li7uQX9XKMfHkcgL3kiUoi",
            "Asia4": "1lyR6y6u8tSozfv3AQJ1PuUcdR0BU9yUk", "Asia2": "1w_wv0_QZhnH9jO1ygJg6ssTrXupIbTHp"}
 MAN_DIR = DATA / "manual"
+
+_drive = None
+def fetch(fid, out):
+    """Download a public Google Drive file. The anonymous route (gdown) is often blocked by Drive's
+    'too many users downloaded this file' quota, so fall back to the signed-in Drive API, and if the
+    shared file's quota is still exhausted, make a temporary copy in your own Drive, download that,
+    and remove the copy."""
+    global _drive
+    out = str(out)
+    try:
+        gdown.download(id=fid, output=out, quiet=True)
+        if os.path.exists(out) and zipfile.is_zipfile(out):
+            return
+    except Exception as e:
+        print("  gdown blocked:", str(e).splitlines()[0][:90])
+    from google.colab import auth
+    from googleapiclient.discovery import build
+    from googleapiclient.errors import HttpError
+    from googleapiclient.http import MediaIoBaseDownload
+    if _drive is None:
+        auth.authenticate_user(); _drive = build("drive", "v3")
+
+    def pull(file_id):
+        req = _drive.files().get_media(fileId=file_id, supportsAllDrives=True)
+        with open(out, "wb") as f:
+            dl, done = MediaIoBaseDownload(f, req, chunksize=256 * 1024 * 1024), False
+            while not done:
+                _, done = dl.next_chunk()
+
+    try:
+        pull(fid); print("  downloaded via Drive API"); return
+    except HttpError as e:
+        print("  Drive API direct download refused (", e.status_code, ") - using a temporary copy")
+    copy = _drive.files().copy(fileId=fid, body={"name": f"tmp_gstp_{fid}.zip"}, supportsAllDrives=True).execute()
+    try:
+        pull(copy["id"]); print("  downloaded via temporary copy")
+    finally:
+        _drive.files().delete(fileId=copy["id"]).execute()
+
 for name, fid in MANUAL.items():
     z = DATA / "compressed" / f"{name}.zip"
     if not (MAN_DIR / name).exists():
         if not z.exists():
-            gdown.download(id=fid, output=str(z), quiet=True)
+            print("downloading", name); fetch(fid, z)
         zipfile.ZipFile(z).extractall(MAN_DIR / name)
 print("manual set ready:", sum(1 for _ in MAN_DIR.rglob("*.tif")), "tifs")
 '''),
@@ -838,7 +877,7 @@ for region, fid in REGIONS.items():
         continue
     z = DATA / "compressed" / f"{region}.zip"
     if not z.exists():
-        print("downloading", region); gdown.download(id=fid, output=str(z), quiet=True)
+        print("downloading", region); fetch(fid, z)
     tmp = DATA / "tmp"; shutil.rmtree(tmp, ignore_errors=True); tmp.mkdir()
     zipfile.ZipFile(z).extractall(tmp)
     for inner in glob.glob(str(tmp / "**" / "*.zip"), recursive=True):
