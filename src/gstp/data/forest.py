@@ -49,8 +49,10 @@ def _is_mask(path: Path) -> bool:
 
 
 def _key(path: Path) -> str:
-    nums = re.findall(r"\d+", path.stem)
-    return nums[-1] if nums else path.stem.lower()
+    """Pairing key: the full file stem. Images and masks share the same Sentinel-2
+    tile name (e.g. S2A_MSIL2A_..._01_07); a partial key such as the last number
+    collides across tiles and silently drops most of the dataset."""
+    return path.stem.lower()
 
 
 def build_samples(root: str | Path, split: str) -> tuple[list[Sample], dict]:
