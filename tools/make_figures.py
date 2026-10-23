@@ -133,6 +133,33 @@ def floods():
     print("flood figures ->", out)
 
 
+def forestry():
+    t = json.loads((R / "forestry/test_forest.json").read_text())
+    b = json.loads((R / "forestry/baselines.json").read_text())["NDVI threshold"]
+    h = json.loads((R / "forestry/train_summary.json").read_text())
+    out = R / "forestry/figures"; out.mkdir(parents=True, exist_ok=True)
+    rows = [("U-Net, both biomes", t["test"]["at_chosen_threshold"], "#2f7d4f"), ("U-Net, Amazon", t["test"]["per_group"]["amazon"], "#4f9d6b"),
+            ("U-Net, Atlantic Forest", t["test"]["per_group"]["atlantic"], "#7fbf94"), (f"NDVI > {b['threshold']:.2f}", b["test"], "#b8c2d1")]
+    keys = [("iou", "IoU (forest)"), ("f1", "F1"), ("precision", "Precision"), ("recall", "Recall")]
+    fig, ax = plt.subplots(figsize=(9, 4.4)); x = np.arange(len(keys)); w = 0.2
+    for i, (name, r, c) in enumerate(rows):
+        v = [100 * r[k] for k, _ in keys]
+        ax.bar(x + (i - 1.5) * w, v, w, color=c, label=name)
+        for xx, vv in zip(x + (i - 1.5) * w, v):
+            ax.text(xx, vv + 1, f"{vv:.0f}", ha="center", fontsize=8.5, color=INK)
+    ax.set_xticks(x, [l for _, l in keys]); ax.set_ylim(0, 112); ax.set_ylabel("% on held-out test set")
+    ax.set_title("Forest segmentation vs NDVI threshold — 200 unseen Sentinel-2 images", color=INK)
+    ax.legend(frameon=False, fontsize=9, ncol=4, loc="upper center")
+    fig.tight_layout(); fig.savefig(out / "model_vs_ndvi.png", dpi=200); plt.close(fig)
+    ep = [x["epoch"] for x in h["history"]]
+    fig, ax = plt.subplots(1, 2, figsize=(11, 3.8))
+    ax[0].plot(ep, [x["train_loss"] for x in h["history"]], color=INK, lw=2); ax[0].set(title="Training loss (BCE + Dice)", xlabel="epoch")
+    ax[1].plot(ep, [x["val_iou"] for x in h["history"]], color="#2f7d4f", lw=2); ax[1].set(title="Validation IoU (forest)", xlabel="epoch", ylim=(0, 1))
+    fig.suptitle(f"U-Net / ResNet-34 on Amazon + Atlantic Forest — {h['epochs_run']} epochs, {h['train_time_s']/60:.0f} min on a {h['gpu']}", color=INK)
+    fig.tight_layout(); fig.savefig(out / "training_curves.png", dpi=200); plt.close(fig)
+    print("forestry figures ->", out)
+
+
 if __name__ == "__main__":
     for name in sys.argv[1:] or ["agriculture"]:
         globals()[name]()
