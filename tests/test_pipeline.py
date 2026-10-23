@@ -146,6 +146,12 @@ def test_burn_scar_and_forest_indexers(tmp_path):
             Image.fromarray((rng.random((32, 32)) > 0.5).astype(np.uint8) * 255).save(label_dir / f"img_{i}.png")
     samples, rep = forest.build_samples(tmp_path / "forest", "training")
     assert rep["paired"] == 4 and rep["images"] == 4
+    # real naming: same tile-position suffix in two different scenes must not collide
+    for scene in ("S2A_SCENEA", "S2B_SCENEB"):
+        _write_tif(tmp_path / "forest2/AMAZON/Training/image" / f"{scene}_01_07.tif", rng.integers(0, 255, (4, 16, 16)), "uint8")
+        _write_tif(tmp_path / "forest2/AMAZON/Training/label" / f"{scene}_01_07.tif", (rng.random((16, 16)) > 0.5).astype(np.uint8), "uint8")
+    s2, rep2 = forest.build_samples(tmp_path / "forest2", "training")
+    assert rep2["paired"] == 2
     img, mask = SegDataset(samples, "percentile").load(0)
     assert img.shape == (4, 32, 32) and 0 <= img.min() and img.max() <= 1 and set(np.unique(mask)) <= {0, 1}
 
