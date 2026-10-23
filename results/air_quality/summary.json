@@ -1,0 +1,26 @@
+{
+  "feature_importance_gain_no2": {
+    "nitrogen_dioxide_lag0": 387356.0,
+    "nitrogen_dioxide_mean7": 88430.8,
+    "nitrogen_dioxide_mean28": 36038.8,
+    "wind_speed_10m_d1": 30022.7,
+    "site_id": 22176.2,
+    "wind_u_d1": 5581.4,
+    "wind_v_d1": 3575.8,
+    "nitrogen_dioxide_lag1": 3381.9,
+    "wind_speed_10m_d0": 3231.5,
+    "temperature_2m_d1": 2238.8,
+    "wind_u_d0": 2145.1,
+    "relative_humidity_2m_d1": 2106.6,
+    "doy_cos": 1910.3,
+    "sulphur_dioxide_lag0": 1863.4,
+    "doy_sin": 1779.9
+  },
+  "sites": 60,
+  "period": [
+    "2022-08-01",
+    "2026-09-30"
+  ],
+  "val_start": "2025-04-01",
+  "test_start": "2025-10-01"
+}

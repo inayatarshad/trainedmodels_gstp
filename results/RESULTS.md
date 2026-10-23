@@ -40,4 +40,9 @@ Test accuracy **99.2 %**, macro-F1 **99.2 %** on 5400 images.
 
 ## Air quality — next-day forecast, test year Oct 2025 – Sep 2026
 
-_pending first training run_
+| Setting | LightGBM MAE | Persistence MAE | Skill vs persistence | R² |
+|---|---|---|---|---|
+| no2_with_nextday_weather | 2.01 | 3.31 | +39.4 % | 0.830 |
+| no2_no_nextday_weather | 2.91 | 3.31 | +12.2 % | 0.747 |
+| pm25_with_nextday_weather | 3.95 | 4.82 | +17.9 % | 0.684 |
+| pm25_no_nextday_weather | 4.54 | 4.82 | +5.7 % | 0.673 |

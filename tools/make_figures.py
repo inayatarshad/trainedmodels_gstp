@@ -160,6 +160,33 @@ def forestry():
     print("forestry figures ->", out)
 
 
+def air_quality():
+    import csv
+    r = json.loads((R / "air_quality/test_metrics.json").read_text())
+    rows = list(csv.DictReader(open(R / "air_quality/per_site_no2.csv")))
+    out = R / "air_quality/figures"; out.mkdir(parents=True, exist_ok=True)
+    tags = [("no2_with_nextday_weather", "NO₂ + weather forecast"), ("no2_no_nextday_weather", "NO₂, no future info"),
+            ("pm25_with_nextday_weather", "PM2.5 + weather forecast"), ("pm25_no_nextday_weather", "PM2.5, no future info")]
+    fig, ax = plt.subplots(figsize=(9, 4.2)); x = np.arange(len(tags)); w = 0.36
+    m = [r[t]["LightGBM"]["mae"] for t, _ in tags]; p = [r[t]["persistence"]["mae"] for t, _ in tags]
+    ax.bar(x - w / 2, m, w, color="#7c3aed", label="LightGBM forecast"); ax.bar(x + w / 2, p, w, color="#b8c2d1", label="Persistence (tomorrow = today)")
+    for i, (t, _) in enumerate(tags):
+        ax.text(x[i] - w / 2, m[i] + 0.1, f"{m[i]:.2f}", ha="center", fontsize=9, color=INK)
+        ax.text(x[i] + w / 2, p[i] + 0.1, f"{p[i]:.2f}", ha="center", fontsize=9, color=MUTED)
+        ax.text(x[i], max(m[i], p[i]) + 0.75, f"{100*r[t]['skill_vs_persistence_mae']:.0f} % less error", ha="center", fontsize=10, color="#7c3aed", weight="bold")
+    ax.set_xticks(x, [l for _, l in tags], fontsize=9); ax.set_ylabel("Mean absolute error (µg/m³)"); ax.set_ylim(0, max(p) + 2)
+    ax.set_title("Next-day air-quality forecast, all 60 sites — test year Oct 2025 – Sep 2026", color=INK)
+    ax.legend(frameon=False, fontsize=9, loc="upper left")
+    fig.tight_layout(); fig.savefig(out / "model_vs_persistence.png", dpi=200); plt.close(fig)
+    rows = sorted(rows, key=lambda z: float(z["skill"]))
+    fig, ax = plt.subplots(figsize=(8, 11))
+    ax.barh([z["site_id"] for z in rows], [100 * float(z["skill"]) for z in rows], color="#7c3aed")
+    ax.axvline(0, color=INK, lw=0.8); ax.set_xlabel("NO₂ forecast skill vs persistence (% lower error)"); ax.tick_params(axis="y", labelsize=7.5)
+    ax.set_title("Forecast beats persistence at all 60 sites", color=INK)
+    fig.tight_layout(); fig.savefig(out / "per_site_skill_no2.png", dpi=200); plt.close(fig)
+    print("air-quality figures ->", out)
+
+
 if __name__ == "__main__":
     for name in sys.argv[1:] or ["agriculture"]:
         globals()[name]()

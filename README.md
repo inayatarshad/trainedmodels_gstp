@@ -25,7 +25,7 @@ Full tables: [`results/RESULTS.md`](results/RESULTS.md) · Report: [`docs/GSTP_H
 | Wildfires | Burn-scar segmentation | U-Net / ResNet-34, 6 bands | **IoU 0.805**, F1 0.892 (264 chips) | NBR threshold: IoU 0.450, F1 0.621 | ✅ Done |
 | Floods | Water segmentation (radar / optical / both) | U-Net / ResNet-34 | **IoU 0.838** radar+optical (90 chips); optical 0.798 on the unseen Bolivia event | MNDWI: 0.773 · radar VV threshold: 0.463 | ✅ Done |
 | Forestry | Forest segmentation → forest loss | U-Net / ResNet-34, R-G-B-NIR | **IoU 0.929**, F1 0.963 (200 images; Amazon 0.957, Atlantic 0.887) | NDVI threshold: IoU 0.738, F1 0.849 | ✅ Done |
-| Air quality | Next-day NO₂ and PM2.5 forecast, 60 sites | LightGBM | — | Persistence | ⏳ Next |
+| Air quality | Next-day NO₂ and PM2.5 forecast, 60 sites | LightGBM | **NO₂ MAE 2.01 µg/m³** (39 % lower error than persistence, better at all 60 sites); PM2.5 MAE 3.95 (18 % lower) | Persistence: NO₂ 3.31, PM2.5 4.82 | ✅ Done |
 
 <p align="center">
   <img src="results/wildfires/figures/model_vs_nbr.png" width="48%" alt="Burn-scar model vs NBR threshold">
