@@ -749,37 +749,27 @@ pd.DataFrame(rows)
 '''),
         md("## Agriculture — land-use composition of every farm, Spain and UK site"),
         code(r'''
-ck = torch.load(CKPT_DIR / "agriculture" / "landuse_eurosat_best.pt", map_location="cpu", weights_only=False)
-ag = ck["config"]["extra"]; CLASSES = ag["classes"]
-lu = build_s2_classifier(len(CLASSES), drop_bands=["B10"], pretrained=False, input_size=ag["input_size"])
-lu.load_state_dict(ck["state_dict"]); lu.eval()
-pc_bands = ag["bands"]   # same names on the Planetary Computer (B01 ... B8A ... B12)
+# Each site runs in its own process with a 9 GB memory cap (tools/apply_agriculture.py): a heavy Sentinel-2 load
+# then fails that one site instead of crashing the Colab session, and results are saved after every site.
+import json, os
+AG_CKPT = CKPT_DIR / "agriculture" / "landuse_eurosat_best.pt"
 targets = [s for s in SITES.values() if s["focus"] in ("agriculture", "all")]
-# One site at a time, saved after each, so a crash (12 GB RAM on free Colab) loses nothing and a re-run resumes.
-import gc
-out_csv = RESULTS / "agriculture_landuse.csv"
-rows = pd.read_csv(out_csv).to_dict("records") if out_csv.exists() else []
-done = {r["site"] for r in rows}
+part = RESULTS / "agriculture_sites"; part.mkdir(exist_ok=True)
+env = {**os.environ, "CUDA_VISIBLE_DEVICES": ""}
 for site in targets:
-    if site["label"] in done:
+    out = part / f"{site['id']}.json"
+    if out.exists():
         continue
-    win = EVENTS["agriculture"]["site_windows"].get(site["id"], EVENTS["agriculture"]["default_window"])
-    for attempt in range(2):                      # Planetary Computer reads fail now and then; retry once
-        try:
-            arr, valid, info = INF.load_s2(site["bbox"], win, pc_bands, max_cloud=20, max_items=3)
-            cls, probs = INF.patch_classify(lu, arr / ag["scale"], device=DEV)
-            frac = pd.Series(cls.ravel()).value_counts(normalize=True).reindex(range(len(CLASSES)), fill_value=0)
-            rows.append({"site": site["label"], "country": site["country"], "window": win,
-                         **{CLASSES[i]: round(float(frac[i]), 3) for i in range(len(CLASSES))}})
-            pd.DataFrame(rows).to_csv(out_csv, index=False)
+    for attempt, (mem, items) in enumerate([(9, 3), (9, 2)]):
+        r = subprocess.run([sys.executable, "tools/apply_agriculture.py", str(AG_CKPT), site["id"], str(out),
+                            "--mem-gb", str(mem), "--max-items", str(items)], capture_output=True, text=True, env=env)
+        if out.exists():
             print("✓", site["id"]); break
-        except Exception as e:
-            print("✗", site["id"], "attempt", attempt + 1, str(e)[:120])
-        finally:
-            arr = probs = cls = None; gc.collect()
+        print("✗", site["id"], f"attempt {attempt + 1}:", (r.stderr.strip().splitlines() or ["?"])[-1][:140])
+rows = [json.loads(p.read_text()) for p in sorted(part.glob("*.json"))]
 agri = pd.DataFrame(rows)
 agri["farmland_share"] = agri[["AnnualCrop", "PermanentCrop", "Pasture"]].sum(1)
-agri.sort_values("farmland_share", ascending=False).to_csv(out_csv, index=False)
+agri.sort_values("farmland_share", ascending=False).to_csv(RESULTS / "agriculture_landuse.csv", index=False)
 agri.sort_values("farmland_share", ascending=False).head(15)
 '''),
         code(r'''
