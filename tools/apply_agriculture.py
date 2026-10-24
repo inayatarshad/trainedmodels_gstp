@@ -22,6 +22,7 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--mem-gb", type=float, default=9.0)
     ap.add_argument("--max-items", type=int, default=3)
+    ap.add_argument("--tiles", type=int, default=2, help="split the site into tiles x tiles pieces")
     a = ap.parse_args()
 
     cap = int(a.mem_gb * 1024**3)
@@ -43,11 +44,22 @@ def main():
     model = build_s2_classifier(len(classes), drop_bands=["B10"], pretrained=False, input_size=ag["input_size"])
     model.load_state_dict(ck["state_dict"])
 
-    arr, valid, info = INF.load_s2(site["bbox"], win, ag["bands"], max_cloud=20, max_items=a.max_items)
-    cls, _ = INF.patch_classify(model, arr / ag["scale"], device="cpu")   # CPU: CUDA reserves more address space than the cap
-    counts = np.bincount(cls.ravel(), minlength=len(classes)) / cls.size
+    # Load the site in tiles (a 12-band stack of a 500 km2 site at 10 m is several GB) and add up the patch counts.
+    x0, y0, x1, y1 = site["bbox"]
+    n = a.tiles
+    counts = np.zeros(len(classes))
+    scenes, valid_px, total_px = set(), 0, 0
+    for i in range(n):
+        for j in range(n):
+            sub = [x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * j / n, x0 + (x1 - x0) * (i + 1) / n, y0 + (y1 - y0) * (j + 1) / n]
+            arr, valid, info = INF.load_s2(sub, win, ag["bands"], max_cloud=20, max_items=a.max_items)
+            cls, _ = INF.patch_classify(model, arr / ag["scale"], device="cpu")  # CPU: CUDA reserves more address space than the cap
+            counts += np.bincount(cls.ravel(), minlength=len(classes))
+            scenes.update(info["scenes"]); valid_px += int(valid.sum()); total_px += valid.size
+            del arr, valid, cls
+    counts /= counts.sum()
     row = {"site": site["label"], "site_id": site["id"], "country": site["country"], "window": win,
-           "scenes": len(info["scenes"]), "valid_fraction": round(info["valid_fraction"], 3),
+           "scenes": len(scenes), "valid_fraction": round(valid_px / total_px, 3), "tiles": n * n,
            **{c: round(float(v), 3) for c, v in zip(classes, counts)}}
     Path(a.out).write_text(json.dumps(row))
     print("ok", site["id"])

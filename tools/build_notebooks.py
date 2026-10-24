@@ -749,7 +749,7 @@ pd.DataFrame(rows)
 '''),
         md("## Agriculture — land-use composition of every farm, Spain and UK site"),
         code(r'''
-# Each site runs in its own process with a 9 GB memory cap (tools/apply_agriculture.py): a heavy Sentinel-2 load
+# Each site runs in its own process with a memory cap and is loaded in tiles (tools/apply_agriculture.py): a heavy Sentinel-2 load
 # then fails that one site instead of crashing the Colab session, and results are saved after every site.
 import json, os
 AG_CKPT = CKPT_DIR / "agriculture" / "landuse_eurosat_best.pt"
@@ -760,9 +760,9 @@ for site in targets:
     out = part / f"{site['id']}.json"
     if out.exists():
         continue
-    for attempt, (mem, items) in enumerate([(9, 3), (9, 2)]):
+    for attempt, (tiles, items) in enumerate([(2, 3), (3, 2)]):
         r = subprocess.run([sys.executable, "tools/apply_agriculture.py", str(AG_CKPT), site["id"], str(out),
-                            "--mem-gb", str(mem), "--max-items", str(items)], capture_output=True, text=True, env=env)
+                            "--mem-gb", "6", "--max-items", str(items), "--tiles", str(tiles)], capture_output=True, text=True, env=env)
         if out.exists():
             print("✓", site["id"]); break
         print("✗", site["id"], f"attempt {attempt + 1}:", (r.stderr.strip().splitlines() or ["?"])[-1][:140])
