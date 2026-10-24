@@ -755,21 +755,31 @@ lu = build_s2_classifier(len(CLASSES), drop_bands=["B10"], pretrained=False, inp
 lu.load_state_dict(ck["state_dict"]); lu.eval()
 pc_bands = ag["bands"]   # same names on the Planetary Computer (B01 ... B8A ... B12)
 targets = [s for s in SITES.values() if s["focus"] in ("agriculture", "all")]
-rows = []
+# One site at a time, saved after each, so a crash (12 GB RAM on free Colab) loses nothing and a re-run resumes.
+import gc
+out_csv = RESULTS / "agriculture_landuse.csv"
+rows = pd.read_csv(out_csv).to_dict("records") if out_csv.exists() else []
+done = {r["site"] for r in rows}
 for site in targets:
+    if site["label"] in done:
+        continue
     win = EVENTS["agriculture"]["site_windows"].get(site["id"], EVENTS["agriculture"]["default_window"])
-    try:
-        arr, valid, info = INF.load_s2(site["bbox"], win, pc_bands, max_cloud=20)
-        cls, probs = INF.patch_classify(lu, arr / ag["scale"], device=DEV)
-        frac = pd.Series(cls.ravel()).value_counts(normalize=True).reindex(range(len(CLASSES)), fill_value=0)
-        rows.append({"site": site["label"], "country": site["country"], "window": win,
-                     **{CLASSES[i]: round(float(frac[i]), 3) for i in range(len(CLASSES))}})
-        print("✓", site["id"])
-    except Exception as e:
-        print("✗", site["id"], e)
+    for attempt in range(2):                      # Planetary Computer reads fail now and then; retry once
+        try:
+            arr, valid, info = INF.load_s2(site["bbox"], win, pc_bands, max_cloud=20, max_items=3)
+            cls, probs = INF.patch_classify(lu, arr / ag["scale"], device=DEV)
+            frac = pd.Series(cls.ravel()).value_counts(normalize=True).reindex(range(len(CLASSES)), fill_value=0)
+            rows.append({"site": site["label"], "country": site["country"], "window": win,
+                         **{CLASSES[i]: round(float(frac[i]), 3) for i in range(len(CLASSES))}})
+            pd.DataFrame(rows).to_csv(out_csv, index=False)
+            print("✓", site["id"]); break
+        except Exception as e:
+            print("✗", site["id"], "attempt", attempt + 1, str(e)[:120])
+        finally:
+            arr = probs = cls = None; gc.collect()
 agri = pd.DataFrame(rows)
 agri["farmland_share"] = agri[["AnnualCrop", "PermanentCrop", "Pasture"]].sum(1)
-agri.sort_values("farmland_share", ascending=False).to_csv(RESULTS / "agriculture_landuse.csv", index=False)
+agri.sort_values("farmland_share", ascending=False).to_csv(out_csv, index=False)
 agri.sort_values("farmland_share", ascending=False).head(15)
 '''),
         code(r'''
