@@ -622,7 +622,7 @@ from gstp.data.raster import normalise
 from gstp.utils import load_json, load_sites, save_json, CONFIG_DIR
 import numpy as np, pandas as pd, torch, matplotlib.pyplot as plt, traceback
 
-RESULTS = REPO / "results" / MODULE
+RESULTS = DRIVE / "results" / MODULE   # on Drive, so maps survive a disconnect
 CKPT_DIR = DRIVE
 (RESULTS / "maps").mkdir(parents=True, exist_ok=True)
 EVENTS = load_json(CONFIG_DIR / "crisp_events.json")
