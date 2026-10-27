@@ -971,6 +971,93 @@ print("GSTPJSON" + json.dumps({"test": report["test"]["at_chosen_threshold"], "n
     ],
 )
 
+
+# ─────────────────────────────────────────────────────────────── 08 Floods at CRISP sites, corrected
+FLOOD_SITES = nb(
+    "08 · Floods at the CRISP sites — corrected flood area",
+    """Notebook 06 measured new flood water as *water after − water before*, using one radar picture each.
+Three things inflated the area: the dry-season 'before' picture under-marked the river, some 'before' pictures
+were partly missing, and rough sea in a 'before' picture was not marked as water.
+
+This notebook fixes the measurement, and prints the old and the corrected numbers side by side:
+
+1. **One common pixel grid** for before and after.
+2. **Valid in both:** only pixels with data in the after picture and in at least one before picture count.
+3. **Before = several dates:** water in ANY of up to three dry-season pictures counts as normal water.
+4. **Permanent water removed:** rivers, lakes and sea from the JRC Global Surface Water map (water in at least
+   half of all observations 1984–2021) can never count as flood.
+
+Runtime: about 10 min. Uses the radar checkpoint from notebook 01 (on Drive).""",
+    [
+        code(r'''
+MODULE = "crisp_sites"
+from gstp import inference as INF, viz
+from gstp.models import build_unet
+from gstp.data.raster import normalise
+from gstp.utils import load_json, load_sites, CONFIG_DIR
+import numpy as np, pandas as pd, torch, matplotlib.pyplot as plt, json
+
+RESULTS = DRIVE / "results" / MODULE
+(RESULTS / "maps_corrected").mkdir(parents=True, exist_ok=True)
+EVENTS = load_json(CONFIG_DIR / "crisp_events.json")
+SITES = {s["id"]: s for s in load_sites()}
+DEV = get_device()
+ck = torch.load(DRIVE / "floods" / "flood_s1_best.pt", map_location="cpu", weights_only=False)
+model = build_unet(ck["config"]["in_channels"], pretrained=False); model.load_state_dict(ck["state_dict"]); model.eval().to(DEV)
+thr, stats = ck.get("threshold", 0.5), ck["config"]["extra"]["stats"]
+old = pd.read_csv(RESULTS / "floods.csv").set_index("site") if (RESULTS / "floods.csv").exists() else None
+
+def water(db):
+    return INF.sliding_window_probs(model, normalise(db, "zscore", stats), device=DEV) >= thr
+'''),
+        code(r'''
+rows = []
+for ev in EVENTS["floods"]:
+    site = SITES[ev["site"]]
+    try:
+        e = INF.load_s1_event(site["bbox"], ev["pre"], ev["post"])
+        post_day, post_db, post_valid = e["post"]
+        after = water(post_db) & post_valid
+        before = np.zeros_like(after); pre_valid = np.zeros_like(after)
+        for day, db, valid in e["pre"]:
+            before |= water(db) & valid
+            pre_valid |= valid
+        old_new = after & ~(water(e["pre"][0][1]) & e["pre"][0][2])          # notebook 06's way, same grid
+        try:
+            perm, occ = INF.load_permanent_water(site["bbox"], e["geobox"])
+        except Exception as gsw_err:                                       # still apply steps 1-3
+            print("  (no JRC water map:", gsw_err, ")"); perm = np.zeros_like(after)
+        ok = post_valid & pre_valid
+        new = after & ~before & ~perm & ok
+        px = 10 * 10 / 1e6
+        rows.append({"site": site["label"], "event": ev["event"], "after_date": post_day,
+                     "before_dates": ", ".join(d for d, _, _ in e["pre"]),
+                     "old_new_water_km2": round(float(old_new.sum()) * px, 1),
+                     "permanent_water_km2": round(float((perm & ok).sum()) * px, 1),
+                     "missing_data_km2": round(float((~ok).sum()) * px, 1),
+                     "corrected_new_water_km2": round(float(new.sum()) * px, 1)})
+        vv = lambda a: np.clip((a[0] + 25) / 25, 0, 1)
+        g = np.dstack([vv(post_db)] * 3)
+        fig, ax = plt.subplots(1, 3, figsize=(13.5, 4.8))
+        ax[0].imshow(vv(post_db), cmap="viridis"); ax[0].set_title(f"radar after {post_day}", fontsize=10)
+        ax[1].imshow(viz.overlay(g, old_new, (0.85, 0.2, 0.2), alpha=0.7))
+        ax[1].set_title(f"before the fix: {rows[-1]['old_new_water_km2']} km² 'new water' (red)", fontsize=10)
+        shown = viz.overlay(viz.overlay(g, perm & ok, (0.55, 0.55, 0.55), alpha=0.6), new, (0.1, 0.4, 1.0), alpha=0.75)
+        ax[2].imshow(shown)
+        ax[2].set_title(f"after the fix: {rows[-1]['corrected_new_water_km2']} km² flood (blue)\npermanent water grey", fontsize=10)
+        for a in ax: a.axis("off")
+        fig.suptitle(f"{site['label']} — {ev['event']}", fontsize=12); fig.tight_layout()
+        fig.savefig(RESULTS / "maps_corrected" / f"flood_fixed_{site['id']}.png", dpi=130); plt.close(fig)
+        print("✓", rows[-1])
+    except Exception as ex:
+        print("✗", site["id"], ex)
+res = pd.DataFrame(rows); res.to_csv(RESULTS / "floods_corrected.csv", index=False)
+print("GSTPJSON" + json.dumps(rows) + "GSTPEND")
+res
+'''),
+    ],
+)
+
 NOTEBOOKS = {
     "01_floods_sen1floods11.ipynb": FLOODS,
     "02_wildfires_burn_scars.ipynb": WILDFIRES,
@@ -979,6 +1066,7 @@ NOTEBOOKS = {
     "05_air_quality_forecasting.ipynb": AIR,
     "06_apply_to_crisp_sites.ipynb": CRISP,
     "07_wildfires_active_fire.ipynb": ACTIVE_FIRE,
+    "08_floods_at_crisp_sites_corrected.ipynb": FLOOD_SITES,
 }
 
 if __name__ == "__main__":

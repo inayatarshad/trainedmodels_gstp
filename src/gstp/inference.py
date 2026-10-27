@@ -110,6 +110,65 @@ def load_s1_db(bbox, date_range, resolution=10):
     return arr, valid, info
 
 
+def _s1_days(bbox, date_range):
+    """Sentinel-1 RTC items in the window, grouped by acquisition day (oldest first)."""
+    items = search("sentinel-1-rtc", bbox, date_range)
+    if not items:
+        raise RuntimeError(f"No Sentinel-1 RTC scenes in {date_range}")
+    days = {}
+    for it in sorted(items, key=lambda i: i.datetime):
+        days.setdefault(str(it.datetime.date()), []).append(it)
+    return list(days.items())
+
+
+def _s1_db(items, bbox=None, geobox=None, resolution=10):
+    import odc.stac
+
+    kw = {"geobox": geobox} if geobox is not None else {"bbox": bbox, "resolution": resolution, "crs": "utm"}
+    ds = odc.stac.load(items, bands=["vv", "vh"], groupby="solar_day", **kw)
+    arr = np.stack([ds["vv"].isel(time=0).values, ds["vh"].isel(time=0).values]).astype(np.float32)
+    valid = np.all(np.isfinite(arr) & (arr > 0), axis=0)
+    return 10.0 * np.log10(np.where(valid, arr, 1.0)), valid, ds.odc.geobox
+
+
+def load_s1_event(bbox, pre_range, post_range, resolution=10, max_pre_days=3):
+    """Radar for a flood event on ONE common pixel grid.
+
+    post: the first acquisition day in post_range (closest to the flood).
+    pre:  up to `max_pre_days` acquisition days in pre_range, each on the post grid, so the 'before'
+          water can be taken from several dates (one rough-water or partial scene no longer decides it).
+    """
+    post_day, post_items = _s1_days(bbox, post_range)[0]
+    post_db, post_valid, gbox = _s1_db(post_items, bbox=bbox, resolution=resolution)
+    pre_days = _s1_days(bbox, pre_range)
+    step = max(1, len(pre_days) // max_pre_days)
+    pre = []
+    for day, items in pre_days[::step][:max_pre_days]:
+        db, valid, _ = _s1_db(items, geobox=gbox)
+        pre.append((day, db, valid))
+    return {"post": (post_day, post_db, post_valid), "pre": pre, "geobox": gbox}
+
+
+def load_permanent_water(bbox, geobox, min_occurrence=50):
+    """JRC Global Surface Water (1984-2021) on the given grid.
+
+    Returns (permanent, occurrence): permanent = water in >= min_occurrence % of observations, plus
+    pixels with no JRC value (open sea is not mapped by JRC), so rivers, lakes and sea can never be
+    counted as new flood water.
+    """
+    import odc.stac
+
+    items = search("jrc-gsw", bbox, None)
+    if not items:
+        raise RuntimeError("No JRC Global Surface Water tile for this area")
+    ds = odc.stac.load(items, bands=["occurrence"], geobox=geobox, resampling="nearest")
+    da = ds["occurrence"]
+    occ = (da.max("time") if "time" in da.dims else da).values.astype(np.float32)
+    no_value = ~np.isfinite(occ) | (occ < 0) | (occ > 100)       # 255 / NaN = not mapped (open sea)
+    occ = np.where(no_value, -1, occ)
+    return (occ >= min_occurrence) | no_value, occ
+
+
 def sliding_window_probs(model, img: np.ndarray, tile=512, overlap=64, device="cpu", batch=4):
     """Binary-segmentation probabilities for an arbitrarily sized image [C,H,W].
 
