@@ -1,0 +1,7 @@
+site,event,after_date,before_dates,old_new_water_km2,permanent_water_km2,missing_data_km2,corrected_new_water_km2
+"Sukkur, Indus Plain",2022 Pakistan monsoon floods,2022-08-30,"2022-06-02, 2022-06-11, 2022-06-19",119.5,20.6,0.0,110.5
+Valencia Huerta,"October 2024 DANA flash floods, Valencia",2024-11-01,"2024-10-01, 2024-10-08, 2024-10-19",167.7,174.0,0.0,12.6
+"Lokoja, Niger-Benue",2022 Niger-Benue confluence floods,2022-10-13,"2022-03-11, 2022-03-23",122.9,35.4,0.0,91.9
+"Sirajganj, Jamuna River",July 2020 Jamuna River floods,2020-07-15,"2020-03-03, 2020-03-15, 2020-03-27",126.8,81.3,0.0,91.2
+"Can Tho, Mekong Delta",Mekong Delta high-water season 2022,2022-10-01,"2022-04-03, 2022-04-15, 2022-04-27",32.3,40.9,0.0,21.7
+Ahr Valley,July 2021 Ahr Valley flash flood,2021-07-15,"2021-06-15, 2021-06-22, 2021-07-01",0.1,0.0,0.0,0.1
