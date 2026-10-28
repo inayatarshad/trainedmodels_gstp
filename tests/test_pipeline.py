@@ -238,3 +238,20 @@ def test_active_fire_naming_and_pairing(tmp_path):
     assert rep["fire_patches"] == 1 and rep["nonfire_patches"] == 1
     assert {x.meta["scene"] for x in s} == {"LC08_A"}
     assert abs(float(AF.l8_dn_to_toa(np.array([20000]))[0]) - 0.3) < 1e-6
+
+
+def test_flood_v2_detectors():
+    import numpy as np
+    from gstp import flood_mapping as FM
+
+    rng = np.random.default_rng(0)
+    land = rng.normal(-12, 1.5, (512, 512)).astype(np.float32)
+    after = land.copy(); after[:, :200] = rng.normal(-24, 1.5, (512, 200))
+    valid = np.ones_like(after, bool)
+    w, t, n = FM.split_based_otsu_water(after, valid)
+    assert n > 0 and -22 < t < -14 and abs(w[:, :200].mean() - 1) < 0.02 and w[:, 220:].mean() < 0.02
+    ch = FM.change_ratio_flood(after, land)
+    assert ch[:, :200].mean() > 0.95 and ch[:, 220:].mean() < 0.05
+    m = np.zeros((50, 50), bool); m[0:2, 0:2] = True; m[10:20, 10:20] = True
+    assert FM.remove_small(m).sum() == 100
+    assert abs(FM.gamma0_to_sigma0_db(np.zeros(1), 37.0)[0] + 0.977) < 0.01

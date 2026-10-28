@@ -1058,6 +1058,133 @@ res
     ],
 )
 
+# ─────────────────────────────────────────────────────────────── 09 Flood area for any place (pipeline v2)
+FLOOD_ANY = nb(
+    "09 · Flood area for any place — pipeline v2, checked against official maps",
+    """Pipeline v2 follows how the operational services map floods (Copernicus GFM, UN-SPIDER recommended practice):
+
+1. **Radar fix:** the U-Net was trained on sigma0 (Sen1Floods11, Earth Engine) but Planetary Computer gives
+   terrain-flattened gamma0, which is about 1 dB brighter. We convert gamma0 → sigma0 before the model.
+2. **Speckle smoothing:** 5×5 median filter (50 m), as in UN-SPIDER.
+3. **Three detectors:** U-Net · change ratio after/before > 1.25 on VH dB (UN-SPIDER) · split-based Otsu threshold on VV.
+4. **Majority vote:** a pixel is flood when at least 2 of the 3 agree (GFM style).
+5. **Masks:** JRC permanent water, slope > 5 % (Copernicus DEM), missing data, patches of ≤ 8 pixels removed.
+
+Section A checks every variant against two official UNOSAT maps. The method is chosen on **Sirajganj only**;
+**Lokoja is kept as an unseen test**. Section B gives the flood km² for any place you type in.""",
+    [
+        code(r'''
+from gstp import inference as INF, flood_mapping as FM
+from gstp.models import build_unet
+from gstp.utils import load_json, load_sites, CONFIG_DIR
+import numpy as np, pandas as pd, torch, matplotlib.pyplot as plt, json, glob, os, requests, subprocess
+import geopandas as gpd
+from rasterio import features
+os.system("apt-get -qq install -y p7zip-full > /dev/null")
+RESULTS = DRIVE / "results" / "floods_v2"; RESULTS.mkdir(parents=True, exist_ok=True)
+EVENTS = load_json(CONFIG_DIR / "crisp_events.json"); SITES = {s["id"]: s for s in load_sites()}
+EVS = {e["site"]: e for e in EVENTS["floods"]}
+DEV = get_device()
+ck = torch.load(DRIVE / "floods" / "flood_s1_best.pt", map_location="cpu", weights_only=False)
+model = build_unet(ck["config"]["in_channels"], pretrained=False); model.load_state_dict(ck["state_dict"]); model.eval().to(DEV)
+thr, stats = ck.get("threshold", 0.5), ck["config"]["extra"]["stats"]
+print("model ready, threshold", thr)
+'''),
+        md("## A · Check against official maps (UNOSAT)"),
+        code(r'''
+def fetch_ref(slug, d, pattern):
+    if glob.glob(f"{d}/**/{pattern}*.shp", recursive=True): return
+    os.makedirs(d, exist_ok=True)
+    pk = requests.get("https://data.humdata.org/api/3/action/package_show", params={"id": slug}, timeout=60).json()["result"]
+    url = [r for r in pk["resources"] if "shp" in (r.get("name", "") + r.get("format", "")).lower()][0]["url"]
+    with requests.get(url, stream=True, timeout=900) as r, open(d + "/ref.zip", "wb") as f:
+        for ch in r.iter_content(1 << 22): f.write(ch)
+    subprocess.run(["7z", "x", "-y", "-o" + d, d + "/ref.zip", f"*{pattern}*", "-r"], capture_output=True)
+    os.remove(d + "/ref.zip")
+
+def rasterize_ref(shp_glob, bbox, gb):
+    g = gpd.read_file(glob.glob(shp_glob, recursive=True)[0], bbox=tuple(bbox)).to_crs(str(gb.crs))
+    return features.rasterize(((s, 1) for s in g.geometry if s is not None and not s.is_empty), out_shape=gb.shape,
+                              transform=gb.affine, fill=0, dtype="uint8").astype(bool)
+
+CHECKS = {  # role, flood window = the reference's own dates, reference layer
+    "sirajganj-jamuna": dict(role="choose method", window="2020-07-19/2020-07-19",
+        slug="water-extent-as-of-18-july-2020-over-mymensingh-rajshahi-and-rangpur-divisions-bangladesh",
+        d="/content/ref_sirajganj", pattern="ST1_20200719_FloodExtent_Bangladesh", name="UNOSAT 19 Jul 2020 (Sentinel-1)"),
+    "lokoja-niger": dict(role="unseen test", window="2022-10-13/2022-10-17",
+        slug="satellite-detected-water-extents-between-13-and-17-october-2022-over-nigeria",
+        d="/content/ref_lokoja-niger", pattern="VIIRS_20221013_20221017_MaximumFloodWaterExtent", name="UNOSAT 13-17 Oct 2022 (VIIRS)"),
+}
+VARIANTS = {"v1 (old: no radar fix, no smoothing)": dict(harmonise=False, smooth=False),
+            "v2": dict(harmonise=True, smooth=True)}
+rows = []
+for sid, c in CHECKS.items():
+    site = SITES[sid]
+    fetch_ref(c["slug"], c["d"], c["pattern"])
+    for vname, kw in VARIANTS.items():
+        r = FM.map_flood(site["bbox"], EVS[sid]["pre"], c["window"], model, stats, thr, DEV, **kw)
+        gb = r["geobox"]
+        excl = r["permanent"] | r["steep"]
+        ref = rasterize_ref(f"{c['d']}/**/{c['pattern']}*.shp", site["bbox"], gb) & ~excl
+        for meth, m in r["max_extent"].items():
+            if vname.startswith("v1") and meth != "unet": continue
+            inter = (m & ref).sum()
+            rows.append({"site": site["label"], "role": c["role"], "reference": c["name"], "variant": vname, "method": meth,
+                         "reference_km2": round(float(ref.sum()) * FM.PX_KM2, 1), "ours_km2": round(float(m.sum()) * FM.PX_KM2, 1),
+                         "difference_km2": round(float(m.sum() - ref.sum()) * FM.PX_KM2, 1),
+                         "found_of_reference": round(float(inter / max(ref.sum(), 1)), 3),
+                         "ours_inside_reference": round(float(inter / max(m.sum(), 1)), 3),
+                         "IoU": round(float(inter / max((m | ref).sum(), 1)), 3)})
+            print(rows[-1])
+        if vname == "v2":
+            m = r["max_extent"]["final"]
+            vv = np.clip((r["post_db"][0] + 25) / 25, 0, 1); show = np.dstack([vv] * 3)
+            show[m & ref] = (0.15, 0.7, 0.3); show[m & ~ref] = (0.95, 0.6, 0.1); show[ref & ~m] = (0.85, 0.2, 0.2)
+            plt.figure(figsize=(7, 6.5)); plt.imshow(show); plt.axis("off")
+            plt.title(f"{site['label']}: ours {m.sum()*FM.PX_KM2:.1f} km² vs {c['name']} {ref.sum()*FM.PX_KM2:.1f} km²\n"
+                      "green both · orange only ours · red only reference", fontsize=10)
+            plt.tight_layout(); plt.savefig(RESULTS / f"v2_vs_ref_{sid}.png", dpi=130); plt.close()
+check = pd.DataFrame(rows); check.to_csv(RESULTS / "v2_reference_check.csv", index=False)
+print("GSTPJSON" + json.dumps(rows) + "GSTPEND")
+check
+'''),
+        md("""## B · Flood area for any place
+
+Type a place (centre + size, or a bounding box), the flood dates and a dry-season period before it.
+Keep the box under about 40 × 40 km so it fits in Colab memory. `final` is the 2-of-3 vote; the three single
+methods are printed too, so you can see how much they agree."""),
+        code(r'''
+PLACE = "my test area"
+LAT, LON, HALF_KM = 7.80, 6.74, 10          # centre and half-width (km); or set BBOX = [lon0, lat0, lon1, lat1]
+BBOX = None
+FLOOD_PERIOD = "2022-10-01/2022-10-20"       # dates of the flood (every radar pass in it is used)
+DRY_PERIOD = "2022-02-01/2022-04-30"         # same place, normal dry season, ideally the same year
+
+if BBOX is None:
+    dlat = HALF_KM / 111.0; dlon = HALF_KM / (111.0 * np.cos(np.deg2rad(LAT)))
+    BBOX = [LON - dlon, LAT - dlat, LON + dlon, LAT + dlat]
+r = FM.map_flood(BBOX, DRY_PERIOD, FLOOD_PERIOD, model, stats, thr, DEV)
+print(f"{PLACE}: radar passes {r['dates']}, dry-season passes {r['dry_dates']}")
+print(pd.DataFrame(r["per_pass"]).to_string(index=False))
+print("maximum flood extent over the period (km²):", r["max_extent_km2"])
+m = r["max_extent"]["final"]
+vv = np.clip((r["post_db"][0] + 25) / 25, 0, 1); base = np.dstack([vv] * 3)
+show = np.where(m[..., None], (0.1, 0.4, 1.0), np.where(r["permanent"][..., None], (0.55, 0.55, 0.55), base))
+fig, ax = plt.subplots(1, 2, figsize=(12, 5.5))
+ax[0].imshow(vv, cmap="gray"); ax[0].set_title(f"radar {r['dates'][0]}", fontsize=10)
+ax[1].imshow(show); ax[1].set_title(f"flood {r['max_extent_km2']['final']} km² (blue) · permanent water grey", fontsize=10)
+for a in ax: a.axis("off")
+fig.suptitle(PLACE); fig.tight_layout()
+slug = "".join(ch if ch.isalnum() else "_" for ch in PLACE)
+fig.savefig(RESULTS / f"place_{slug}.png", dpi=130); plt.show()
+out = {"place": PLACE, "bbox": BBOX, "flood_period": FLOOD_PERIOD, "dry_period": DRY_PERIOD,
+       "per_pass": r["per_pass"], "max_extent_km2": r["max_extent_km2"]}
+json.dump(out, open(RESULTS / f"place_{slug}.json", "w"), indent=2)
+print("GSTPJSON" + json.dumps(out) + "GSTPEND")
+'''),
+    ],
+)
+
 NOTEBOOKS = {
     "01_floods_sen1floods11.ipynb": FLOODS,
     "02_wildfires_burn_scars.ipynb": WILDFIRES,
@@ -1067,6 +1194,7 @@ NOTEBOOKS = {
     "06_apply_to_crisp_sites.ipynb": CRISP,
     "07_wildfires_active_fire.ipynb": ACTIVE_FIRE,
     "08_floods_at_crisp_sites_corrected.ipynb": FLOOD_SITES,
+    "09_flood_area_any_place.ipynb": FLOOD_ANY,
 }
 
 if __name__ == "__main__":
