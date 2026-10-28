@@ -113,7 +113,7 @@ def remove_small(mask, min_pixels=9):
 
 # ── full pipeline for one place ─────────────────────────────────────────────────────────────────────────────
 def map_flood(bbox, dry_range, flood_range, model, stats, threshold, device, max_passes=8, max_dry=3,
-              harmonise=True, smooth=True):
+              harmonise=True, smooth=False):
     """Flood extent for a bounding box. Returns a dict with the final mask, per-method masks, per-pass areas and
     the masks used, all on the grid of the first flood-period radar pass."""
     days = INF._s1_days(bbox, flood_range)

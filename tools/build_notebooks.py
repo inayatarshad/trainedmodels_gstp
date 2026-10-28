@@ -1065,7 +1065,8 @@ FLOOD_ANY = nb(
 
 1. **Radar fix:** the U-Net was trained on sigma0 (Sen1Floods11, Earth Engine) but Planetary Computer gives
    terrain-flattened gamma0, which is about 1 dB brighter. We convert gamma0 → sigma0 before the model.
-2. **Speckle smoothing:** 5×5 median filter (50 m), as in UN-SPIDER.
+2. **Speckle smoothing:** 5×5 median filter (50 m), as in UN-SPIDER. Tested and switched OFF by default: it shrank the
+   detected water at both check sites (results/floods_v2/v2_ablation.csv).
 3. **Three detectors:** U-Net · change ratio after/before > 1.25 on VH dB (UN-SPIDER) · split-based Otsu threshold on VV.
 4. **Majority vote:** a pixel is flood when at least 2 of the 3 agree (GFM style).
 5. **Masks:** JRC permanent water, slope > 5 % (Copernicus DEM), missing data, patches of ≤ 8 pixels removed.
@@ -1116,7 +1117,7 @@ CHECKS = {  # role, flood window = the reference's own dates, reference layer
         d="/content/ref_lokoja-niger", pattern="VIIRS_20221013_20221017_MaximumFloodWaterExtent", name="UNOSAT 13-17 Oct 2022 (VIIRS)"),
 }
 VARIANTS = {"v1 (old: no radar fix, no smoothing)": dict(harmonise=False, smooth=False),
-            "v2": dict(harmonise=True, smooth=True)}
+            "v2": dict(harmonise=True, smooth=False)}
 rows = []
 for sid, c in CHECKS.items():
     site = SITES[sid]

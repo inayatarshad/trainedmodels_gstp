@@ -1,0 +1,25 @@
+site,variant,method,ref,ours,found,inside,IoU
+sirajganj-jamuna,fix only,unet,96.9,129.8,0.854,0.638,0.575
+sirajganj-jamuna,fix only,change,96.9,67.0,0.488,0.707,0.406
+sirajganj-jamuna,fix only,otsu,96.9,128.8,0.929,0.699,0.664
+sirajganj-jamuna,fix only,final,96.9,119.3,0.872,0.709,0.642
+sirajganj-jamuna,smooth only,unet,96.9,54.7,0.483,0.855,0.446
+sirajganj-jamuna,smooth only,change,96.9,67.1,0.525,0.759,0.45
+sirajganj-jamuna,smooth only,otsu,96.9,107.3,0.795,0.718,0.606
+sirajganj-jamuna,smooth only,final,96.9,80.9,0.672,0.804,0.577
+sirajganj-jamuna,none,unet,96.9,86.1,0.595,0.669,0.46
+sirajganj-jamuna,none,change,96.9,67.0,0.488,0.707,0.406
+sirajganj-jamuna,none,otsu,96.9,131.4,0.949,0.7,0.674
+sirajganj-jamuna,none,final,96.9,95.4,0.71,0.721,0.557
+lokoja-niger,fix only,unet,91.8,78.8,0.708,0.825,0.615
+lokoja-niger,fix only,change,91.8,33.0,0.302,0.838,0.285
+lokoja-niger,fix only,otsu,91.8,62.7,0.545,0.798,0.479
+lokoja-niger,fix only,final,91.8,65.0,0.569,0.803,0.5
+lokoja-niger,smooth only,unet,91.8,35.4,0.308,0.798,0.286
+lokoja-niger,smooth only,change,91.8,33.1,0.301,0.836,0.285
+lokoja-niger,smooth only,otsu,91.8,60.2,0.547,0.835,0.494
+lokoja-niger,smooth only,final,91.8,44.5,0.395,0.817,0.363
+lokoja-niger,none,unet,91.8,72.0,0.641,0.817,0.56
+lokoja-niger,none,change,91.8,33.0,0.302,0.838,0.285
+lokoja-niger,none,otsu,91.8,64.3,0.554,0.791,0.484
+lokoja-niger,none,final,91.8,64.4,0.56,0.798,0.491

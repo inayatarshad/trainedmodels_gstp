@@ -1,0 +1,11 @@
+site,role,reference,variant,method,reference_km2,ours_km2,difference_km2,found_of_reference,ours_inside_reference,IoU
+"Sirajganj, Jamuna River",choose method,UNOSAT 19 Jul 2020 (Sentinel-1),"v1 (old: no radar fix, no smoothing)",unet,96.9,86.1,-10.8,0.595,0.669,0.46
+"Sirajganj, Jamuna River",choose method,UNOSAT 19 Jul 2020 (Sentinel-1),v2,unet,96.9,65.4,-31.5,0.559,0.828,0.501
+"Sirajganj, Jamuna River",choose method,UNOSAT 19 Jul 2020 (Sentinel-1),v2,change,96.9,67.1,-29.9,0.525,0.759,0.45
+"Sirajganj, Jamuna River",choose method,UNOSAT 19 Jul 2020 (Sentinel-1),v2,otsu,96.9,100.3,3.4,0.738,0.713,0.569
+"Sirajganj, Jamuna River",choose method,UNOSAT 19 Jul 2020 (Sentinel-1),v2,final,96.9,80.6,-16.4,0.659,0.793,0.563
+"Lokoja, Niger-Benue",unseen test,UNOSAT 13-17 Oct 2022 (VIIRS),"v1 (old: no radar fix, no smoothing)",unet,91.8,72.0,-19.8,0.641,0.817,0.56
+"Lokoja, Niger-Benue",unseen test,UNOSAT 13-17 Oct 2022 (VIIRS),v2,unet,91.8,41.5,-50.3,0.369,0.817,0.341
+"Lokoja, Niger-Benue",unseen test,UNOSAT 13-17 Oct 2022 (VIIRS),v2,change,91.8,33.1,-58.7,0.301,0.836,0.285
+"Lokoja, Niger-Benue",unseen test,UNOSAT 13-17 Oct 2022 (VIIRS),v2,otsu,91.8,58.6,-33.2,0.538,0.842,0.488
+"Lokoja, Niger-Benue",unseen test,UNOSAT 13-17 Oct 2022 (VIIRS),v2,final,91.8,47.2,-44.6,0.427,0.83,0.393
