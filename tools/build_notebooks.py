@@ -1186,6 +1186,145 @@ print("GSTPJSON" + json.dumps(out) + "GSTPEND")
     ],
 )
 
+# ─────────────────────────────────────────────────────────────── 10 Deblurring (data + classic baselines)
+DEBLUR = nb(
+    "10 · Deblurring — blurred/sharp pairs and classic baselines (Wiener, Richardson–Lucy)",
+    """**Where this sits on GSTP:** camera → FPGA (dark-reference subtraction, FIR filtering) → **deblurring (Jetson)** →
+hazard models → ground.
+
+**Days 1–4 of the deblurring plan.** The GSTP camera's real blur is not measured yet, so sharp optical chips are blurred
+synthetically with the blur an orbiting camera can suffer — optics (Gaussian), defocus (disk), platform motion (line)
+and attitude jitter (random path) — plus sensor noise. A *none* group (noise only) checks that a method does not damage
+an image that is already sharp (the double-sharpening risk if the FPGA filter already sharpens).
+
+Sharp images are the **same chips and the same splits** as the hazard models (HLS Burn Scars 6 bands at 30 m,
+Sen1Floods11 Sentinel-2 12 bands at 10 m), so the deblurred test images can later go through the burn-scar and flood
+models (day 8: does IoU recover?).
+
+Classic methods: unsharp mask (no PSF), Wiener filter and Richardson–Lucy with the **true** PSF (best case for classic
+methods) and with one **nominal** PSF (realistic if only a lab PSF is known). Parameters are tuned on validation; test
+is scored once. Runtime on a T4: about 30–40 min, mostly data download and SSIM.""",
+    [
+        code(r'''
+MODULE = "deblur"
+from gstp.data import burn_scars as BS, sen1floods11 as S
+from gstp.data.segmentation import split_samples
+from gstp.data.deblur import DeblurEvalSet, guess_scale
+from gstp import blur as B, deblur_classic as D
+from gstp.utils import save_json, get_device
+import numpy as np, pandas as pd, torch, tarfile, matplotlib.pyplot as plt
+
+DEV = get_device()
+BURN, FLOOD = WORK / "data" / "hls_burn_scars", WORK / "data" / "sen1floods11"
+RESULTS = REPO / "results" / MODULE
+CKPT_DIR = DRIVE / MODULE
+for p in (BURN, FLOOD, RESULTS / "figures", CKPT_DIR):
+    p.mkdir(parents=True, exist_ok=True)
+'''),
+        md("## 1. Download the sharp images (same data as notebooks 01 and 02)"),
+        code(r'''
+from huggingface_hub import snapshot_download
+if not any(BURN.rglob("*merged*.tif")):
+    snapshot_download("ibm-nasa-geospatial/hls_burn_scars", repo_type="dataset", local_dir=str(BURN))
+    for t in BURN.rglob("*.tar.gz"):
+        with tarfile.open(t) as tf:
+            tf.extractall(BURN)
+if not any(FLOOD.rglob("*_LabelHand.tif")):
+    for sub in ("S1Hand", "S2Hand", "LabelHand"):
+        subprocess.run(["gsutil", "-m", "-q", "cp", "-r",
+                        f"gs://sen1floods11/v1.1/data/flood_events/HandLabeled/{sub}", str(FLOOD)], check=True)
+    subprocess.run(["gsutil", "-m", "-q", "cp", "-r", "gs://sen1floods11/v1.1/splits", str(FLOOD)], check=True)
+print("burn chips:", len(list(BURN.rglob("*merged*.tif"))), "| flood S2 chips:", len(list(FLOOD.rglob("*_S2Hand.tif"))))
+'''),
+        md("## 2. Same splits as the hazard models"),
+        code(r'''
+burn_train_all = BS.build_samples(BURN, "training")
+burn = dict(zip(("train", "val"), split_samples(burn_train_all, 0.15, seed=42, group_key=lambda s: s.meta["tile"])))
+burn["test"] = BS.build_samples(BURN, "validation")
+flood = {sp: S.build_samples(FLOOD, sp, "s2") for sp in ("train", "val", "test")}
+scale = {"burn": guess_scale(burn["train"], BS.NODATA), "flood": guess_scale(flood["train"])}
+print({k: len(v) for k, v in burn.items()}, {k: len(v) for k, v in flood.items()}, "reflectance scale:", scale)
+'''),
+        md("## 3. The blur types (PSFs) and what they do to an image"),
+        code(r'''
+rng = np.random.default_rng(7)
+recipes = [B.sample_recipe(rng, bt) for bt in B.BLUR_TYPES]
+ex = DeblurEvalSet(flood["val"][:1], scale["flood"], recipes=[recipes[0]])[0]["sharp"]
+rgb_idx = (S.S2_BANDS.index("B4"), S.S2_BANDS.index("B3"), S.S2_BANDS.index("B2"))
+def show(img, crop=slice(128, 384)):
+    x = img[list(rgb_idx)][:, crop, crop].transpose(1, 2, 0)
+    return np.clip(x / max(np.percentile(x, 99), 1e-3), 0, 1)
+fig, ax = plt.subplots(2, 5, figsize=(17, 7))
+for j, r in enumerate(recipes):
+    y, psf = B.degrade(ex, r)
+    ax[0, j].imshow(psf, cmap="magma"); ax[0, j].set_title(f"{r['blur_type']}  PSF {psf.shape[0]}×{psf.shape[1]} px")
+    ax[1, j].imshow(show(y.numpy())); ax[1, j].set_title("blurred + noise")
+for a in ax.ravel(): a.axis("off")
+plt.tight_layout(); fig.savefig(RESULTS / "figures" / "blur_types.png", dpi=120); plt.show()
+'''),
+        md("## 4. Fixed, seeded validation and test sets (recipes saved so the test set can be rebuilt exactly)"),
+        code(r'''
+N_VAL = 30   # chips per dataset used for tuning (validation only)
+val_sets = [DeblurEvalSet(burn["val"][:N_VAL], scale["burn"], BS.NODATA, seed=101, name="HLS burn scars"),
+            DeblurEvalSet(flood["val"][:N_VAL], scale["flood"], seed=102, name="Sen1Floods11 S2")]
+test_sets = [DeblurEvalSet(burn["test"], scale["burn"], BS.NODATA, seed=201, name="HLS burn scars"),
+             DeblurEvalSet(flood["test"], scale["flood"], seed=202, name="Sen1Floods11 S2")]
+save_json({ds.name: ds.recipe_table() for ds in test_sets}, RESULTS / "test_degradations.json")
+print("test chips:", {ds.name: len(ds) for ds in test_sets},
+      "| per blur type:", pd.Series([r["blur_type"] for ds in test_sets for r in ds.recipes]).value_counts().to_dict())
+'''),
+        md("## 5. Tune the classic methods on validation (PSNR)"),
+        code(r'''
+val_items = [it for ds in val_sets for it in ds]
+best = D.tune(val_items, device=DEV)
+save_json(best, RESULTS / "classic_tuned.json")
+fig, ax = plt.subplots(1, 3, figsize=(15, 3.8))
+for mode in ("true", "nominal"):
+    c = best[f"wiener_{mode}"]["curve"]; ax[0].semilogx(list(c), list(c.values()), "o-", label=f"{mode} PSF")
+    c = best[f"rl_{mode}"]["curve"]; ax[1].plot(list(c), list(c.values()), "o-", label=f"{mode} PSF")
+c = best["unsharp_none"]["curve"]; ax[2].plot(list(c), list(c.values()), "o-")
+for a, t in zip(ax, ("Wiener: K", "Richardson–Lucy: iterations", "Unsharp mask: amount")):
+    a.set_title(t); a.set_ylabel("validation PSNR (dB)"); a.grid(alpha=.3)
+ax[0].legend(); ax[1].legend(); plt.tight_layout(); fig.savefig(RESULTS / "figures" / "classic_tuning.png", dpi=120)
+{k: v["param"] for k, v in best.items()}
+'''),
+        md("## 6. Score the test set once"),
+        code(r'''
+methods = D.method_table(best)
+keep = {ds.samples[i].id for ds in test_sets[1:] for i in range(len(B.BLUR_TYPES))}   # one flood chip per blur type
+rows, kept = [], {}
+for ds in test_sets:
+    r, k = D.evaluate(ds, methods, device=DEV, keep=keep)
+    rows += r; kept.update(k)
+df = pd.DataFrame(rows)
+df.to_csv(RESULTS / "test_per_image.csv", index=False)
+order = list(methods)
+overall = df.groupby("method")[["psnr", "ssim"]].mean().loc[order]
+by_type = df.pivot_table(index="method", columns="blur_type", values="psnr").loc[order, list(B.BLUR_TYPES)]
+by_ds = df.pivot_table(index="method", columns="dataset", values="psnr").loc[order]
+save_json({"overall": overall.to_dict("index"), "psnr_by_blur_type": by_type.to_dict("index"),
+           "psnr_by_dataset": by_ds.to_dict("index"), "tuned": {k: v["param"] for k, v in best.items()}},
+          RESULTS / "test_classic.json")
+overall.to_csv(RESULTS / "results_table.csv")
+display(overall.style.format({"psnr": "{:.2f} dB", "ssim": "{:.4f}"}))
+display(by_type.style.format("{:.2f}").set_caption("Test PSNR (dB) by blur type"))
+'''),
+        code(r'''
+names = [m for m in order if "nominal" not in m]
+fig, ax = plt.subplots(len(keep), len(names) + 1, figsize=(3 * (len(names) + 1), 3 * len(keep)))
+items = {it["id"]: it for it in test_sets[1] if it["id"] in keep}
+for i, (cid, it) in enumerate(items.items()):
+    ax[i, 0].imshow(show(it["sharp"])); ax[i, 0].set_title(f"sharp ({it['blur_type']})")
+    for j, m in enumerate(names, 1):
+        ax[i, j].imshow(show(kept[cid][m]))
+        ax[i, j].set_title(f"{m.split(' (')[0]}\n{df[(df.id == cid) & (df.method == m)].psnr.iloc[0]:.1f} dB", fontsize=9)
+for a in ax.ravel(): a.axis("off")
+plt.tight_layout(); fig.savefig(RESULTS / "figures" / "classic_examples_test.png", dpi=110); plt.show()
+'''),
+        code(FINISH),
+    ],
+)
+
 NOTEBOOKS = {
     "01_floods_sen1floods11.ipynb": FLOODS,
     "02_wildfires_burn_scars.ipynb": WILDFIRES,
@@ -1196,6 +1335,7 @@ NOTEBOOKS = {
     "07_wildfires_active_fire.ipynb": ACTIVE_FIRE,
     "08_floods_at_crisp_sites_corrected.ipynb": FLOOD_SITES,
     "09_flood_area_any_place.ipynb": FLOOD_ANY,
+    "10_deblurring_data_and_classic.ipynb": DEBLUR,
 }
 
 if __name__ == "__main__":

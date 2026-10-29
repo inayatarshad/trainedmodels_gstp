@@ -97,6 +97,9 @@ notebooks/                run these in Google Colab (T4 GPU), in order
   05_air_quality_forecasting.ipynb
   06_apply_to_crisp_sites.ipynb
   07_wildfires_active_fire.ipynb
+  08_floods_at_crisp_sites_corrected.ipynb
+  09_flood_area_any_place.ipynb
+  10_deblurring_data_and_classic.ipynb   deblurring: blurred/sharp pairs + Wiener / Richardson-Lucy baselines
 src/gstp/                 shared library used by every notebook
   data/                   dataset readers (Sen1Floods11, HLS Burn Scars, Landsat-8 Active Fire, forest masks) + normalisation
   models.py               U-Net and Sentinel-2-pretrained ResNet factories, ONNX export
@@ -108,8 +111,11 @@ src/gstp/                 shared library used by every notebook
   air_quality.py          data download, feature engineering, LightGBM forecaster
   inference.py            Sentinel-1/2 loading from Planetary Computer, tiled inference
   viz.py                  figures
+  blur.py                 synthetic blur (optics, defocus, motion, jitter) + sensor noise
+  deblur_classic.py       Wiener, Richardson-Lucy, unsharp mask; PSNR / SSIM
 results/                  metrics (JSON/CSV) and figures written by the notebooks
 docs/model_cards.md       per-model intended use, data, metrics, limitations
+docs/deblurring.md        deblurring stage: plan, design choices, questions for the camera/FPGA team
 tests/                    end-to-end smoke tests on synthetic data (pytest)
 tools/                    notebook generator and results collector
 ```
