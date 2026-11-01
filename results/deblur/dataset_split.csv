@@ -1,0 +1,3 @@
+Dataset,Train chips,Validation chips,  (used for tuning),Test chips
+"HLS burn scars (6 bands, 30 m)",459,81,30,264
+"Sen1Floods11 Sentinel-2 (12 bands, 10 m)",252,89,30,90

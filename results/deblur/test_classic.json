@@ -1,0 +1,94 @@
+{
+  "overall": {
+    "No deblurring": {
+      "psnr": 43.03488200944433,
+      "ssim": 0.9413385436977146
+    },
+    "Wiener, nominal PSF (K=0.018)": {
+      "psnr": 38.28905163529847,
+      "ssim": 0.9249928351316299
+    },
+    "Richardson-Lucy, nominal PSF (5 it)": {
+      "psnr": 40.570918217551224,
+      "ssim": 0.944963269595148
+    },
+    "Wiener, true PSF (K=0.0056)": {
+      "psnr": 45.35175246822194,
+      "ssim": 0.9660574359689504
+    },
+    "Richardson-Lucy, true PSF (50 it)": {
+      "psnr": 46.71477946070351,
+      "ssim": 0.9692758031456035
+    }
+  },
+  "psnr_by_blur_type": {
+    "No deblurring": {
+      "motion": 39.76202553564441,
+      "defocus": 39.33829247299244,
+      "gaussian": 39.3339484091944,
+      "none": 53.784459870062555
+    },
+    "Wiener, nominal PSF (K=0.018)": {
+      "motion": 38.16897603127783,
+      "defocus": 39.299122105605754,
+      "gaussian": 40.190953503496225,
+      "none": 35.48704132278808
+    },
+    "Richardson-Lucy, nominal PSF (5 it)": {
+      "motion": 39.86074923366105,
+      "defocus": 40.216479793409285,
+      "gaussian": 40.637012694926895,
+      "none": 41.58152895966258
+    },
+    "Wiener, true PSF (K=0.0056)": {
+      "motion": 43.11823600156443,
+      "defocus": 41.9549732280343,
+      "gaussian": 42.27108135452254,
+      "none": 54.12669992179881
+    },
+    "Richardson-Lucy, true PSF (50 it)": {
+      "motion": 43.92048778429827,
+      "defocus": 42.2784533348485,
+      "gaussian": 42.33028820036387,
+      "none": 58.41205463469273
+    }
+  },
+  "ssim_by_blur_type": {
+    "No deblurring": {
+      "motion": 0.9242186690872528,
+      "defocus": 0.9236207942614395,
+      "gaussian": 0.9226749064683012,
+      "none": 0.9952356870653052
+    },
+    "Wiener, nominal PSF (K=0.018)": {
+      "motion": 0.9181449332375652,
+      "defocus": 0.931147703573052,
+      "gaussian": 0.9419582601297986,
+      "none": 0.9087283189662478
+    },
+    "Richardson-Lucy, nominal PSF (5 it)": {
+      "motion": 0.9292568127425869,
+      "defocus": 0.9364575577920742,
+      "gaussian": 0.9395135200836442,
+      "none": 0.9749003260424643
+    },
+    "Wiener, true PSF (K=0.0056)": {
+      "motion": 0.9564523743221376,
+      "defocus": 0.9545757552322824,
+      "gaussian": 0.9573082395010826,
+      "none": 0.9961329968928389
+    },
+    "Richardson-Lucy, true PSF (50 it)": {
+      "motion": 0.9645100251007616,
+      "defocus": 0.9594591807448463,
+      "gaussian": 0.9571016605830553,
+      "none": 0.9961980552497235
+    }
+  },
+  "tuned": {
+    "wiener_true": 0.005623413251903491,
+    "wiener_nominal": 0.01778279410038923,
+    "rl_true": 50,
+    "rl_nominal": 5
+  }
+}

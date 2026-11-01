@@ -1464,25 +1464,32 @@ display(by_type.rename(columns=TYPE_NAMES).style.format("{:.2f}").set_caption("T
 display(iou.style.format("{:.3f}").set_caption("Hazard-model IoU on the test chips"))
 '''),
         code(r'''
-# Comparison table as a figure (for slides)
-tab = overall.copy(); tab["PSNR gain vs blurry (dB)"] = tab.psnr - tab.loc["No deblurring", "psnr"]
-for col in iou.columns: tab[f"IoU {col}"] = iou.loc[order, col]
-fig, ax = plt.subplots(figsize=(17, 0.55 * len(tab) + 1.4)); ax.axis("off")
-cells = [[f"{r.psnr:.2f}", f"{r.ssim:.4f}", f"{r['PSNR gain vs blurry (dB)']:+.2f}"] + [f"{r[c]:.3f}" for c in tab.columns[3:]] for _, r in tab.iterrows()]
-cells.append(["—", "—", "—"] + [f"{iou.loc[SHARP, c]:.3f}" for c in iou.columns])
-t = ax.table(cellText=cells, rowLabels=list(tab.index) + [SHARP], colLabels=["PSNR (dB)", "SSIM", "Gain vs blurry"] + [f"IoU: {c}" for c in iou.columns],
-             loc="center", cellLoc="center"); t.auto_set_font_size(False); t.set_fontsize(11); t.scale(1, 1.6)
-best_row = order.index(tab.psnr.idxmax())
-for j in range(len(cells[0])): t[(best_row + 1, j)].set_facecolor("#dff0d8")
-ax.set_title(f"Deblurring test results — {sum(len(d) for d in test_sets)} test chips, all blur types", fontsize=14)
+# Comparison table as a figure (for slides). Averages are over the BLURRED chips; the no-extra-blur check is its own column.
+BL = list(B.BLUR_TYPES)
+bl, nb_ = df[df.blur_type.isin(BL)], df[df.blur_type == "none"]
+ps, ss, pn = bl.groupby("method").psnr.mean(), bl.groupby("method").ssim.mean(), nb_.groupby("method").psnr.mean()
+iou_b = hz_df[hz_df.blur_type.isin(BL)].groupby(["method", "hazard_model"]).iou.mean().unstack()
+H = list(iou_b.columns)
+rows = [[f"{ps[m]:.2f}", f"{ps[m] - ps['No deblurring']:+.2f}", f"{ss[m]:.4f}", f"{pn[m]:.2f}"] + [f"{iou_b.loc[m, h]:.3f}" for h in H] for m in order]
+rows.append(["—", "—", "—", "—"] + [f"{iou_b.loc[SHARP, h]:.3f}" for h in H])
+fig, ax = plt.subplots(figsize=(18, 0.55 * len(rows) + 1.6)); ax.axis("off")
+t = ax.table(cellText=rows, rowLabels=order + [SHARP], colLabels=["PSNR (dB)\nblurred chips", "Gain vs\nblurry", "SSIM\nblurred chips",
+             "PSNR (dB)\nno-extra-blur check"] + [f"IoU: {h}\nblurred chips" for h in H], loc="center", cellLoc="center")
+t.auto_set_font_size(False); t.set_fontsize(11); t.scale(1, 1.9)
+best_row = order.index(ps.idxmax())
+for j in range(len(rows[0])): t[(best_row + 1, j)].set_facecolor("#dff0d8")
+ax.set_title(f"Deblurring test results — {bl.id.nunique()} blurred test chips (motion, defocus, Gaussian) + {nb_.id.nunique()} no-extra-blur check chips\n"
+             "Classic methods are given the blur shape (true = exact, nominal = lab-style); the AI models are not", fontsize=13)
 fig.savefig(FIG / "D4_1_comparison_table.png", dpi=130, bbox_inches="tight"); plt.show()
 
-fig, ax = plt.subplots(1, 2, figsize=(17, 4.8))
-by_type.rename(columns=TYPE_NAMES).T.plot.bar(ax=ax[0], rot=0, width=0.85)
-ax[0].set_ylim(by_type.values.min() - 2, by_type.values.max() + 1.5); ax[0].set_ylabel("test PSNR (dB)")
-ax[0].set_title("Image quality by blur type"); ax[0].legend(fontsize=8, ncol=2); ax[0].grid(axis="y", alpha=.3)
-iou.plot.barh(ax=ax[1]); ax[1].set_xlabel("IoU"); ax[1].set_title("Hazard models on the deblurred images (test)")
-ax[1].invert_yaxis(); ax[1].grid(axis="x", alpha=.3); ax[1].set_xlim(max(0, iou.values.min() - 0.1), min(1, iou.values.max() + 0.03))
+bt = bl.pivot_table(index="method", columns="blur_type", values="psnr").loc[order, BL]; bt["none"] = pn.loc[order]
+fig, ax = plt.subplots(1, 2, figsize=(18, 5))
+bt.rename(columns=TYPE_NAMES).T.plot.bar(ax=ax[0], rot=0, width=0.85)
+ax[0].set_ylim(bt.values.min() - 2, bt.values.max() + 1.5); ax[0].set_ylabel("test PSNR (dB)")
+ax[0].set_title("Image quality by blur type (higher is better)"); ax[0].legend(fontsize=8, ncol=2); ax[0].grid(axis="y", alpha=.3)
+iou_b.loc[[SHARP] + order].plot.barh(ax=ax[1]); ax[1].invert_yaxis(); ax[1].set_xlabel("IoU (blurred test chips)")
+ax[1].set_xlim(max(0, iou_b.values.min() - 0.03), min(1, iou_b.values.max() + 0.02))
+ax[1].set_title("Hazard models on the deblurred images"); ax[1].grid(axis="x", alpha=.3)
 plt.tight_layout(); fig.savefig(FIG / "D4_2_psnr_and_iou_by_method.png", dpi=130); plt.show()
 '''),
         code(r'''
@@ -1547,6 +1554,81 @@ tb = ax.table(cellText=speed.values, colLabels=speed.columns, loc="center", cell
 ax.set_title("Model size and speed (Jetson speed still to be measured on the board)", fontsize=13)
 fig.savefig(FIG / "D5_1_speed_onnx.png", dpi=130, bbox_inches="tight"); plt.show()
 speed
+'''),
+        md("## 6. Clearer example figures (examples picked by a fixed rule on the sharp image only)"),
+        code(r'''
+# Clearer example figures. Example chips are chosen by a fixed rule that does NOT look at any method's result:
+# for each blur type, the test chip with the least cloud and the most ground detail (edges) in the SHARP image,
+# then the 192x192 window with the most detail inside it.
+def detail(img, ds):
+    g = img[list(RGB[ds])].mean(0)
+    return np.abs(np.diff(g, axis=0))[:, :-1] + np.abs(np.diff(g, axis=1))[:-1, :]
+
+def clear_example(ds, t):
+    best_k, best_s = None, -1e9
+    blue = RGB[ds.name][2]
+    for k, r in enumerate(ds.recipes):
+        if r["blur_type"] != t:
+            continue
+        sharp = DeblurEvalSet(ds.samples[k:k + 1], ds.scale, ds.nodata, recipes=[r], name=ds.name)[0]
+        cloud = np.mean(sharp["sharp"][blue] > 0.2) + np.mean(~sharp["valid_data"])
+        s = detail(sharp["sharp"], ds.name).mean() if cloud < 0.05 else -10 - cloud   # fallback: least cloudy
+        if s > best_s:
+            best_k, best_s = k, s
+    it = ds[best_k]
+    d = detail(it["sharp"], ds.name)
+    W, best, pos = 192, -1, (160, 160)
+    for y in range(32, d.shape[0] - W - 32, 32):
+        for x in range(32, d.shape[1] - W - 32, 32):
+            v = d[y:y + W, x:x + W].mean()
+            if v > best:
+                best, pos = v, (y, x)
+    return it, (slice(pos[0], pos[0] + W), slice(pos[1], pos[1] + W))
+
+def side_by_side(ds, cols, title, path):
+    fig, ax = plt.subplots(4, len(cols) + 1, figsize=(3.6 * (len(cols) + 1), 15.5))
+    for i, t in enumerate(B.ALL_TYPES):
+        it, crop = clear_example(ds, t)
+        y = torch.as_tensor(it["blurred"], device=DEV)
+        for j, (m, name) in enumerate(cols):
+            with torch.no_grad():
+                out = methods[m](y, it).float().cpu().numpy()
+            p = D.score(it["sharp"], out, it["valid"], ssim=False)["psnr"]
+            ax[i, j].imshow(show(np.clip(out, 0, 1), ds.name, crop=crop, ref=it["sharp"]))
+            ax[i, j].set_title(f"{name}\n{p:.1f} dB", fontsize=11)
+        ax[i, -1].imshow(show(it["sharp"], ds.name, crop=crop)); ax[i, -1].set_title("Sharp original\n(right answer)", fontsize=11)
+        ax[i, 0].set_ylabel(TYPE_NAMES[t], fontsize=13)
+    for a in ax.ravel(): a.set_xticks([]); a.set_yticks([])
+    fig.suptitle(title, fontsize=14, y=1.005)
+    plt.tight_layout(); fig.savefig(path, dpi=95, bbox_inches="tight"); plt.show()
+
+classic_cols = [("No deblurring", "Blurry input")] + [(m, m.split(" (")[0]) for m in order if "true" in m]
+ai_cols = classic_cols + [("Plain autoencoder", "Plain autoencoder"), ("NAFNet", "NAFNet (AI)")]
+for ds in test_sets:
+    tag = "flood" if "Flood" in ds.name else "burn"
+    side_by_side(ds, classic_cols, f"{ds.name}: classic deblurring with the TRUE blur shape (PSNR of the whole chip)",
+                 FIG / f"D2_4_classic_side_by_side_clear_{tag}.png")
+    side_by_side(ds, ai_cols, f"{ds.name}: classic (true blur shape) vs AI (no blur shape) — PSNR of the whole chip",
+                 FIG / f"D4_5_side_by_side_clear_{tag}.png")
+'''),
+        code(r'''
+# Compact example for slides: motion and defocus rows, blurry | best classic (true blur shape) | NAFNet | sharp
+ds = test_sets[1]
+cols = [("No deblurring", "Blurry input"), ([m for m in order if m.startswith("Richardson-Lucy, true")][0], "Classic (Richardson-Lucy)"),
+        ("NAFNet", "AI (NAFNet)")]
+fig, ax = plt.subplots(2, 4, figsize=(16, 8.4))
+for i, t in enumerate(("motion", "defocus")):
+    it, crop = clear_example(ds, t)
+    y = torch.as_tensor(it["blurred"], device=DEV)
+    for j, (m, name) in enumerate(cols):
+        with torch.no_grad():
+            out = methods[m](y, it).float().cpu().numpy()
+        p = D.score(it["sharp"], out, it["valid"], ssim=False)["psnr"]
+        ax[i, j].imshow(show(np.clip(out, 0, 1), ds.name, crop=crop, ref=it["sharp"])); ax[i, j].set_title(f"{name}\n{p:.1f} dB", fontsize=15)
+    ax[i, 3].imshow(show(it["sharp"], ds.name, crop=crop)); ax[i, 3].set_title("Sharp original\n(right answer)", fontsize=15)
+    ax[i, 0].set_ylabel(TYPE_NAMES[t] + " blur", fontsize=16)
+for a in ax.ravel(): a.set_xticks([]); a.set_yticks([])
+plt.tight_layout(); fig.savefig(FIG / "D5_2_slide_example.png", dpi=110, bbox_inches="tight"); plt.show()
 '''),
         code(FINISH),
     ],

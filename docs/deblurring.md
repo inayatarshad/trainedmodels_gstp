@@ -13,6 +13,24 @@ models → ground. Same pattern as the hazard models: learned model vs classic m
 | Evaluation | PSNR / SSIM per blur type, and flood / burn-scar IoU on sharp vs blurred vs deblurred test chips (`src/gstp/hazard_check.py`) | Notebook 11 |
 | Export | ONNX (256×256 tiles) + speed on T4 and CPU | Notebook 11 |
 
+## Results (test set, used once — notebooks 10 and 11, Colab T4)
+
+| Method | Needs blur shape? | PSNR blurred chips (dB) | Gain | SSIM | No-extra-blur check (dB) | IoU burn-scar | IoU flood (S2) |
+|---|---|---|---|---|---|---|---|
+| No deblurring | – | 39.48 | +0.00 | 0.9235 | 53.78 | 0.732 | 0.751 |
+| Wiener, nominal PSF | yes | 39.22 | −0.26 | 0.9304 | 35.49 | 0.764 | 0.756 |
+| Richardson–Lucy, nominal PSF | yes | 40.24 | +0.76 | 0.9351 | 41.58 | 0.753 | 0.755 |
+| Wiener, true PSF | yes | 42.45 | +2.97 | 0.9561 | 54.13 | 0.787 | 0.761 |
+| Richardson–Lucy, true PSF | yes | 42.85 | +3.37 | 0.9604 | 58.41 | 0.781 | 0.761 |
+| Plain autoencoder | no | 40.53 | +1.05 | 0.9398 | 42.18 | 0.762 | 0.756 |
+| **NAFNet** | no | **43.02** | **+3.54** | **0.9623** | 54.42 | 0.776 | 0.758 |
+| Sharp original | – | – | – | – | – | 0.808 | 0.761 |
+
+266 blurred test chips (motion, defocus, Gaussian) + 88 no-extra-blur check chips. NAFNet beats Richardson–Lucy with the
+exact PSF on 67 % of blurred chips (better for defocus and Gaussian, worse for motion: 42.50 vs 43.92 dB). Blur costs the
+burn-scar model 0.076 IoU and NAFNet wins back 58 % of it; the flood model is barely affected by blur.
+NAFNet: 3.92 M parameters, 15.8 MB ONNX, 102 ms per 512×512 band on a T4 (tiled). Full write-up: GSTP_Deblurring_Report.
+
 ## Design choices
 
 - **Sharp images** are the HLS Burn Scars (6 bands, 30 m) and Sen1Floods11 Sentinel-2 (12 bands, 10 m) chips, with

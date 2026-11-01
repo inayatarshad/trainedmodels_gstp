@@ -1,0 +1,286 @@
+{
+  "overall": {
+    "No deblurring": {
+      "psnr": 43.03488200944433,
+      "ssim": 0.9413385436977146
+    },
+    "Wiener, nominal PSF (K=0.018)": {
+      "psnr": 38.28905163529847,
+      "ssim": 0.9249928351316299
+    },
+    "Richardson-Lucy, nominal PSF (5 it)": {
+      "psnr": 40.570918217551224,
+      "ssim": 0.944963269595148
+    },
+    "Wiener, true PSF (K=0.0056)": {
+      "psnr": 45.35175246822194,
+      "ssim": 0.9660574359689504
+    },
+    "Richardson-Lucy, true PSF (50 it)": {
+      "psnr": 46.71477946070351,
+      "ssim": 0.9692758031456035
+    },
+    "Plain autoencoder": {
+      "psnr": 40.9386458214061,
+      "ssim": 0.9467945439555101
+    },
+    "NAFNet": {
+      "psnr": 45.855629307187314,
+      "ssim": 0.9709841978723944
+    }
+  },
+  "psnr_by_blur_type": {
+    "No deblurring": {
+      "motion": 39.76202553564441,
+      "defocus": 39.33829247299244,
+      "gaussian": 39.3339484091944,
+      "none": 53.784459870062555
+    },
+    "Wiener, nominal PSF (K=0.018)": {
+      "motion": 38.16897603127783,
+      "defocus": 39.299122105605754,
+      "gaussian": 40.190953503496225,
+      "none": 35.48704132278808
+    },
+    "Richardson-Lucy, nominal PSF (5 it)": {
+      "motion": 39.86074923366105,
+      "defocus": 40.216479793409285,
+      "gaussian": 40.637012694926895,
+      "none": 41.58152895966258
+    },
+    "Wiener, true PSF (K=0.0056)": {
+      "motion": 43.11823600156443,
+      "defocus": 41.9549732280343,
+      "gaussian": 42.27108135452254,
+      "none": 54.12669992179881
+    },
+    "Richardson-Lucy, true PSF (50 it)": {
+      "motion": 43.92048778429827,
+      "defocus": 42.2784533348485,
+      "gaussian": 42.33028820036387,
+      "none": 58.41205463469273
+    },
+    "Plain autoencoder": {
+      "motion": 39.59962443664323,
+      "defocus": 40.62128104136781,
+      "gaussian": 41.36792994069338,
+      "none": 42.18457043697451
+    },
+    "NAFNet": {
+      "motion": 42.49874197677139,
+      "defocus": 43.30735400341703,
+      "gaussian": 43.26451717373779,
+      "none": 54.41900819566609
+    }
+  },
+  "ssim_by_blur_type": {
+    "No deblurring": {
+      "motion": 0.9242186690872528,
+      "defocus": 0.9236207942614395,
+      "gaussian": 0.9226749064683012,
+      "none": 0.9952356870653052
+    },
+    "Wiener, nominal PSF (K=0.018)": {
+      "motion": 0.9181449332375652,
+      "defocus": 0.931147703573052,
+      "gaussian": 0.9419582601297986,
+      "none": 0.9087283189662478
+    },
+    "Richardson-Lucy, nominal PSF (5 it)": {
+      "motion": 0.9292568127425869,
+      "defocus": 0.9364575577920742,
+      "gaussian": 0.9395135200836442,
+      "none": 0.9749003260424643
+    },
+    "Wiener, true PSF (K=0.0056)": {
+      "motion": 0.9564523743221376,
+      "defocus": 0.9545757552322824,
+      "gaussian": 0.9573082395010826,
+      "none": 0.9961329968928389
+    },
+    "Richardson-Lucy, true PSF (50 it)": {
+      "motion": 0.9645100251007616,
+      "defocus": 0.9594591807448463,
+      "gaussian": 0.9571016605830553,
+      "none": 0.9961980552497235
+    },
+    "Plain autoencoder": {
+      "motion": 0.9261093579986123,
+      "defocus": 0.9440221669298879,
+      "gaussian": 0.9493436185135082,
+      "none": 0.9679695955957427
+    },
+    "NAFNet": {
+      "motion": 0.9543578511989965,
+      "defocus": 0.9683114202058271,
+      "gaussian": 0.9641716191827349,
+      "none": 0.9973152091331555
+    }
+  },
+  "psnr_by_dataset": {
+    "No deblurring": {
+      "HLS burn scars": 41.99815664070536,
+      "Sen1Floods11 S2": 46.075943091078614
+    },
+    "Wiener, nominal PSF (K=0.018)": {
+      "HLS burn scars": 37.45704061122533,
+      "Sen1Floods11 S2": 40.72961730591302
+    },
+    "Richardson-Lucy, nominal PSF (5 it)": {
+      "HLS burn scars": 39.57334976023356,
+      "Sen1Floods11 S2": 43.49711902568303
+    },
+    "Wiener, true PSF (K=0.0056)": {
+      "HLS burn scars": 44.79962764095812,
+      "Sen1Floods11 S2": 46.97131862819582
+    },
+    "Richardson-Lucy, true PSF (50 it)": {
+      "HLS burn scars": 45.67482014181664,
+      "Sen1Floods11 S2": 49.76532679610501
+    },
+    "Plain autoencoder": {
+      "HLS burn scars": 40.024947865347286,
+      "Sen1Floods11 S2": 43.618826492511936
+    },
+    "NAFNet": {
+      "HLS burn scars": 44.85562565913935,
+      "Sen1Floods11 S2": 48.78897334146136
+    }
+  },
+  "hazard_iou": {
+    "Sharp original (upper bound)": {
+      "Burn-scar U-Net": 0.8054087857689979,
+      "Flood U-Net (S2)": 0.8199306595533649
+    },
+    "No deblurring": {
+      "Burn-scar U-Net": 0.7475558189567356,
+      "Flood U-Net (S2)": 0.8153084426699146
+    },
+    "Wiener, nominal PSF (K=0.018)": {
+      "Burn-scar U-Net": 0.7661251605267382,
+      "Flood U-Net (S2)": 0.8158699274403934
+    },
+    "Richardson-Lucy, nominal PSF (5 it)": {
+      "Burn-scar U-Net": 0.7671494918773129,
+      "Flood U-Net (S2)": 0.8151780118562127
+    },
+    "Wiener, true PSF (K=0.0056)": {
+      "Burn-scar U-Net": 0.790464570863796,
+      "Flood U-Net (S2)": 0.8199543049766906
+    },
+    "Richardson-Lucy, true PSF (50 it)": {
+      "Burn-scar U-Net": 0.7856894386111349,
+      "Flood U-Net (S2)": 0.819928361864392
+    },
+    "Plain autoencoder": {
+      "Burn-scar U-Net": 0.7701960361522759,
+      "Flood U-Net (S2)": 0.8151277798114358
+    },
+    "NAFNet": {
+      "Burn-scar U-Net": 0.7830452135553505,
+      "Flood U-Net (S2)": 0.8171536687252203
+    }
+  },
+  "hazard_iou_by_type": {
+    "Burn-scar U-Net | NAFNet": {
+      "defocus": 0.7940443554509925,
+      "gaussian": 0.701438582794148,
+      "motion": 0.8327224440235277,
+      "none": 0.7956708662529947
+    },
+    "Burn-scar U-Net | No deblurring": {
+      "defocus": 0.7625122869856631,
+      "gaussian": 0.6257402323279287,
+      "motion": 0.8079474055596895,
+      "none": 0.783486934354583
+    },
+    "Burn-scar U-Net | Plain autoencoder": {
+      "defocus": 0.7865210516583582,
+      "gaussian": 0.6776336763788514,
+      "motion": 0.8232577122703261,
+      "none": 0.7848384774620125
+    },
+    "Burn-scar U-Net | Richardson-Lucy, nominal PSF (5 it)": {
+      "defocus": 0.7853951049215643,
+      "gaussian": 0.6550345515457522,
+      "motion": 0.8199969825525049,
+      "none": 0.7994566422066686
+    },
+    "Burn-scar U-Net | Richardson-Lucy, true PSF (50 it)": {
+      "defocus": 0.7860865499649344,
+      "gaussian": 0.7291748064913686,
+      "motion": 0.8274927411711199,
+      "none": 0.7932292954788495
+    },
+    "Burn-scar U-Net | Sharp original (upper bound)": {
+      "defocus": 0.7897471169066104,
+      "gaussian": 0.791854957585622,
+      "motion": 0.8426710617311886,
+      "none": 0.7905294650729748
+    },
+    "Burn-scar U-Net | Wiener, nominal PSF (K=0.018)": {
+      "defocus": 0.7868201642430758,
+      "gaussian": 0.6820498388472841,
+      "motion": 0.8245829916623799,
+      "none": 0.7627499290991478
+    },
+    "Burn-scar U-Net | Wiener, true PSF (K=0.0056)": {
+      "defocus": 0.7860031752010067,
+      "gaussian": 0.7421488363698774,
+      "motion": 0.8341822436222076,
+      "none": 0.7924264404492306
+    },
+    "Flood U-Net (S2) | NAFNet": {
+      "defocus": 0.832674219026666,
+      "gaussian": 0.6452448614615742,
+      "motion": 0.7951003167283821,
+      "none": 0.8759599464323097
+    },
+    "Flood U-Net (S2) | No deblurring": {
+      "defocus": 0.8351825744313757,
+      "gaussian": 0.630074091527075,
+      "motion": 0.7878369450710345,
+      "none": 0.8764077525726854
+    },
+    "Flood U-Net (S2) | Plain autoencoder": {
+      "defocus": 0.8321997814304709,
+      "gaussian": 0.6455391676073802,
+      "motion": 0.7902232798926355,
+      "none": 0.8729953063008273
+    },
+    "Flood U-Net (S2) | Richardson-Lucy, nominal PSF (5 it)": {
+      "defocus": 0.835881372492672,
+      "gaussian": 0.6405819339073111,
+      "motion": 0.7890436784896607,
+      "none": 0.871045153577794
+    },
+    "Flood U-Net (S2) | Richardson-Lucy, true PSF (50 it)": {
+      "defocus": 0.8365480249407787,
+      "gaussian": 0.6462501515231573,
+      "motion": 0.7994641896644462,
+      "none": 0.8764429260409868
+    },
+    "Flood U-Net (S2) | Sharp original (upper bound)": {
+      "defocus": 0.835721414181335,
+      "gaussian": 0.6488416365913855,
+      "motion": 0.7998690767863184,
+      "none": 0.8762226963303827
+    },
+    "Flood U-Net (S2) | Wiener, nominal PSF (K=0.018)": {
+      "defocus": 0.8365934517191992,
+      "gaussian": 0.6406243069065377,
+      "motion": 0.7895641974274287,
+      "none": 0.8719376358920207
+    },
+    "Flood U-Net (S2) | Wiener, true PSF (K=0.0056)": {
+      "defocus": 0.837089916081649,
+      "gaussian": 0.64626345591438,
+      "motion": 0.7985026385126249,
+      "none": 0.8766453191841483
+    }
+  },
+  "n_test": {
+    "HLS burn scars": 264,
+    "Sen1Floods11 S2": 90
+  }
+}

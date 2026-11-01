@@ -1,0 +1,2892 @@
+{
+  "HLS burn scars": [
+    {
+      "id": "subsetted_512x512_HLS.S30.T10SEH.2018190.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5972201234637455,
+      "noise_std": 0.0010732666557347083,
+      "psf_seed": 1911640300,
+      "kind": "jitter",
+      "length": 11.20888111793162
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10SFE.2021166.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5953337983028607,
+      "noise_std": 0.0013926111606328841,
+      "psf_seed": 1666586670,
+      "radius": 3.5526709635095166
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10SFF.2020215.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3049664839601036,
+      "noise_std": 2.8980309998152267e-05,
+      "psf_seed": 408053274,
+      "sigma": 2.2426960311974096
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10SFG.2020185.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.30108666954517715,
+      "noise_std": 0.0008020277502702351,
+      "psf_seed": 1277676590
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10SFG.2020215.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.3451664866690168,
+      "noise_std": 0.0006975156510268426,
+      "psf_seed": 258163088,
+      "kind": "jitter",
+      "length": 12.199963557326074
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10SGD.2018257.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.590623152965105,
+      "noise_std": 0.0009569710143820956,
+      "psf_seed": 1641218710,
+      "radius": 1.0550536204183794
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10SGF.2020217.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.30936945173687214,
+      "noise_std": 0.0006313337792202984,
+      "psf_seed": 2048297247,
+      "sigma": 2.4042751037407304
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10SGG.2018187.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.3017154673256121,
+      "noise_std": 0.0013253904141286993,
+      "psf_seed": 1322176795
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10SGG.2020247.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5924716787270772,
+      "noise_std": 0.0013497986105760475,
+      "psf_seed": 35492588,
+      "kind": "line",
+      "length": 9.557789677998397,
+      "angle": 163.01536001058423
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TFL.2018215.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.38803416899612675,
+      "noise_std": 0.0013685371892961848,
+      "psf_seed": 2100225899,
+      "radius": 2.1357303697491767
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TFM.2018110.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.4089136684655589,
+      "noise_std": 0.0004316136091212615,
+      "psf_seed": 828606926,
+      "sigma": 2.19101475880029
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TFM.2019215.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4852275982507105,
+      "noise_std": 0.001964792705074569,
+      "psf_seed": 1936740465
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TFM.2020215.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.49498592047512024,
+      "noise_std": 0.0017509416503562968,
+      "psf_seed": 1197649152,
+      "kind": "jitter",
+      "length": 12.549174181382304
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TFN.2018175.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.43955294507541176,
+      "noise_std": 0.0009198802150361745,
+      "psf_seed": 1236186593,
+      "radius": 3.390502017951573
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TFP.2019278.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5603919480371802,
+      "noise_std": 0.0018494579387951804,
+      "psf_seed": 803022825,
+      "sigma": 1.451215004779836
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TFQ.2018183.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.3196829805888868,
+      "noise_std": 0.001324359231615682,
+      "psf_seed": 289825915
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TFQ.2019305.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5669965213112362,
+      "noise_std": 6.932589457813676e-05,
+      "psf_seed": 387340120,
+      "kind": "jitter",
+      "length": 9.830648457972707
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TFR.2018188.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4292287066552809,
+      "noise_std": 0.0008110642901845579,
+      "psf_seed": 155014984,
+      "radius": 3.6311516123341887
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TFR.2020173.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5100999516325552,
+      "noise_std": 0.001381155786775262,
+      "psf_seed": 1401047056,
+      "sigma": 1.507127455097884
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGK.2019245.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5137733399800386,
+      "noise_std": 0.0003627806677968375,
+      "psf_seed": 1718151691
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGK.2020285.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4865549821649746,
+      "noise_std": 0.0014528454666819241,
+      "psf_seed": 1775434046,
+      "kind": "line",
+      "length": 13.525192002227017,
+      "angle": 132.82108009767603
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGL.2018215.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.41157318535753507,
+      "noise_std": 0.0011419222548848316,
+      "psf_seed": 582890347,
+      "radius": 2.543421074331618
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGL.2020265.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5964234159083872,
+      "noise_std": 0.0017680133726086164,
+      "psf_seed": 41702468,
+      "sigma": 1.9997101558347021
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGM.2020215.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4221907546953501,
+      "noise_std": 0.0010911800502363042,
+      "psf_seed": 1248266732
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGR.2018215.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4403468482776987,
+      "noise_std": 0.0012889354309276173,
+      "psf_seed": 2007910017,
+      "kind": "line",
+      "length": 3.6940185981631624,
+      "angle": 127.30570006680801
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGR.2019215.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3571960780335659,
+      "noise_std": 0.0014810478978737778,
+      "psf_seed": 297802326,
+      "radius": 3.471449373156978
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGR.2019245.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5114083622041994,
+      "noise_std": 0.0006449399281763085,
+      "psf_seed": 17260496,
+      "sigma": 1.8134987574232047
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGS.2018245.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.332506251490041,
+      "noise_std": 0.0006552537862806867,
+      "psf_seed": 932086127
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGS.2019215.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4322697456869703,
+      "noise_std": 0.00042927728795306085,
+      "psf_seed": 1137084167,
+      "kind": "jitter",
+      "length": 6.326460454735228
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGS.2020215.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.303840142539377,
+      "noise_std": 0.0008218419414920086,
+      "psf_seed": 1323612782,
+      "radius": 3.831320039294331
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGT.2018188.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.46468733086861785,
+      "noise_std": 0.0007982561492672276,
+      "psf_seed": 202828077,
+      "sigma": 1.738030329306187
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGT.2018285.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.49883991886304685,
+      "noise_std": 0.0014097209708533933,
+      "psf_seed": 1494276242
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10TGT.2020218.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4693990012648339,
+      "noise_std": 0.0015594881551801016,
+      "psf_seed": 632500669,
+      "kind": "line",
+      "length": 8.587504044899285,
+      "angle": 112.55343787300718
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T10UGV.2020218.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4761292308038665,
+      "noise_std": 0.001997267450610635,
+      "psf_seed": 1394465235,
+      "radius": 2.5465575223028463
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SKU.2019002.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3395738503754576,
+      "noise_std": 0.00034423587732674177,
+      "psf_seed": 1154819782,
+      "sigma": 2.2559732917658977
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SLB.2018197.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4512481456143226,
+      "noise_std": 0.0013366801205304858,
+      "psf_seed": 412110038
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SLT.2019309.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4109944491729137,
+      "noise_std": 2.9802861113661815e-05,
+      "psf_seed": 447085653,
+      "kind": "line",
+      "length": 6.472207041784635,
+      "angle": 41.972225888400594
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SLU.2018274.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3382447412156005,
+      "noise_std": 0.001190766558050912,
+      "psf_seed": 1575554643,
+      "radius": 2.793375146122907
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SLU.2021188.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.30649136526246085,
+      "noise_std": 0.0007719007800330327,
+      "psf_seed": 771302712,
+      "sigma": 1.2372504670365376
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SLV.2018249.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4703097197812746,
+      "noise_std": 0.0006603033689757712,
+      "psf_seed": 680127992
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SLV.2020222.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.45945391512958966,
+      "noise_std": 0.0008600580855462336,
+      "psf_seed": 1962878487,
+      "kind": "line",
+      "length": 7.708893991611594,
+      "angle": 60.21745787775764
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SLV.2021186.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4165964591074013,
+      "noise_std": 0.0018164696894836568,
+      "psf_seed": 81439988,
+      "radius": 2.1025279591690644
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SLV.2021216.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.32555561088113244,
+      "noise_std": 0.0012639154684501775,
+      "psf_seed": 1076258925,
+      "sigma": 0.8659150540257908
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SLV.2021331.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.41724572751577027,
+      "noise_std": 0.0013702879809304764,
+      "psf_seed": 1063426776
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SMS.2018259.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.3059525437486878,
+      "noise_std": 0.001600118284652583,
+      "psf_seed": 2097501930,
+      "kind": "line",
+      "length": 14.310454597285089,
+      "angle": 88.64251736237468
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SMS.2020029.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.576489343888448,
+      "noise_std": 0.001620038906624208,
+      "psf_seed": 2098284920,
+      "radius": 3.455891959164796
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SMT.2019309.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5198182797523669,
+      "noise_std": 0.0009345164231666607,
+      "psf_seed": 1456459063,
+      "sigma": 2.1342196109825355
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SMT.2021248.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5109385362798213,
+      "noise_std": 0.0019814653917261983,
+      "psf_seed": 1566769008
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SMU.2020299.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5777500234999992,
+      "noise_std": 0.00042213186418480863,
+      "psf_seed": 650680840,
+      "kind": "line",
+      "length": 6.352879278201101,
+      "angle": 128.3096988782433
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SMV.2020234.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5596404713322594,
+      "noise_std": 0.00011292168789680602,
+      "psf_seed": 956897057,
+      "radius": 2.873544749163384
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SNT.2020221.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3512880362313635,
+      "noise_std": 0.0015740068433981807,
+      "psf_seed": 1383053118,
+      "sigma": 1.6092076603432077
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SPB.2019281.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.36497271015238064,
+      "noise_std": 0.0013449623378079519,
+      "psf_seed": 1132383480
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SPB.2020241.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5449287480400886,
+      "noise_std": 0.00019668398817080312,
+      "psf_seed": 1031530374,
+      "kind": "jitter",
+      "length": 14.518037745683362
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SPD.2020184.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3573730389613533,
+      "noise_std": 0.00040774808899054696,
+      "psf_seed": 150831852,
+      "radius": 1.8480182847201214
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SQA.2019226.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3979957709325834,
+      "noise_std": 0.0009230589639453893,
+      "psf_seed": 209739824,
+      "sigma": 1.706653230097937
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11SQB.2020241.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4150214122220328,
+      "noise_std": 0.0016021403664820974,
+      "psf_seed": 320579108
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TLE.2019257.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.588080373080553,
+      "noise_std": 0.0012328609463985447,
+      "psf_seed": 1690472729,
+      "kind": "line",
+      "length": 13.202799106883678,
+      "angle": 81.96656633910564
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TLG.2018247.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.42115813221791476,
+      "noise_std": 0.00041209608913118803,
+      "psf_seed": 1151247184,
+      "radius": 3.643640542952255
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TLH.2018152.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.4223801779302576,
+      "noise_std": 0.0019091408098528882,
+      "psf_seed": 1196083126,
+      "sigma": 2.4887995233336278
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TLL.2018215.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4705084879232082,
+      "noise_std": 0.001638258793395804,
+      "psf_seed": 1196895997
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TLM.2018245.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.42588908767014444,
+      "noise_std": 0.00017129142202893966,
+      "psf_seed": 318392253,
+      "kind": "jitter",
+      "length": 8.482579324069306
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TLM.2019245.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5969292644223541,
+      "noise_std": 0.0005588892659402078,
+      "psf_seed": 2000499243,
+      "radius": 1.2129712812472733
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TME.2019222.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.49960555044419064,
+      "noise_std": 0.0009007098601418557,
+      "psf_seed": 242950095,
+      "sigma": 0.9075019865083044
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TMF.2020217.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.44568788501545736,
+      "noise_std": 4.23340704366737e-06,
+      "psf_seed": 1867829769
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TMG.2019217.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5379183800781188,
+      "noise_std": 0.0006861465182441957,
+      "psf_seed": 1007588254,
+      "kind": "line",
+      "length": 12.870608435581829,
+      "angle": 161.03290121237848
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TMH.2019227.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.47052904975279863,
+      "noise_std": 0.0012401438702450578,
+      "psf_seed": 1823525183,
+      "radius": 2.9862081567411667
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TMK.2018217.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.36400688776309587,
+      "noise_std": 0.0011691072330416892,
+      "psf_seed": 1111489563,
+      "sigma": 1.1909642112351075
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TMK.2020247.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4025352142529238,
+      "noise_std": 0.0013050910976907962,
+      "psf_seed": 1963541585
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TNF.2019224.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4209216192934357,
+      "noise_std": 0.0008802654150354575,
+      "psf_seed": 17519128,
+      "kind": "jitter",
+      "length": 11.116694802502678
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TNJ.2018217.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3482050782953965,
+      "noise_std": 0.0018762958339337606,
+      "psf_seed": 1954757462,
+      "radius": 2.8926284710872414
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TNJ.2019217.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3176825561806332,
+      "noise_std": 0.0016871760256297558,
+      "psf_seed": 1059363552,
+      "sigma": 1.604880123259343
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TPE.2020219.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5550877275605488,
+      "noise_std": 0.0017517571479011638,
+      "psf_seed": 1455356488
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TPH.2018219.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.37396752249840115,
+      "noise_std": 0.0001707893526741382,
+      "psf_seed": 927159288,
+      "kind": "jitter",
+      "length": 12.435082020594015
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TPH.2018244.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3215859347484659,
+      "noise_std": 0.0010190877849627715,
+      "psf_seed": 287784262,
+      "radius": 1.3887773135538013
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TPH.2019244.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.4795922013480899,
+      "noise_std": 0.0018931275979707412,
+      "psf_seed": 877013248,
+      "sigma": 0.832728089516959
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TPH.2020249.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5230130955418772,
+      "noise_std": 0.0012576681951676429,
+      "psf_seed": 2122167192
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TPM.2021223.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.517020364736874,
+      "noise_std": 0.0006666622669697294,
+      "psf_seed": 2062562485,
+      "kind": "jitter",
+      "length": 13.207539062675556
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TQG.2018221.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.474379766493934,
+      "noise_std": 0.0018553739202851343,
+      "psf_seed": 409647870,
+      "radius": 2.351187648381197
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TQG.2018291.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.39489455840696114,
+      "noise_std": 0.0018201175390060707,
+      "psf_seed": 1786898811,
+      "sigma": 1.2198455497627867
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TQG.2020306.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.3515348561762867,
+      "noise_std": 0.001178775770525118,
+      "psf_seed": 1833262628
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TQH.2018219.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.33189148399999385,
+      "noise_std": 0.0004991930147857826,
+      "psf_seed": 826445990,
+      "kind": "jitter",
+      "length": 12.085775987985519
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11TQH.2019244.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4775755463649517,
+      "noise_std": 0.0019287539314774961,
+      "psf_seed": 1340690295,
+      "radius": 1.683477439284882
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T11ULP.2020215.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3952370116293383,
+      "noise_std": 4.799269366668635e-05,
+      "psf_seed": 1304443230,
+      "sigma": 1.0762053718790288
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12RVV.2020320.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5901083080765928,
+      "noise_std": 0.001973439802555791,
+      "psf_seed": 409543047
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12RXV.2018182.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5763938880116175,
+      "noise_std": 7.86670789888031e-05,
+      "psf_seed": 1816413809,
+      "kind": "line",
+      "length": 5.702342799762604,
+      "angle": 131.4890439440427
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12RXV.2019062.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3632342224425859,
+      "noise_std": 0.0011376736929923652,
+      "psf_seed": 988624389,
+      "radius": 2.968236661294307
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12STD.2018168.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.562487595845247,
+      "noise_std": 0.0005328812540347514,
+      "psf_seed": 1834982446,
+      "sigma": 1.554179719978267
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12STF.2018231.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4704065658400361,
+      "noise_std": 0.0004098626811522812,
+      "psf_seed": 18720206
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12STG.2018186.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.33130618846595183,
+      "noise_std": 0.0019360607754647303,
+      "psf_seed": 1009569294,
+      "kind": "line",
+      "length": 8.159655407424902,
+      "angle": 160.04072608000297
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12STG.2020241.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5216110712560449,
+      "noise_std": 0.0016425611646935013,
+      "psf_seed": 1862438131,
+      "radius": 2.4641018194538606
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12STJ.2020241.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5954368757591302,
+      "noise_std": 0.001842662833442575,
+      "psf_seed": 1710717419,
+      "sigma": 1.599204823533633
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SUC.2019223.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5136179550618682,
+      "noise_std": 0.0018511977592686687,
+      "psf_seed": 1578019224
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SUC.2020153.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5143809685150064,
+      "noise_std": 0.0018798212808440488,
+      "psf_seed": 593764839,
+      "kind": "line",
+      "length": 8.569988141200403,
+      "angle": 62.22556237082596
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SUC.2020248.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5560374690141887,
+      "noise_std": 0.0016399434575379039,
+      "psf_seed": 156315121,
+      "radius": 2.232885886052052
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SUD.2018168.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.30934689474728483,
+      "noise_std": 0.0005920399664672979,
+      "psf_seed": 1105016857,
+      "sigma": 0.9736036787931669
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SUD.2020218.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5139496408877181,
+      "noise_std": 0.0008903249211354594,
+      "psf_seed": 1823920380
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SUE.2020218.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5904839502140806,
+      "noise_std": 0.001482918853653917,
+      "psf_seed": 2036204027,
+      "kind": "line",
+      "length": 4.633146839194905,
+      "angle": 174.9617420488901
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SUF.2020183.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4660458738417954,
+      "noise_std": 0.0008477471458259747,
+      "psf_seed": 1682829758,
+      "radius": 3.882602312816006
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SUH.2020268.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5469481730061545,
+      "noise_std": 0.0001860174997706323,
+      "psf_seed": 55142122,
+      "sigma": 0.9634644638154701
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SUJ.2019298.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4092211853318047,
+      "noise_std": 0.001830439199657717,
+      "psf_seed": 1499371471
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SUJ.2019308.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4380094978247888,
+      "noise_std": 0.0019526203258415312,
+      "psf_seed": 121923860,
+      "kind": "line",
+      "length": 9.820830456280106,
+      "angle": 120.7343748865109
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SUJ.2020186.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4521970094749953,
+      "noise_std": 0.0005628137444802111,
+      "psf_seed": 357501632,
+      "radius": 1.9593426339555509
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SVB.2020185.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5627593925831048,
+      "noise_std": 0.0003392925928165982,
+      "psf_seed": 1419770968,
+      "sigma": 1.0773827611206166
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SVB.2020310.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4101810516227147,
+      "noise_std": 0.0012275369100163485,
+      "psf_seed": 1425787915
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SVC.2018215.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5717888461915387,
+      "noise_std": 0.0008035969651560415,
+      "psf_seed": 1980723389,
+      "kind": "line",
+      "length": 5.880837816574147,
+      "angle": 126.45746720121416
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SVC.2019280.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5899833711284005,
+      "noise_std": 9.646228094031506e-05,
+      "psf_seed": 991654977,
+      "radius": 2.339681476008108
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SVD.2018310.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.4453840566205084,
+      "noise_std": 0.0004613148497659976,
+      "psf_seed": 1489118445,
+      "sigma": 1.8913775031512743
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SVD.2020218.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.30856099470949233,
+      "noise_std": 5.4006916390590965e-05,
+      "psf_seed": 244321695
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SWA.2018225.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.3653288531563941,
+      "noise_std": 0.0005284966498729881,
+      "psf_seed": 394418406,
+      "kind": "line",
+      "length": 9.383599835411644,
+      "angle": 114.10957441953462
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SXA.2020187.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5150778660065976,
+      "noise_std": 0.001282790983709175,
+      "psf_seed": 501252890,
+      "radius": 3.815835876891529
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SXA.2020247.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.43551792517328863,
+      "noise_std": 0.0012532889445186464,
+      "psf_seed": 884801392,
+      "sigma": 1.08614816729671
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12SXG.2019235.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.3825775953979929,
+      "noise_std": 0.001432858389189195,
+      "psf_seed": 1695322233
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TTM.2018219.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5733117179018936,
+      "noise_std": 0.0012739094557514393,
+      "psf_seed": 2136817287,
+      "kind": "jitter",
+      "length": 13.137826743067508
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TTM.2019244.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4123058699036429,
+      "noise_std": 0.0009785379483273405,
+      "psf_seed": 1492631763,
+      "radius": 1.347663537400011
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TUK.2018231.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5880204600690072,
+      "noise_std": 0.001329750967419177,
+      "psf_seed": 115483244,
+      "sigma": 1.2032901034022467
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TUM.2019231.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5383700793437127,
+      "noise_std": 0.0007374674903873593,
+      "psf_seed": 1243226550
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TUN.2019276.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.3792688391255437,
+      "noise_std": 0.00010795827531485202,
+      "psf_seed": 79336029,
+      "kind": "jitter",
+      "length": 8.547907897504075
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TUN.2021215.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5387970200762247,
+      "noise_std": 0.0019283668733544568,
+      "psf_seed": 1323318865,
+      "radius": 2.1022150987781867
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TUP.2019226.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.32197901830260617,
+      "noise_std": 0.0015862744463136047,
+      "psf_seed": 1192930666,
+      "sigma": 2.0310068438371545
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TVK.2020308.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5901285427426819,
+      "noise_std": 0.00199738748635841,
+      "psf_seed": 10341735
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TVM.2018246.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5265779836101614,
+      "noise_std": 0.001032797649467096,
+      "psf_seed": 1310776244,
+      "kind": "line",
+      "length": 14.947470690993676,
+      "angle": 20.333825775374272
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TVN.2018291.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.48168078644315515,
+      "noise_std": 0.0004956871391081801,
+      "psf_seed": 1180722484,
+      "radius": 2.9539439050074803
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TVR.2020281.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.585614083861651,
+      "noise_std": 0.0015016836225439473,
+      "psf_seed": 1117261470,
+      "sigma": 2.1699980558097645
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TWR.2020283.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5197240079885391,
+      "noise_std": 0.001047405781140442,
+      "psf_seed": 373502826
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TXK.2018215.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.45972343899380097,
+      "noise_std": 0.0016591764477616622,
+      "psf_seed": 1266710369,
+      "kind": "line",
+      "length": 8.615823571720647,
+      "angle": 15.077302474799959
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TXT.2018293.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.38856202531481937,
+      "noise_std": 0.0018207017623122186,
+      "psf_seed": 1504679583,
+      "radius": 3.0931746555108104
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TXT.2020248.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.42894306887063494,
+      "noise_std": 0.001389944002540102,
+      "psf_seed": 416001708,
+      "sigma": 1.1598616012573315
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TYK.2020215.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.35577173162204845,
+      "noise_std": 0.0016882844466987665,
+      "psf_seed": 247227316
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TYT.2018153.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5973145899872782,
+      "noise_std": 0.0012718437401568834,
+      "psf_seed": 2108658088,
+      "kind": "line",
+      "length": 7.5965929346431045,
+      "angle": 96.85048328755087
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12TYT.2019153.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5119577063824935,
+      "noise_std": 0.0007279572945539345,
+      "psf_seed": 59976375,
+      "radius": 3.970997484583968
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T12UXU.2021250.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.41780784485458816,
+      "noise_std": 0.0007527832040951126,
+      "psf_seed": 1116141747,
+      "sigma": 1.9069946576999253
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13REQ.2018156.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.3859510503507103,
+      "noise_std": 0.00024133474740480222,
+      "psf_seed": 1682319271
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13RGP.2020118.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5689963559799697,
+      "noise_std": 0.0005781217903863451,
+      "psf_seed": 585210519,
+      "kind": "line",
+      "length": 3.944742203016758,
+      "angle": 53.23614576462559
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13SBT.2019202.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5089210606345921,
+      "noise_std": 0.0013466740067146464,
+      "psf_seed": 1889642505,
+      "radius": 1.8051318318041079
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13SBV.2019247.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3618841066474237,
+      "noise_std": 0.0007927028503251151,
+      "psf_seed": 319038276,
+      "sigma": 1.2417433003067635
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13SCA.2019227.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4401868890834118,
+      "noise_std": 0.0019108144001141593,
+      "psf_seed": 2076751651
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13SDA.2018199.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.42672860598124596,
+      "noise_std": 0.000817040384384691,
+      "psf_seed": 1077999007,
+      "kind": "jitter",
+      "length": 9.819404266824082
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13SDU.2018254.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4149529521324227,
+      "noise_std": 0.00010908753206238187,
+      "psf_seed": 1530601428,
+      "radius": 1.840015755067487
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13SEB.2020249.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.31152207006459376,
+      "noise_std": 0.00156016301095995,
+      "psf_seed": 1155874459,
+      "sigma": 0.8475993561729738
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13SFA.2018159.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.47552105230809166,
+      "noise_std": 0.0019676388048396978,
+      "psf_seed": 928464470
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13SFB.2019219.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5389416564664813,
+      "noise_std": 0.0006781659296821509,
+      "psf_seed": 299587325,
+      "kind": "line",
+      "length": 9.785809757323676,
+      "angle": 171.80367796018183
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13SFB.2020164.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.35938020153008765,
+      "noise_std": 0.0009617712644217456,
+      "psf_seed": 120367422,
+      "radius": 2.1635398744104464
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13SFS.2018196.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5978570051775007,
+      "noise_std": 0.0015560362600432036,
+      "psf_seed": 380734302,
+      "sigma": 1.097462577972019
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13SFT.2019171.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.3166135868003696,
+      "noise_std": 0.0005854453432231435,
+      "psf_seed": 1688369392
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TBF.2018190.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4469942020571495,
+      "noise_std": 0.0016428685505509876,
+      "psf_seed": 1472966417,
+      "kind": "jitter",
+      "length": 3.1677975966841885
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TCH.2020280.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.42695187894397507,
+      "noise_std": 8.419804811013232e-05,
+      "psf_seed": 1964304501,
+      "radius": 2.7244438050870574
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TCL.2019150.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5678365420467562,
+      "noise_std": 0.00020405905447221052,
+      "psf_seed": 1842966273,
+      "sigma": 1.3266379305267368
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TDH.2018292.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.30099024367058697,
+      "noise_std": 0.000618296687415592,
+      "psf_seed": 1429392594
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TDK.2020217.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.33463201471832715,
+      "noise_std": 0.00035480093324541807,
+      "psf_seed": 1413427543,
+      "kind": "line",
+      "length": 8.815321484850006,
+      "angle": 129.7900788387499
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TDL.2020187.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4803310278849783,
+      "noise_std": 0.0010357041358734914,
+      "psf_seed": 643964266,
+      "radius": 3.0930190152516004
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TDL.2020245.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5965619480616715,
+      "noise_std": 0.0007491903301747038,
+      "psf_seed": 1321504513,
+      "sigma": 1.519718115927934
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TDL.2020280.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5337515110687218,
+      "noise_std": 0.0006059502174349103,
+      "psf_seed": 1805098066
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TEE.2020214.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4825882754146311,
+      "noise_std": 0.001591507912267226,
+      "psf_seed": 1489778110,
+      "kind": "line",
+      "length": 6.743130442750518,
+      "angle": 61.96647026183305
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TEE.2020249.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.39030755175710696,
+      "noise_std": 0.0011727906526575454,
+      "psf_seed": 605721730,
+      "radius": 1.4295719635407296
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TFG.2020274.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.44439906710232113,
+      "noise_std": 0.0001389268096048002,
+      "psf_seed": 247194219,
+      "sigma": 2.0638862996055134
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TFN.2018157.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.48390115055747873,
+      "noise_std": 0.0007023691195716964,
+      "psf_seed": 1701133364
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TFN.2019152.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.560438938164729,
+      "noise_std": 0.0010439894618431435,
+      "psf_seed": 1745107308,
+      "kind": "jitter",
+      "length": 13.888373544995812
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TGE.2018136.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.33137553107104173,
+      "noise_std": 0.000952202910515779,
+      "psf_seed": 1920895351,
+      "radius": 1.6025623548256633
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T13TGJ.2020309.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.30614146228210054,
+      "noise_std": 0.0009825293585882001,
+      "psf_seed": 593408271,
+      "sigma": 1.1676815306155763
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14RKV.2018213.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5017565067773537,
+      "noise_std": 0.0012711348261973023,
+      "psf_seed": 139926103
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14RKV.2020278.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.3163041463116,
+      "noise_std": 0.0016063222225827936,
+      "psf_seed": 35779667,
+      "kind": "line",
+      "length": 13.90286791866599,
+      "angle": 159.5486959553285
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14RLV.2019223.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5741134097130998,
+      "noise_std": 0.0019961643260850283,
+      "psf_seed": 1598084661,
+      "radius": 2.5940416459196904
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14RLV.2019348.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.43968056182974274,
+      "noise_std": 0.0014231324811861408,
+      "psf_seed": 1084883750,
+      "sigma": 0.8535417752253239
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14RMV.2020280.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5021960449970724,
+      "noise_std": 0.0016244847648597884,
+      "psf_seed": 1210702055
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14RNQ.2021051.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.3394064250023219,
+      "noise_std": 0.0016847020901470126,
+      "psf_seed": 1788551999,
+      "kind": "line",
+      "length": 7.9120365976867735,
+      "angle": 26.031960554781666
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14RNV.2018215.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3431165952519722,
+      "noise_std": 0.0013808169709978704,
+      "psf_seed": 520420956,
+      "radius": 1.488498767101219
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14RPS.2019257.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.47017931715926786,
+      "noise_std": 0.0018443631532741177,
+      "psf_seed": 359540737,
+      "sigma": 1.701906950287328
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SKA.2019278.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5853654922635411,
+      "noise_std": 0.0010742850563687071,
+      "psf_seed": 781668412
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SKB.2019268.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.47646954212610493,
+      "noise_std": 0.0007118763981275919,
+      "psf_seed": 1376759701,
+      "kind": "line",
+      "length": 9.501097427591853,
+      "angle": 5.437655119400855
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SKD.2018156.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3332122932206687,
+      "noise_std": 0.0016983042094969427,
+      "psf_seed": 1462119079,
+      "radius": 2.0811050354950833
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SKE.2018156.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5303759583231908,
+      "noise_std": 0.0003973735437260555,
+      "psf_seed": 287977282,
+      "sigma": 2.1075773644964775
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SKF.2019246.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4218715163223479,
+      "noise_std": 0.0010969639365767177,
+      "psf_seed": 1050223451
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SLC.2019258.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.3423960872293472,
+      "noise_std": 0.0013449447949931196,
+      "psf_seed": 115849286,
+      "kind": "line",
+      "length": 10.810301396860172,
+      "angle": 147.10483774839253
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SLD.2018163.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.39196654750879795,
+      "noise_std": 0.0018981090157870156,
+      "psf_seed": 1720937882,
+      "radius": 3.106356300679674
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SMA.2020185.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.44855602033027575,
+      "noise_std": 0.000604138361221901,
+      "psf_seed": 1374851157,
+      "sigma": 2.221798901384969
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SMB.2019228.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4232833429727333,
+      "noise_std": 0.0007516316092047461,
+      "psf_seed": 1521270830
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SMC.2018213.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.30710377471844263,
+      "noise_std": 0.0016090508791209693,
+      "psf_seed": 1243167077,
+      "kind": "jitter",
+      "length": 8.186155500511731
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SNA.2018215.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5487861288851865,
+      "noise_std": 0.0010446892662597331,
+      "psf_seed": 44719001,
+      "radius": 3.954656694539323
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SND.2018125.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.30925408188686393,
+      "noise_std": 0.0017826442000892309,
+      "psf_seed": 1347744050,
+      "sigma": 2.1996500198157305
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SNG.2020118.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.3256173269727107,
+      "noise_std": 0.0019277845104485188,
+      "psf_seed": 1902035720
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SPD.2018100.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4566102180202891,
+      "noise_std": 0.0005146171382808061,
+      "psf_seed": 1759854496,
+      "kind": "jitter",
+      "length": 8.592323565340225
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SPF.2019345.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5371297262942781,
+      "noise_std": 0.0019223998245901798,
+      "psf_seed": 163361929,
+      "radius": 3.8119107511688837
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SPH.2018125.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.32263498194167206,
+      "noise_std": 0.0019003701535893025,
+      "psf_seed": 1321040365,
+      "sigma": 2.2861123260102447
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SPJ.2019345.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5136751296785783,
+      "noise_std": 0.0014821448926108666,
+      "psf_seed": 136552344
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SQE.2018075.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.3199463098497142,
+      "noise_std": 0.001960834584899537,
+      "psf_seed": 1289018785,
+      "kind": "line",
+      "length": 9.957929059887448,
+      "angle": 65.98136858027588
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SQE.2018100.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5439914625930522,
+      "noise_std": 0.0016560428208110137,
+      "psf_seed": 1794706227,
+      "radius": 3.88527655046448
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SQG.2020085.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.45390664266808955,
+      "noise_std": 0.0004261215345232894,
+      "psf_seed": 1403665180,
+      "sigma": 1.623839206303646
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14SQH.2018125.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.32110425776117635,
+      "noise_std": 0.0001955349235083983,
+      "psf_seed": 1415876002
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14TKM.2019144.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.41209580163789694,
+      "noise_std": 0.0006513041941198763,
+      "psf_seed": 624051806,
+      "kind": "line",
+      "length": 12.857402446588068,
+      "angle": 66.95257823103914
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T14UQU.2019163.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.47393540587893723,
+      "noise_std": 0.00011744958538409135,
+      "psf_seed": 1336252673,
+      "radius": 3.0337993826244096
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15RVQ.2021063.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.43458686827079784,
+      "noise_std": 0.0008746588619695299,
+      "psf_seed": 1532020582,
+      "sigma": 1.5113665382588755
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15RWQ.2021063.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.3357116924986264,
+      "noise_std": 0.001305957006356064,
+      "psf_seed": 133069756
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15RWQ.2021098.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.3496958067014705,
+      "noise_std": 8.720530454570219e-05,
+      "psf_seed": 1262251552,
+      "kind": "jitter",
+      "length": 5.110925021281865
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15RXQ.2020106.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3409898378255863,
+      "noise_std": 0.0005526028748578338,
+      "psf_seed": 115843554,
+      "radius": 1.7837288202669428
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15STA.2018125.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5906589742263534,
+      "noise_std": 0.00034213444303557504,
+      "psf_seed": 436677422,
+      "sigma": 0.9240202116545342
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15SVU.2018114.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.49537033014240905,
+      "noise_std": 0.0013890683505211007,
+      "psf_seed": 1390467829
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15SVU.2021063.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4993836870729599,
+      "noise_std": 0.0007923285223102918,
+      "psf_seed": 1360554106,
+      "kind": "line",
+      "length": 8.294667989140788,
+      "angle": 90.7029373425554
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15SVU.2021098.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5935456428419349,
+      "noise_std": 4.796721331228038e-05,
+      "psf_seed": 1144804812,
+      "radius": 1.240791778785369
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15SWR.2021128.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.38517774336204963,
+      "noise_std": 0.0015998140145427264,
+      "psf_seed": 1575839501,
+      "sigma": 1.4084708992243415
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15SWV.2021093.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4710563920183415,
+      "noise_std": 0.0017493868947736847,
+      "psf_seed": 2061596714
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15SXA.2021093.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4919689639884679,
+      "noise_std": 0.0008301719028477946,
+      "psf_seed": 928081394,
+      "kind": "line",
+      "length": 10.806104826439359,
+      "angle": 53.139318483513804
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15SXB.2019134.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.591631034069443,
+      "noise_std": 0.0016013811943546338,
+      "psf_seed": 1178351528,
+      "radius": 3.9662916452386106
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15SXB.2020089.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.38196942504503545,
+      "noise_std": 0.0013974156627719779,
+      "psf_seed": 619029158,
+      "sigma": 1.446562265347533
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15SYR.2021110.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4100909616538019,
+      "noise_std": 0.001904217176057186,
+      "psf_seed": 716280988
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15TVN.2018135.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5435636506393438,
+      "noise_std": 0.0018592722983912372,
+      "psf_seed": 2065313062,
+      "kind": "line",
+      "length": 11.221650308509378,
+      "angle": 120.39695125644678
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15TVN.2019140.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5655048743205187,
+      "noise_std": 0.0011732120261277994,
+      "psf_seed": 614078834,
+      "radius": 3.1862522737685457
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15TXM.2018187.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.596326306181657,
+      "noise_std": 0.0011621153806340837,
+      "psf_seed": 1117317265,
+      "sigma": 1.0012147521747359
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T15TYL.2019159.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5145077284968552,
+      "noise_std": 0.0016336413764388997,
+      "psf_seed": 1380357273
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16RBV.2018158.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.33086463384182363,
+      "noise_std": 0.001861315953039691,
+      "psf_seed": 2045238622,
+      "kind": "line",
+      "length": 13.67678784065566,
+      "angle": 90.5410644221099
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16RCU.2020118.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.31009540672436975,
+      "noise_std": 0.001520560971724424,
+      "psf_seed": 110148979,
+      "radius": 3.8166363754034043
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16REV.2018130.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5483764169709585,
+      "noise_std": 0.0017010893241821954,
+      "psf_seed": 599128450,
+      "sigma": 2.10405618056083
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16REV.2019135.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5935382235516071,
+      "noise_std": 0.001593824669126104,
+      "psf_seed": 134137179
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16REV.2020060.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5931583978229047,
+      "noise_std": 0.001769800846626292,
+      "psf_seed": 1389230812,
+      "kind": "jitter",
+      "length": 6.268937062323251
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16REV.2021129.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5550895411794594,
+      "noise_std": 0.001266105276141271,
+      "psf_seed": 419743477,
+      "radius": 2.6611324752872823
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16RFU.2019105.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5544647061619111,
+      "noise_std": 0.0015421587970456021,
+      "psf_seed": 1025693594,
+      "sigma": 2.2157081262434746
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16RFU.2019250.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.3986588968958052,
+      "noise_std": 0.0018986336728118794,
+      "psf_seed": 892576243
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16RFU.2019305.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4314990827207691,
+      "noise_std": 0.0008767798093697939,
+      "psf_seed": 738443412,
+      "kind": "line",
+      "length": 8.162390427286123,
+      "angle": 89.65637995833823
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16RFU.2021069.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4335630099792319,
+      "noise_std": 0.0002035428919736966,
+      "psf_seed": 762720833,
+      "radius": 2.822188645323903
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16RGU.2018107.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5285133906384589,
+      "noise_std": 0.00029652620775029746,
+      "psf_seed": 883900130,
+      "sigma": 1.2200359183446134
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16RGU.2019127.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.3297689834054235,
+      "noise_std": 0.0007166209310498503,
+      "psf_seed": 1381192025
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16RGU.2019277.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.3648511886042638,
+      "noise_std": 0.0011432606792763918,
+      "psf_seed": 242564765,
+      "kind": "line",
+      "length": 8.817672566434595,
+      "angle": 134.39643314253323
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16RGU.2020107.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.375255425035227,
+      "noise_std": 0.001869871583510343,
+      "psf_seed": 2028865587,
+      "radius": 2.638882835407815
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16RGU.2021066.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3276037847602593,
+      "noise_std": 0.0018961130475198202,
+      "psf_seed": 1958470444,
+      "sigma": 2.1331946594044546
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SBD.2020096.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.32993453997472605,
+      "noise_std": 0.0016532460975652841,
+      "psf_seed": 1325553072
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SCF.2019111.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.35156212834121386,
+      "noise_std": 0.0015905819123906812,
+      "psf_seed": 1904714972,
+      "kind": "line",
+      "length": 4.7742407461847005,
+      "angle": 110.71786337349909
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SCG.2019111.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.40679584076784453,
+      "noise_std": 0.0017740701917049499,
+      "psf_seed": 736987496,
+      "radius": 3.477253612307188
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SDB.2018133.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3376492455476445,
+      "noise_std": 1.6937320826375226e-05,
+      "psf_seed": 659800935,
+      "sigma": 0.8336120976467236
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SDC.2018098.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.33592591610396594,
+      "noise_std": 0.00037683857733085933,
+      "psf_seed": 861542637
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SDC.2021127.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4866981299138878,
+      "noise_std": 0.00015884934616526182,
+      "psf_seed": 1885203240,
+      "kind": "line",
+      "length": 11.435971687332227,
+      "angle": 12.68990829655976
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SEB.2018090.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3075381753842552,
+      "noise_std": 0.00042184111913391085,
+      "psf_seed": 2074749017,
+      "radius": 2.709435654922243
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SEB.2018095.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.41101652663541227,
+      "noise_std": 0.0008211850385492885,
+      "psf_seed": 958014126,
+      "sigma": 2.078941629269064
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SEB.2018155.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5212771857686093,
+      "noise_std": 0.0008968544722861948,
+      "psf_seed": 2123366972
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SEB.2019100.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5992763245841518,
+      "noise_std": 0.0018264459817747256,
+      "psf_seed": 182253166,
+      "kind": "jitter",
+      "length": 4.92981960607835
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SEB.2021069.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4805637766886479,
+      "noise_std": 0.0007602674271077328,
+      "psf_seed": 2120593946,
+      "radius": 2.4664952425593
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SEC.2020105.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5206057431405312,
+      "noise_std": 0.0018008986480735189,
+      "psf_seed": 641109825,
+      "sigma": 1.2041496370019036
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SEH.2021102.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.30525718991900297,
+      "noise_std": 0.001663832498633333,
+      "psf_seed": 851285271
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SFB.2019100.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5026074055238202,
+      "noise_std": 0.0016825043705444005,
+      "psf_seed": 1731611800,
+      "kind": "jitter",
+      "length": 9.213712037469088
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SFC.2018155.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.556132506947639,
+      "noise_std": 0.0006020137875966947,
+      "psf_seed": 1176361678,
+      "radius": 2.7298552992492424
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SFC.2019100.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3021502230744309,
+      "noise_std": 0.0016561994639736506,
+      "psf_seed": 1552180354,
+      "sigma": 1.0399770490333167
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SFD.2019100.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4915913606162914,
+      "noise_std": 0.0018330664769807908,
+      "psf_seed": 301746708
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SFF.2021094.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4036106024572579,
+      "noise_std": 0.00013854407526861135,
+      "psf_seed": 883598368,
+      "kind": "line",
+      "length": 3.145352734934637,
+      "angle": 137.43905822522512
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SGD.2018155.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5561845548246493,
+      "noise_std": 0.0012599692578061583,
+      "psf_seed": 2107410593,
+      "radius": 2.5127865948375363
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SGE.2019100.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.4667730217945927,
+      "noise_std": 0.001090143307668878,
+      "psf_seed": 2031565510,
+      "sigma": 1.8851753070371664
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16SGG.2021094.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5683039185943193,
+      "noise_std": 0.0019318410822972878,
+      "psf_seed": 1828638657
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16TDS.2019159.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.40577059180621144,
+      "noise_std": 0.001991173649527229,
+      "psf_seed": 514583942,
+      "kind": "line",
+      "length": 10.265279411765668,
+      "angle": 60.32935414166614
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16TFS.2019153.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4870063821439714,
+      "noise_std": 0.00048148856010353925,
+      "psf_seed": 928662323,
+      "radius": 3.6337717736539887
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T16TGQ.2018133.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.4480174072585986,
+      "noise_std": 0.0005399524275684646,
+      "psf_seed": 529200277,
+      "sigma": 1.1213431410974393
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17RMH.2021103.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5965897290068825,
+      "noise_std": 0.001784474311609011,
+      "psf_seed": 641518187
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17RMJ.2021313.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.4048235676666864,
+      "noise_std": 0.000779626211822583,
+      "psf_seed": 1177993928,
+      "kind": "jitter",
+      "length": 13.14049945249182
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17RNL.2019111.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4365640542720105,
+      "noise_std": 0.0003655180738556401,
+      "psf_seed": 647897127,
+      "radius": 1.228317218432765
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17RNM.2019349.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.41650360743581083,
+      "noise_std": 0.0012100332190338326,
+      "psf_seed": 589047233,
+      "sigma": 1.6293972625473523
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17SKT.2018107.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4145911117138148,
+      "noise_std": 0.0017255538072709416,
+      "psf_seed": 1041655313
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17SKU.2018107.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.3185321897776558,
+      "noise_std": 0.000444733146589321,
+      "psf_seed": 1970938777,
+      "kind": "line",
+      "length": 9.82643634310515,
+      "angle": 127.55236557225022
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17SKU.2021166.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5631464245433941,
+      "noise_std": 0.0018495135955798022,
+      "psf_seed": 257731050,
+      "radius": 3.525193094047002
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17SLT.2019112.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.4179218424332732,
+      "noise_std": 5.181533307621744e-05,
+      "psf_seed": 704124066,
+      "sigma": 2.0902115245473007
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17SLT.2021096.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.5400579746935839,
+      "noise_std": 0.0009128544802848929,
+      "psf_seed": 1057098312
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17SMA.2019112.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.5480517332822024,
+      "noise_std": 0.0019591637274321114,
+      "psf_seed": 932626361,
+      "kind": "line",
+      "length": 10.785585607209248,
+      "angle": 47.94383031268092
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17SNA.2021348.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4072426625051138,
+      "noise_std": 0.0009057878183738504,
+      "psf_seed": 1112696428,
+      "radius": 2.7431531331354155
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17SNB.2020102.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.42627973308565315,
+      "noise_std": 7.715008902485954e-05,
+      "psf_seed": 859073526,
+      "sigma": 2.056778803523655
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17SNU.2018074.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.4055191837928744,
+      "noise_std": 0.0006130775551752366,
+      "psf_seed": 972229577
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17SNU.2018129.v1.4",
+      "blur_type": "motion",
+      "optics_sigma": 0.3807987104817909,
+      "noise_std": 0.0012447618875830227,
+      "psf_seed": 1812216116,
+      "kind": "jitter",
+      "length": 7.212200264468889
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17SPS.2019009.v1.4",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3605632389568297,
+      "noise_std": 0.00016137312810874182,
+      "psf_seed": 535250099,
+      "radius": 3.210587842789014
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T17SQU.2018121.v1.4",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.4369867235200165,
+      "noise_std": 0.0014120760919103766,
+      "psf_seed": 156189851,
+      "sigma": 2.372618998658609
+    },
+    {
+      "id": "subsetted_512x512_HLS.S30.T18SVJ.2020131.v1.4",
+      "blur_type": "none",
+      "optics_sigma": 0.3752784251422012,
+      "noise_std": 0.000861439394722166,
+      "psf_seed": 590411760
+    }
+  ],
+  "Sen1Floods11 S2": [
+    {
+      "id": "Ghana_313799",
+      "blur_type": "motion",
+      "optics_sigma": 0.4038862499771227,
+      "noise_std": 0.0008873118159488181,
+      "psf_seed": 547541474,
+      "kind": "jitter",
+      "length": 6.605111894531946
+    },
+    {
+      "id": "Ghana_1078550",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5268594130229992,
+      "noise_std": 0.0010123030928942181,
+      "psf_seed": 413519570,
+      "radius": 2.119675818994036
+    },
+    {
+      "id": "Ghana_97059",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.4736450231390587,
+      "noise_std": 0.0004488639607040834,
+      "psf_seed": 1169197392,
+      "sigma": 1.1887687505273847
+    },
+    {
+      "id": "Ghana_359826",
+      "blur_type": "none",
+      "optics_sigma": 0.44409314038638514,
+      "noise_std": 0.0007262030557730199,
+      "psf_seed": 1121522188
+    },
+    {
+      "id": "Ghana_319168",
+      "blur_type": "motion",
+      "optics_sigma": 0.588811977924427,
+      "noise_std": 0.0018591817469252108,
+      "psf_seed": 1766514641,
+      "kind": "jitter",
+      "length": 6.881245403023817
+    },
+    {
+      "id": "Ghana_866994",
+      "blur_type": "defocus",
+      "optics_sigma": 0.33942377769365967,
+      "noise_std": 4.609301102286079e-06,
+      "psf_seed": 1743284986,
+      "radius": 3.3599685439578777
+    },
+    {
+      "id": "Ghana_406026",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3076949078323388,
+      "noise_std": 0.0001004934846187453,
+      "psf_seed": 1509824812,
+      "sigma": 1.1905998759162961
+    },
+    {
+      "id": "Ghana_53713",
+      "blur_type": "none",
+      "optics_sigma": 0.4963691446183208,
+      "noise_std": 0.0005217252016020226,
+      "psf_seed": 1408050472
+    },
+    {
+      "id": "Ghana_83483",
+      "blur_type": "motion",
+      "optics_sigma": 0.5344154681002791,
+      "noise_std": 0.0007708649993685386,
+      "psf_seed": 1296539311,
+      "kind": "jitter",
+      "length": 5.199229683407407
+    },
+    {
+      "id": "Ghana_167233",
+      "blur_type": "defocus",
+      "optics_sigma": 0.43189738377058995,
+      "noise_std": 0.0019529350974789499,
+      "psf_seed": 1497558921,
+      "radius": 1.0578852114452835
+    },
+    {
+      "id": "Ghana_141271",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.35704347826292715,
+      "noise_std": 4.338769147785593e-05,
+      "psf_seed": 1173362247,
+      "sigma": 0.9227576793731161
+    },
+    {
+      "id": "India_900498",
+      "blur_type": "none",
+      "optics_sigma": 0.4737046451754445,
+      "noise_std": 0.0011592687765973203,
+      "psf_seed": 275107726
+    },
+    {
+      "id": "India_591317",
+      "blur_type": "motion",
+      "optics_sigma": 0.5484521210004463,
+      "noise_std": 0.001993088780628355,
+      "psf_seed": 206900973,
+      "kind": "line",
+      "length": 7.780728406244531,
+      "angle": 103.49448000600714
+    },
+    {
+      "id": "India_747992",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5068641674203356,
+      "noise_std": 0.00030207856605440165,
+      "psf_seed": 2113165551,
+      "radius": 2.5782390670703523
+    },
+    {
+      "id": "India_79637",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5982475022002729,
+      "noise_std": 0.00012229977255730651,
+      "psf_seed": 1509130678,
+      "sigma": 2.00146255878506
+    },
+    {
+      "id": "India_952728",
+      "blur_type": "none",
+      "optics_sigma": 0.33534987887077616,
+      "noise_std": 0.001706132827315977,
+      "psf_seed": 1970754720
+    },
+    {
+      "id": "India_828067",
+      "blur_type": "motion",
+      "optics_sigma": 0.3529431580677471,
+      "noise_std": 0.0003236166399730145,
+      "psf_seed": 1416382166,
+      "kind": "jitter",
+      "length": 5.280236527724471
+    },
+    {
+      "id": "India_570384",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5514554015192605,
+      "noise_std": 5.2317672463289e-06,
+      "psf_seed": 1960852081,
+      "radius": 3.8199103312057927
+    },
+    {
+      "id": "India_44475",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3099476268734299,
+      "noise_std": 0.00016384822003850653,
+      "psf_seed": 1843827013,
+      "sigma": 1.7013651733019455
+    },
+    {
+      "id": "India_80221",
+      "blur_type": "none",
+      "optics_sigma": 0.561023501420751,
+      "noise_std": 0.00043179225844822123,
+      "psf_seed": 1951278774
+    },
+    {
+      "id": "India_1018327",
+      "blur_type": "motion",
+      "optics_sigma": 0.5447498361007356,
+      "noise_std": 0.0007258490172115119,
+      "psf_seed": 155495298,
+      "kind": "jitter",
+      "length": 6.947550078268629
+    },
+    {
+      "id": "India_592446",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4469482561516738,
+      "noise_std": 0.0016463815132453442,
+      "psf_seed": 1612383986,
+      "radius": 2.7233178732669048
+    },
+    {
+      "id": "India_772630",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3473224752689718,
+      "noise_std": 0.00168217958830598,
+      "psf_seed": 303962877,
+      "sigma": 1.679702913083783
+    },
+    {
+      "id": "India_631692",
+      "blur_type": "none",
+      "optics_sigma": 0.4884096839483173,
+      "noise_std": 3.4291934660670265e-05,
+      "psf_seed": 678220028
+    },
+    {
+      "id": "India_399883",
+      "blur_type": "motion",
+      "optics_sigma": 0.5751482127896086,
+      "noise_std": 0.00041287116556794513,
+      "psf_seed": 945261083,
+      "kind": "line",
+      "length": 8.681117058795806,
+      "angle": 103.98558893566032
+    },
+    {
+      "id": "Mekong_333434",
+      "blur_type": "defocus",
+      "optics_sigma": 0.34734432319559483,
+      "noise_std": 0.0005903212861889429,
+      "psf_seed": 1307055959,
+      "radius": 3.352345443454351
+    },
+    {
+      "id": "Mekong_45934",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.49401399956685865,
+      "noise_std": 0.001759267542217377,
+      "psf_seed": 2032404844,
+      "sigma": 1.1312584079866135
+    },
+    {
+      "id": "Mekong_1443339",
+      "blur_type": "none",
+      "optics_sigma": 0.47479257244370443,
+      "noise_std": 0.001730414798328714,
+      "psf_seed": 1412814953
+    },
+    {
+      "id": "Mekong_382276",
+      "blur_type": "motion",
+      "optics_sigma": 0.5805944962497896,
+      "noise_std": 0.0011903776363679725,
+      "psf_seed": 504432198,
+      "kind": "jitter",
+      "length": 8.86170001203547
+    },
+    {
+      "id": "Mekong_254910",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3108964808474092,
+      "noise_std": 0.0001410233204913316,
+      "psf_seed": 908240579,
+      "radius": 1.2270489713849346
+    },
+    {
+      "id": "Mekong_424793",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.46405338336295626,
+      "noise_std": 2.908139387726405e-05,
+      "psf_seed": 707690148,
+      "sigma": 0.8086283750967527
+    },
+    {
+      "id": "Nigeria_417184",
+      "blur_type": "none",
+      "optics_sigma": 0.45919768188700316,
+      "noise_std": 0.0011177025191193514,
+      "psf_seed": 1206855191
+    },
+    {
+      "id": "Nigeria_225131",
+      "blur_type": "motion",
+      "optics_sigma": 0.5414934074589405,
+      "noise_std": 0.0015280841634270899,
+      "psf_seed": 752193102,
+      "kind": "line",
+      "length": 11.701227691464648,
+      "angle": 96.60961798654691
+    },
+    {
+      "id": "Nigeria_812045",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3890903881655113,
+      "noise_std": 0.0007058383655361825,
+      "psf_seed": 1005219529,
+      "radius": 1.1854420768565472
+    },
+    {
+      "id": "Nigeria_22088",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5880101660000572,
+      "noise_std": 0.001867918011371204,
+      "psf_seed": 1887769239,
+      "sigma": 1.8134517814897848
+    },
+    {
+      "id": "Pakistan_849790",
+      "blur_type": "none",
+      "optics_sigma": 0.42165716693447575,
+      "noise_std": 0.0011753235124970704,
+      "psf_seed": 1051465899
+    },
+    {
+      "id": "Pakistan_664885",
+      "blur_type": "motion",
+      "optics_sigma": 0.4107124385734545,
+      "noise_std": 0.001412639995225074,
+      "psf_seed": 604928346,
+      "kind": "jitter",
+      "length": 7.94853829158256
+    },
+    {
+      "id": "Pakistan_694942",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3540001794215734,
+      "noise_std": 0.0009383994097555302,
+      "psf_seed": 16662639,
+      "radius": 2.590661086482608
+    },
+    {
+      "id": "Pakistan_70625",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.36793628573861914,
+      "noise_std": 0.001651161649632072,
+      "psf_seed": 1390277686,
+      "sigma": 1.3730386091649585
+    },
+    {
+      "id": "Pakistan_528249",
+      "blur_type": "none",
+      "optics_sigma": 0.5130056434149037,
+      "noise_std": 4.589650554022384e-06,
+      "psf_seed": 707572114
+    },
+    {
+      "id": "Pakistan_167553",
+      "blur_type": "motion",
+      "optics_sigma": 0.416094434009483,
+      "noise_std": 0.0019007627552530795,
+      "psf_seed": 230469740,
+      "kind": "line",
+      "length": 5.133198243491226,
+      "angle": 62.44269195980633
+    },
+    {
+      "id": "Paraguay_913449",
+      "blur_type": "defocus",
+      "optics_sigma": 0.36825462814534626,
+      "noise_std": 0.001793187101697865,
+      "psf_seed": 1624168188,
+      "radius": 2.940413496289664
+    },
+    {
+      "id": "Paraguay_280900",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.4948325641635192,
+      "noise_std": 0.001011463590861133,
+      "psf_seed": 1556044091,
+      "sigma": 1.5388526571755714
+    },
+    {
+      "id": "Paraguay_790830",
+      "blur_type": "none",
+      "optics_sigma": 0.5629186724029995,
+      "noise_std": 0.00040762551948464454,
+      "psf_seed": 1556573979
+    },
+    {
+      "id": "Paraguay_232281",
+      "blur_type": "motion",
+      "optics_sigma": 0.49154392537069963,
+      "noise_std": 0.001937378898704732,
+      "psf_seed": 1595867497,
+      "kind": "line",
+      "length": 7.097027491901219,
+      "angle": 53.39823571226359
+    },
+    {
+      "id": "Paraguay_271769",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5578794977242614,
+      "noise_std": 0.001513933773915367,
+      "psf_seed": 120464346,
+      "radius": 2.1152850143644697
+    },
+    {
+      "id": "Paraguay_40936",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.574588928990615,
+      "noise_std": 0.0007076094521973913,
+      "psf_seed": 629990635,
+      "sigma": 2.3182158033096023
+    },
+    {
+      "id": "Paraguay_1029191",
+      "blur_type": "none",
+      "optics_sigma": 0.4520268753205672,
+      "noise_std": 0.001414819483620181,
+      "psf_seed": 469155497
+    },
+    {
+      "id": "Paraguay_59731",
+      "blur_type": "motion",
+      "optics_sigma": 0.5772003034007197,
+      "noise_std": 0.000840459985644269,
+      "psf_seed": 1060118191,
+      "kind": "jitter",
+      "length": 12.099524004138477
+    },
+    {
+      "id": "Paraguay_683296",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4031622023835648,
+      "noise_std": 0.0005277434015458847,
+      "psf_seed": 1585269682,
+      "radius": 3.709490602129639
+    },
+    {
+      "id": "Paraguay_34417",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3187522910130208,
+      "noise_std": 0.001928712297206779,
+      "psf_seed": 1473138914,
+      "sigma": 1.4823181746934033
+    },
+    {
+      "id": "Paraguay_868895",
+      "blur_type": "none",
+      "optics_sigma": 0.4022421599739734,
+      "noise_std": 0.0003342038532049141,
+      "psf_seed": 1357838695
+    },
+    {
+      "id": "Paraguay_511199",
+      "blur_type": "motion",
+      "optics_sigma": 0.4778767547757839,
+      "noise_std": 0.0007590113098617752,
+      "psf_seed": 1504393123,
+      "kind": "jitter",
+      "length": 13.394672268226136
+    },
+    {
+      "id": "Paraguay_80102",
+      "blur_type": "defocus",
+      "optics_sigma": 0.45307673649957825,
+      "noise_std": 0.0015309782637953483,
+      "psf_seed": 2137662233,
+      "radius": 1.2279911633598812
+    },
+    {
+      "id": "Paraguay_651904",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3097256747020345,
+      "noise_std": 0.0018080931292887659,
+      "psf_seed": 2033264955,
+      "sigma": 2.0335384495649755
+    },
+    {
+      "id": "Somalia_699062",
+      "blur_type": "none",
+      "optics_sigma": 0.3314319555130999,
+      "noise_std": 0.0015222349812134498,
+      "psf_seed": 1422153083
+    },
+    {
+      "id": "Somalia_60129",
+      "blur_type": "motion",
+      "optics_sigma": 0.3723862885057348,
+      "noise_std": 0.0013504061316693223,
+      "psf_seed": 1864251630,
+      "kind": "jitter",
+      "length": 8.57331015401886
+    },
+    {
+      "id": "Somalia_685158",
+      "blur_type": "defocus",
+      "optics_sigma": 0.32422225484600764,
+      "noise_std": 0.0010496447132641125,
+      "psf_seed": 83025617,
+      "radius": 2.793078083883442
+    },
+    {
+      "id": "Somalia_166342",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5334127928804828,
+      "noise_std": 0.0008799467635363401,
+      "psf_seed": 1828938512,
+      "sigma": 1.7553626007542174
+    },
+    {
+      "id": "Somalia_94102",
+      "blur_type": "none",
+      "optics_sigma": 0.40201313705846614,
+      "noise_std": 0.00028001920646917314,
+      "psf_seed": 201897827
+    },
+    {
+      "id": "Somalia_322855",
+      "blur_type": "motion",
+      "optics_sigma": 0.5152193046436155,
+      "noise_std": 0.0016521774360631041,
+      "psf_seed": 1670088150,
+      "kind": "line",
+      "length": 9.792275660910203,
+      "angle": 85.28200626008858
+    },
+    {
+      "id": "Spain_6860600",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4570817584741129,
+      "noise_std": 0.0004541065945379448,
+      "psf_seed": 240696072,
+      "radius": 3.4677403839195327
+    },
+    {
+      "id": "Spain_7558720",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.47195356963515567,
+      "noise_std": 0.0017241630312503655,
+      "psf_seed": 1888835891,
+      "sigma": 2.2674929207314873
+    },
+    {
+      "id": "Spain_5650136",
+      "blur_type": "none",
+      "optics_sigma": 0.3606137600578606,
+      "noise_std": 0.0008763954656829447,
+      "psf_seed": 634949346
+    },
+    {
+      "id": "Spain_7370579",
+      "blur_type": "motion",
+      "optics_sigma": 0.3468561003469081,
+      "noise_std": 0.0016015810282853482,
+      "psf_seed": 1643605441,
+      "kind": "jitter",
+      "length": 9.750486601131508
+    },
+    {
+      "id": "Spain_6095801",
+      "blur_type": "defocus",
+      "optics_sigma": 0.49508520603450734,
+      "noise_std": 0.0005227669248380111,
+      "psf_seed": 747327238,
+      "radius": 2.0090485544242704
+    },
+    {
+      "id": "Spain_7387658",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3492458275700641,
+      "noise_std": 0.00010961402678611076,
+      "psf_seed": 229807150,
+      "sigma": 1.0160211096188518
+    },
+    {
+      "id": "Sri-Lanka_117737",
+      "blur_type": "none",
+      "optics_sigma": 0.3122590567738459,
+      "noise_std": 4.815457701342463e-05,
+      "psf_seed": 927677667
+    },
+    {
+      "id": "Sri-Lanka_1049830",
+      "blur_type": "motion",
+      "optics_sigma": 0.44523652652410667,
+      "noise_std": 0.0012650000349204954,
+      "psf_seed": 906818535,
+      "kind": "line",
+      "length": 13.38161419799069,
+      "angle": 126.18895839675037
+    },
+    {
+      "id": "Sri-Lanka_534068",
+      "blur_type": "defocus",
+      "optics_sigma": 0.5346153957411695,
+      "noise_std": 0.00028383578936375597,
+      "psf_seed": 655233487,
+      "radius": 3.213733761331549
+    },
+    {
+      "id": "Sri-Lanka_922192",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.32707993757487275,
+      "noise_std": 1.2546470585913739e-05,
+      "psf_seed": 770238601,
+      "sigma": 1.569438350066602
+    },
+    {
+      "id": "Sri-Lanka_377277",
+      "blur_type": "none",
+      "optics_sigma": 0.5751389055037784,
+      "noise_std": 0.0016693197768376951,
+      "psf_seed": 493363251
+    },
+    {
+      "id": "Sri-Lanka_649970",
+      "blur_type": "motion",
+      "optics_sigma": 0.4172808807410744,
+      "noise_std": 0.0016154345632077634,
+      "psf_seed": 1156907320,
+      "kind": "line",
+      "length": 3.540092206129852,
+      "angle": 112.61324323658721
+    },
+    {
+      "id": "Sri-Lanka_450918",
+      "blur_type": "defocus",
+      "optics_sigma": 0.43966453741317424,
+      "noise_std": 0.0002223009425149052,
+      "psf_seed": 216298210,
+      "radius": 3.443246965593562
+    },
+    {
+      "id": "Sri-Lanka_849649",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.5931232048474567,
+      "noise_std": 0.0010166669669267236,
+      "psf_seed": 104084211,
+      "sigma": 0.9796881588882256
+    },
+    {
+      "id": "Sri-Lanka_713926",
+      "blur_type": "none",
+      "optics_sigma": 0.3030464880266137,
+      "noise_std": 4.761831518020432e-05,
+      "psf_seed": 1257783713
+    },
+    {
+      "id": "USA_905409",
+      "blur_type": "motion",
+      "optics_sigma": 0.4403467220341213,
+      "noise_std": 0.0012118514043163897,
+      "psf_seed": 1257855589,
+      "kind": "line",
+      "length": 3.0629085519087735,
+      "angle": 78.14395710782088
+    },
+    {
+      "id": "USA_430764",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3889596571297978,
+      "noise_std": 0.0015311597566810247,
+      "psf_seed": 940518089,
+      "radius": 1.1560364810139814
+    },
+    {
+      "id": "USA_350244",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.3106045685355471,
+      "noise_std": 0.0008550465483247507,
+      "psf_seed": 562754727,
+      "sigma": 1.9984971054040062
+    },
+    {
+      "id": "USA_527077",
+      "blur_type": "none",
+      "optics_sigma": 0.4253388489808342,
+      "noise_std": 0.0007132788184888157,
+      "psf_seed": 964579859
+    },
+    {
+      "id": "USA_933610",
+      "blur_type": "motion",
+      "optics_sigma": 0.5430112194114374,
+      "noise_std": 0.0013290086172337992,
+      "psf_seed": 512963715,
+      "kind": "line",
+      "length": 10.807078289671342,
+      "angle": 122.99170549885011
+    },
+    {
+      "id": "USA_66511",
+      "blur_type": "defocus",
+      "optics_sigma": 0.3214368179804576,
+      "noise_std": 0.0008520025876454038,
+      "psf_seed": 1580982671,
+      "radius": 2.146123363815669
+    },
+    {
+      "id": "USA_519181",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.330367134299738,
+      "noise_std": 0.0010817851287904569,
+      "psf_seed": 1219397956,
+      "sigma": 2.3011647390394048
+    },
+    {
+      "id": "USA_778194",
+      "blur_type": "none",
+      "optics_sigma": 0.5802001142521892,
+      "noise_std": 0.00021555539627906084,
+      "psf_seed": 788232386
+    },
+    {
+      "id": "USA_67102",
+      "blur_type": "motion",
+      "optics_sigma": 0.3388357727836871,
+      "noise_std": 0.0006739530563832419,
+      "psf_seed": 665564056,
+      "kind": "line",
+      "length": 8.28920037979451,
+      "angle": 2.253355842751097
+    },
+    {
+      "id": "USA_1049586",
+      "blur_type": "defocus",
+      "optics_sigma": 0.4376766082984716,
+      "noise_std": 0.00014237795309669844,
+      "psf_seed": 1354782793,
+      "radius": 2.123756396372114
+    },
+    {
+      "id": "USA_595451",
+      "blur_type": "gaussian",
+      "optics_sigma": 0.4638238512501066,
+      "noise_std": 0.001467785130672164,
+      "psf_seed": 559188994,
+      "sigma": 2.310553780704523
+    },
+    {
+      "id": "USA_670826",
+      "blur_type": "none",
+      "optics_sigma": 0.34318974227605636,
+      "noise_std": 0.0009574430514778018,
+      "psf_seed": 1841958161
+    },
+    {
+      "id": "USA_504150",
+      "blur_type": "motion",
+      "optics_sigma": 0.4936280197576355,
+      "noise_std": 0.0005718938927439419,
+      "psf_seed": 592827866,
+      "kind": "jitter",
+      "length": 13.323674513946965
+    },
+    {
+      "id": "USA_758178",
+      "blur_type": "defocus",
+      "optics_sigma": 0.43950141109345275,
+      "noise_std": 0.0009382281758226685,
+      "psf_seed": 710041109,
+      "radius": 2.635430056460873
+    }
+  ]
+}
