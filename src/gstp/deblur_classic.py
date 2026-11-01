@@ -2,7 +2,6 @@
 
   Wiener filter            : one-step inverse filter with a noise-to-signal constant K
   Richardson-Lucy (RL)     : iterative maximum-likelihood deconvolution; iterations act as regularisation
-  Unsharp mask             : plain sharpening, no PSF needed (what an FPGA FIR filter can do)
 
 Wiener and RL need the PSF. They are scored two ways:
   * true PSF    - the exact PSF used to blur each test image (best case for the classic methods;
@@ -10,7 +9,7 @@ Wiener and RL need the PSF. They are scored two ways:
   * nominal PSF - one fixed PSF for every image (what you have if only a lab-measured PSF is known)
 The learned model never gets a PSF.
 
-All free parameters (K, number of RL iterations, unsharp amount) are tuned on the
+All free parameters (K, number of RL iterations) are tuned on the
 VALIDATION images; the test images are scored once with the tuned values.
 
 Everything runs on torch tensors, so it uses the GPU when one is available.
@@ -89,7 +88,7 @@ def psnr(gt: np.ndarray, pred: np.ndarray, mask: np.ndarray, data_range: float =
     return float(10 * np.log10(data_range**2 / max(mse, 1e-12)))
 
 
-def ssim(gt: np.ndarray, pred: np.ndarray, mask: np.ndarray, data_range: float = 1.0) -> float:
+def _ssim(gt: np.ndarray, pred: np.ndarray, mask: np.ndarray, data_range: float = 1.0) -> float:
     """Mean SSIM over masked pixels, averaged over bands."""
     from skimage.metrics import structural_similarity
 
@@ -100,10 +99,13 @@ def ssim(gt: np.ndarray, pred: np.ndarray, mask: np.ndarray, data_range: float =
     return float(np.mean(vals))
 
 
-def score(gt, pred, valid, border=8) -> dict:
+def score(gt, pred, valid, border=8, ssim=True) -> dict:
     m = eval_mask(valid, border)
     pred = np.clip(pred, 0, 1)
-    return {"psnr": psnr(gt, pred, m), "ssim": ssim(gt, pred, m)}
+    out = {"psnr": psnr(gt, pred, m)}
+    if ssim:
+        out["ssim"] = _ssim(gt, pred, m)
+    return out
 
 
 # ─────────────────────────────────────────────────────── tune & evaluate
@@ -115,15 +117,13 @@ def _psf_for(item, psf_mode):
     return item["psf"] if psf_mode == "true" else NOMINAL_PSF
 
 
-def tune(val_items, device="cpu", k_grid=None, rl_iters=(5, 10, 15, 20, 30, 50, 80), amounts=None, log=print) -> dict:
-    """Choose K (Wiener), RL iterations and unsharp amount on validation items (PSNR)."""
+def tune(val_items, device="cpu", k_grid=None, rl_iters=(5, 10, 15, 20, 30, 50, 80), log=print) -> dict:
+    """Choose K (Wiener) and the number of RL iterations on validation items (PSNR)."""
     import torch
 
     k_grid = k_grid if k_grid is not None else np.logspace(-4, -0.5, 15)
-    amounts = amounts if amounts is not None else [0.0, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0]
     acc = {("wiener", mode, float(k)): [] for mode in ("true", "nominal") for k in k_grid}
     acc.update({("rl", mode, it): [] for mode in ("true", "nominal") for it in rl_iters})
-    acc.update({("unsharp", "none", float(a)): [] for a in amounts})
     for it_idx, item in enumerate(val_items):
         y = torch.as_tensor(item["blurred"], device=device)
         gt, m = item["sharp"], eval_mask(item["valid"])
@@ -134,13 +134,11 @@ def tune(val_items, device="cpu", k_grid=None, rl_iters=(5, 10, 15, 20, 30, 50, 
                 acc[("wiener", mode, float(k))].append(p(wiener(y, psf, k)))
             for it, x in richardson_lucy(y, psf, list(rl_iters)).items():
                 acc[("rl", mode, it)].append(p(x))
-        for a in amounts:
-            acc[("unsharp", "none", float(a))].append(p(unsharp(y, a)))
         if (it_idx + 1) % 10 == 0:
             log(f"  tuned on {it_idx + 1}/{len(val_items)} validation images")
     mean = {key: float(np.mean(v)) for key, v in acc.items()}
     best = {}
-    for method, mode in (("wiener", "true"), ("wiener", "nominal"), ("rl", "true"), ("rl", "nominal"), ("unsharp", "none")):
+    for method, mode in (("wiener", "true"), ("wiener", "nominal"), ("rl", "true"), ("rl", "nominal")):
         cands = {p: s for (m, md, p), s in mean.items() if m == method and md == mode}
         p = max(cands, key=cands.get)
         best[f"{method}_{mode}"] = {"param": p, "val_psnr": cands[p], "curve": cands}
@@ -151,10 +149,8 @@ def method_table(best: dict) -> dict:
     """Map display names to functions (y_tensor, item) -> restored tensor, using tuned parameters."""
     k_t, k_n = best["wiener_true"]["param"], best["wiener_nominal"]["param"]
     i_t, i_n = int(best["rl_true"]["param"]), int(best["rl_nominal"]["param"])
-    a = best["unsharp_none"]["param"]
     return {
-        "Blurred input (no fix)": lambda y, it: y,
-        f"Unsharp mask (amount {a:g})": lambda y, it: unsharp(y, a),
+        "No deblurring": lambda y, it: y,
         f"Wiener, nominal PSF (K={k_n:.2g})": lambda y, it: wiener(y, NOMINAL_PSF, k_n),
         f"Richardson-Lucy, nominal PSF ({i_n} it)": lambda y, it: richardson_lucy(y, NOMINAL_PSF, i_n),
         f"Wiener, true PSF (K={k_t:.2g})": lambda y, it: wiener(y, it["psf"], k_t),
@@ -162,10 +158,11 @@ def method_table(best: dict) -> dict:
     }
 
 
-def evaluate(items, methods: dict, device="cpu", log=print, keep=None) -> list[dict]:
+def evaluate(items, methods: dict, device="cpu", log=print, keep=None, on_output=None) -> list[dict]:
     """Score every method on every item. Returns one row per (item, method).
 
-    keep: optional set of item ids whose restored images are returned (for figures)."""
+    keep: optional set of item ids whose restored images are returned (for figures).
+    on_output: optional callback(item, method_name, restored (C,H,W)) - e.g. the hazard-model check."""
     import torch
 
     rows, kept = [], {}
@@ -173,6 +170,8 @@ def evaluate(items, methods: dict, device="cpu", log=print, keep=None) -> list[d
         y = torch.as_tensor(item["blurred"], device=device)
         for name, fn in methods.items():
             out = _np(fn(y, item))
+            if on_output is not None:
+                on_output(item, name, out)
             rows.append({"id": item["id"], "dataset": item.get("dataset", ""), "blur_type": item["blur_type"],
                          "method": name, **score(item["sharp"], out, item["valid"])})
             if keep and item["id"] in keep:

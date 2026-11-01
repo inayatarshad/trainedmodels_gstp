@@ -100,6 +100,7 @@ notebooks/                run these in Google Colab (T4 GPU), in order
   08_floods_at_crisp_sites_corrected.ipynb
   09_flood_area_any_place.ipynb
   10_deblurring_data_and_classic.ipynb   deblurring: blurred/sharp pairs + Wiener / Richardson-Lucy baselines
+  11_deblurring_ai_models_and_evaluation.ipynb   autoencoder vs NAFNet vs classic, hazard-model check, ONNX
 src/gstp/                 shared library used by every notebook
   data/                   dataset readers (Sen1Floods11, HLS Burn Scars, Landsat-8 Active Fire, forest masks) + normalisation
   models.py               U-Net and Sentinel-2-pretrained ResNet factories, ONNX export
@@ -112,7 +113,10 @@ src/gstp/                 shared library used by every notebook
   inference.py            Sentinel-1/2 loading from Planetary Computer, tiled inference
   viz.py                  figures
   blur.py                 synthetic blur (optics, defocus, motion, jitter) + sensor noise
-  deblur_classic.py       Wiener, Richardson-Lucy, unsharp mask; PSNR / SSIM
+  deblur_classic.py       Wiener, Richardson-Lucy; PSNR / SSIM
+  deblur_models.py        plain autoencoder and NAFNet (band by band, tiled)
+  train_deblur.py         deblurring training loop, speed benchmark
+  hazard_check.py         hazard-model IoU on sharp / blurred / deblurred images
 results/                  metrics (JSON/CSV) and figures written by the notebooks
 docs/model_cards.md       per-model intended use, data, metrics, limitations
 docs/deblurring.md        deblurring stage: plan, design choices, questions for the camera/FPGA team

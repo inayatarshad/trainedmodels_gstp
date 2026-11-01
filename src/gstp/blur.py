@@ -1,39 +1,43 @@
-"""Synthetic blur for the deblurring stage (sharp image -> blurred, noisy image).
+"""Synthetic blur for the deblurring stage (sharp image -> blurred image).
 
-The GSTP camera's real blur is not characterised yet, so training and test
-pairs are made by blurring sharp satellite images with the blur types an
-orbiting push-frame camera can suffer:
+There are no blurry GSTP images with a sharp "right answer" yet, so sharp
+satellite images are blurred on purpose and the deblurring methods are scored
+against the sharp original. Blur types (as agreed with the manager):
 
-  gaussian : optics / detector MTF (always present to some degree)
-  defocus  : focus shift (thermal, launch loads)  -> disk PSF
-  motion   : platform motion during the exposure  -> straight line PSF
-  jitter   : reaction-wheel / attitude jitter     -> random wandering-path PSF
-  none     : no extra blur (checks that a method does not damage sharp input)
+  motion   : platform motion / attitude jitter during the exposure -> streaks
+             (straight line, or a random wandering path for jitter)
+  defocus  : lens out of focus -> disk PSF
+  gaussian : general optical softness -> Gaussian PSF
+  none     : check group only - no extra blur, to see whether a method damages
+             an image that is already sharp (double-sharpening risk)
 
-Every blurred image also gets the base optics blur and sensor noise
-(read noise + photon noise). Units are reflectance in [0, 1]; the blur size is
-in image pixels. When the camera PSF / MTF and exposure time are known, the
-parameter ranges below should be replaced with the measured values.
+Every image also gets a weak base optics blur and a SMALL leftover noise.
+Noise removal is done on the FPGA (dark-reference subtraction, FIR filtering),
+so the deblurring model must not be a denoiser; the leftover noise is only
+there so that a method that amplifies noise is penalised. Set NOISE_STD to the
+value measured after the FPGA once it is known (0 if almost none is left).
 
-All PSFs are odd-sized, non-negative and sum to 1, so blurring keeps the mean
-brightness.
+Units are reflectance in [0, 1]; blur sizes are in image pixels and are
+placeholders until the camera PSF / MTF and exposure time are known.
+All PSFs are odd-sized, non-negative and sum to 1 (brightness is kept).
 """
 
 from __future__ import annotations
 
 import numpy as np
 
-BLUR_TYPES = ("none", "gaussian", "defocus", "motion", "jitter")
+BLUR_TYPES = ("motion", "defocus", "gaussian")   # the three blur types we train and report on
+CHECK_TYPE = "none"                              # extra test group: no extra blur
+ALL_TYPES = BLUR_TYPES + (CHECK_TYPE,)
+TRAIN_MIX = {"motion": 0.3, "defocus": 0.3, "gaussian": 0.3, "none": 0.1}
 
-# Parameter ranges in pixels (train draws from these; test uses fixed seeded draws)
+# Parameter ranges in pixels (train draws from these; val/test use fixed seeded draws)
 RANGES = {
-    "optics_sigma": (0.3, 0.7),   # base MTF blur added to every image
+    "optics_sigma": (0.3, 0.6),    # weak base optics blur added to every image
     "gaussian_sigma": (0.8, 2.5),
     "defocus_radius": (1.0, 4.0),
-    "motion_length": (3.0, 15.0),
-    "jitter_length": (4.0, 15.0),
-    "read_noise": (0.001, 0.008),  # std in reflectance units
-    "shot_gain": (0.0, 1.5e-4),    # variance per unit signal (photon noise)
+    "motion_length": (3.0, 15.0),  # straight-line motion and jitter path length
+    "noise_std": (0.0, 0.002),     # leftover noise after the FPGA, reflectance units (placeholder)
 }
 
 
@@ -132,19 +136,22 @@ def convolve_psfs(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
 # ───────────────────────────────────────────────────── degradation recipe
 def sample_recipe(rng: np.random.Generator, blur_type: str | None = None) -> dict:
-    """Draw one degradation: blur type + parameters + noise levels (all JSON-serialisable)."""
-    bt = blur_type or str(rng.choice(BLUR_TYPES))
+    """Draw one degradation: blur type + parameters + noise level (all JSON-serialisable)."""
+    if blur_type is None:
+        blur_type = str(rng.choice(list(TRAIN_MIX), p=list(TRAIN_MIX.values())))
+    bt = blur_type
     u = lambda key: float(rng.uniform(*RANGES[key]))  # noqa: E731
-    r = {"blur_type": bt, "optics_sigma": u("optics_sigma"), "read_noise": u("read_noise"),
-         "shot_gain": u("shot_gain"), "psf_seed": int(rng.integers(2**31))}
+    r = {"blur_type": bt, "optics_sigma": u("optics_sigma"), "noise_std": u("noise_std"),
+         "psf_seed": int(rng.integers(2**31))}
     if bt == "gaussian":
         r["sigma"] = u("gaussian_sigma")
     elif bt == "defocus":
         r["radius"] = u("defocus_radius")
     elif bt == "motion":
-        r["length"], r["angle"] = u("motion_length"), float(rng.uniform(0, 180))
-    elif bt == "jitter":
-        r["length"] = u("jitter_length")
+        r["kind"] = "line" if rng.random() < 0.5 else "jitter"
+        r["length"] = u("motion_length")
+        if r["kind"] == "line":
+            r["angle"] = float(rng.uniform(0, 180))
     elif bt != "none":
         raise ValueError(f"unknown blur type {bt}")
     return r
@@ -159,10 +166,12 @@ def psf_from_recipe(r: dict) -> np.ndarray:
         extra = gaussian_psf(r["sigma"])
     elif bt == "defocus":
         extra = defocus_psf(r["radius"])
-    elif bt == "motion":
+    elif bt == "motion" and r.get("kind", "line") == "line":
         extra = motion_psf(r["length"], r["angle"])
-    else:  # jitter
+    elif bt == "motion":
         extra = jitter_psf(r["length"], np.random.default_rng(r["psf_seed"]))
+    else:
+        raise ValueError(f"unknown blur type {bt}")
     return convolve_psfs(base, extra)
 
 
@@ -222,16 +231,17 @@ def blur(x, psf):
     return y[..., p:-p, p:-p].contiguous() if p > 0 else y
 
 
-def add_noise(y, read_noise: float, shot_gain: float, generator=None):
-    """Sensor noise: Gaussian read noise + signal-dependent photon noise (Gaussian approximation)."""
+def add_noise(y, noise_std: float, generator=None):
+    """Small leftover Gaussian noise (what is left after the FPGA noise removal)."""
     import torch
 
-    std = torch.sqrt(read_noise**2 + shot_gain * torch.clamp(y, min=0))
-    return y + std * torch.randn(y.shape, generator=generator, device=y.device, dtype=y.dtype)
+    if noise_std <= 0:
+        return y
+    return y + noise_std * torch.randn(y.shape, generator=generator, device=y.device, dtype=y.dtype)
 
 
 def degrade(x, recipe: dict, seed: int | None = None):
-    """Apply a recipe to a sharp (..., H, W) reflectance image. Returns (blurred_noisy, psf).
+    """Apply a recipe to a sharp (..., H, W) reflectance image. Returns (blurred, psf).
 
     The same PSF is applied to every band: platform motion, jitter and defocus
     affect all bands of one exposure the same way.
@@ -242,5 +252,5 @@ def degrade(x, recipe: dict, seed: int | None = None):
     y = blur(x, psf)
     g = torch.Generator(device=y.device)
     g.manual_seed(int(recipe["psf_seed"] if seed is None else seed))
-    y = add_noise(y, recipe["read_noise"], recipe["shot_gain"], g)
+    y = add_noise(y, recipe["noise_std"], g)
     return y, psf

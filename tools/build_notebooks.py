@@ -1187,42 +1187,22 @@ print("GSTPJSON" + json.dumps(out) + "GSTPEND")
 )
 
 # ─────────────────────────────────────────────────────────────── 10 Deblurring (data + classic baselines)
-DEBLUR = nb(
-    "10 · Deblurring — blurred/sharp pairs and classic baselines (Wiener, Richardson–Lucy)",
-    """**Where this sits on GSTP:** camera → FPGA (dark-reference subtraction, FIR filtering) → **deblurring (Jetson)** →
-hazard models → ground.
-
-**Days 1–4 of the deblurring plan.** The GSTP camera's real blur is not measured yet, so sharp optical chips are blurred
-synthetically with the blur an orbiting camera can suffer — optics (Gaussian), defocus (disk), platform motion (line)
-and attitude jitter (random path) — plus sensor noise. A *none* group (noise only) checks that a method does not damage
-an image that is already sharp (the double-sharpening risk if the FPGA filter already sharpens).
-
-Sharp images are the **same chips and the same splits** as the hazard models (HLS Burn Scars 6 bands at 30 m,
-Sen1Floods11 Sentinel-2 12 bands at 10 m), so the deblurred test images can later go through the burn-scar and flood
-models (day 8: does IoU recover?).
-
-Classic methods: unsharp mask (no PSF), Wiener filter and Richardson–Lucy with the **true** PSF (best case for classic
-methods) and with one **nominal** PSF (realistic if only a lab PSF is known). Parameters are tuned on validation; test
-is scored once. Runtime on a T4: about 30–40 min, mostly data download and SSIM.""",
-    [
-        code(r'''
-MODULE = "deblur"
+DEBLUR_COMMON = r'''
 from gstp.data import burn_scars as BS, sen1floods11 as S
 from gstp.data.segmentation import split_samples
 from gstp.data.deblur import DeblurEvalSet, guess_scale
 from gstp import blur as B, deblur_classic as D
-from gstp.utils import save_json, get_device
-import numpy as np, pandas as pd, torch, tarfile, matplotlib.pyplot as plt
+from gstp.utils import save_json, load_json, get_device
+import numpy as np, pandas as pd, torch, tarfile, json, matplotlib.pyplot as plt
 
 DEV = get_device()
 BURN, FLOOD = WORK / "data" / "hls_burn_scars", WORK / "data" / "sen1floods11"
-RESULTS = REPO / "results" / MODULE
-CKPT_DIR = DRIVE / MODULE
-for p in (BURN, FLOOD, RESULTS / "figures", CKPT_DIR):
+RESULTS = REPO / "results" / "deblur"
+FIG = RESULTS / "figures"
+CKPT_DIR = DRIVE / "deblur"
+for p in (BURN, FLOOD, FIG, CKPT_DIR):
     p.mkdir(parents=True, exist_ok=True)
-'''),
-        md("## 1. Download the sharp images (same data as notebooks 01 and 02)"),
-        code(r'''
+
 from huggingface_hub import snapshot_download
 if not any(BURN.rglob("*merged*.tif")):
     snapshot_download("ibm-nasa-geospatial/hls_burn_scars", repo_type="dataset", local_dir=str(BURN))
@@ -1230,96 +1210,343 @@ if not any(BURN.rglob("*merged*.tif")):
         with tarfile.open(t) as tf:
             tf.extractall(BURN)
 if not any(FLOOD.rglob("*_LabelHand.tif")):
-    for sub in ("S1Hand", "S2Hand", "LabelHand"):
+    for sub in ("S2Hand", "LabelHand"):
         subprocess.run(["gsutil", "-m", "-q", "cp", "-r",
                         f"gs://sen1floods11/v1.1/data/flood_events/HandLabeled/{sub}", str(FLOOD)], check=True)
     subprocess.run(["gsutil", "-m", "-q", "cp", "-r", "gs://sen1floods11/v1.1/splits", str(FLOOD)], check=True)
-print("burn chips:", len(list(BURN.rglob("*merged*.tif"))), "| flood S2 chips:", len(list(FLOOD.rglob("*_S2Hand.tif"))))
-'''),
-        md("## 2. Same splits as the hazard models"),
-        code(r'''
+    (FLOOD / "S1Hand").mkdir(exist_ok=True)   # reader looks for the folder; S1 radar is not used here
+
+# Same splits as the hazard models (notebooks 01 and 02)
 burn_train_all = BS.build_samples(BURN, "training")
 burn = dict(zip(("train", "val"), split_samples(burn_train_all, 0.15, seed=42, group_key=lambda s: s.meta["tile"])))
 burn["test"] = BS.build_samples(BURN, "validation")
 flood = {sp: S.build_samples(FLOOD, sp, "s2") for sp in ("train", "val", "test")}
+for sp in flood:   # S2-only: drop the S1 source the reader adds for other modalities
+    for s in flood[sp]:
+        s.sources = [src for src in s.sources if "S2Hand" in src[0]]
 scale = {"burn": guess_scale(burn["train"], BS.NODATA), "flood": guess_scale(flood["train"])}
-print({k: len(v) for k, v in burn.items()}, {k: len(v) for k, v in flood.items()}, "reflectance scale:", scale)
-'''),
-        md("## 3. The blur types (PSFs) and what they do to an image"),
-        code(r'''
-rng = np.random.default_rng(7)
-recipes = [B.sample_recipe(rng, bt) for bt in B.BLUR_TYPES]
-ex = DeblurEvalSet(flood["val"][:1], scale["flood"], recipes=[recipes[0]])[0]["sharp"]
-rgb_idx = (S.S2_BANDS.index("B4"), S.S2_BANDS.index("B3"), S.S2_BANDS.index("B2"))
-def show(img, crop=slice(128, 384)):
-    x = img[list(rgb_idx)][:, crop, crop].transpose(1, 2, 0)
-    return np.clip(x / max(np.percentile(x, 99), 1e-3), 0, 1)
-fig, ax = plt.subplots(2, 5, figsize=(17, 7))
-for j, r in enumerate(recipes):
-    y, psf = B.degrade(ex, r)
-    ax[0, j].imshow(psf, cmap="magma"); ax[0, j].set_title(f"{r['blur_type']}  PSF {psf.shape[0]}×{psf.shape[1]} px")
-    ax[1, j].imshow(show(y.numpy())); ax[1, j].set_title("blurred + noise")
-for a in ax.ravel(): a.axis("off")
-plt.tight_layout(); fig.savefig(RESULTS / "figures" / "blur_types.png", dpi=120); plt.show()
-'''),
-        md("## 4. Fixed, seeded validation and test sets (recipes saved so the test set can be rebuilt exactly)"),
-        code(r'''
-N_VAL = 30   # chips per dataset used for tuning (validation only)
+print("chips  burn:", {k: len(v) for k, v in burn.items()}, " flood:", {k: len(v) for k, v in flood.items()},
+      " reflectance scale:", scale)
+
+N_VAL = 30   # validation chips per dataset used for tuning / model selection
 val_sets = [DeblurEvalSet(burn["val"][:N_VAL], scale["burn"], BS.NODATA, seed=101, name="HLS burn scars"),
             DeblurEvalSet(flood["val"][:N_VAL], scale["flood"], seed=102, name="Sen1Floods11 S2")]
 test_sets = [DeblurEvalSet(burn["test"], scale["burn"], BS.NODATA, seed=201, name="HLS burn scars"),
              DeblurEvalSet(flood["test"], scale["flood"], seed=202, name="Sen1Floods11 S2")]
-save_json({ds.name: ds.recipe_table() for ds in test_sets}, RESULTS / "test_degradations.json")
-print("test chips:", {ds.name: len(ds) for ds in test_sets},
-      "| per blur type:", pd.Series([r["blur_type"] for ds in test_sets for r in ds.recipes]).value_counts().to_dict())
+TYPE_NAMES = {"motion": "Motion", "defocus": "Defocus", "gaussian": "Gaussian", "none": "No extra blur (check)"}
+RGB = {"HLS burn scars": (2, 1, 0), "Sen1Floods11 S2": (S.S2_BANDS.index("B4"), S.S2_BANDS.index("B3"), S.S2_BANDS.index("B2"))}
+
+def pick(ds, t, n=2):
+    """Index of an example chip of blur type t (the n-th one, so examples are not hand-picked)."""
+    ks = [k for k, r in enumerate(ds.recipes) if r["blur_type"] == t]
+    return ks[min(n, len(ks) - 1)]
+
+def show(img, ds, crop=(slice(160, 352), slice(160, 352)), ref=None):
+    """True-colour crop, stretched with the SHARP image's percentiles so all panels share one stretch."""
+    x = img[list(RGB[ds])][:, crop[0], crop[1]].transpose(1, 2, 0)
+    r = x if ref is None else ref[list(RGB[ds])][:, crop[0], crop[1]].transpose(1, 2, 0)
+    lo, hi = np.percentile(r, 1), np.percentile(r, 99)
+    return np.clip((x - lo) / max(hi - lo, 1e-4), 0, 1)
+'''
+
+DEBLUR = nb(
+    "10 · Deblurring — blur dataset and classic baselines (Wiener, Richardson–Lucy)",
+    """**Where this sits on GSTP:** camera → FPGA (dark-reference subtraction, FIR filtering) → **deblurring (Jetson)** →
+hazard models → ground.
+
+**Why we blur on purpose.** There are no blurry GSTP images with a sharp "right answer" yet. So we take sharp
+satellite images, blur them ourselves, and score every method against the sharp original.
+
+**Blur types:** motion (platform motion / jitter → streaks), defocus (lens out of focus), Gaussian (general optical
+softness), plus a *no extra blur* check group — a method should not damage an image that is already sharp.
+Noise removal is the FPGA's job, so only a small leftover noise is added (placeholder until the FPGA team gives the
+real level).
+
+**Sharp images:** the same chips and splits as the hazard models — HLS Burn Scars (6 bands, 30 m) and Sen1Floods11
+Sentinel-2 (12 bands, 10 m) — so deblurred test images can go through the burn-scar and flood models (notebook 11).
+
+**Classic methods** need the blur shape (PSF). They are scored with the **true PSF** (best case — on orbit it is never
+known this exactly) and with **one fixed "nominal" PSF** (what a lab measurement would give). Settings are tuned on
+validation; the test set is scored once. Runtime on a T4: about 30–40 min.""",
+    [
+        code("MODULE = 'deblur'\n" + DEBLUR_COMMON),
+        md("## 1. The blur types and the sample pairs (Day 1)"),
+        code(r'''
+rng = np.random.default_rng(7)
+recipes = [B.sample_recipe(rng, t) for t in ("motion", "motion", "defocus", "gaussian")]
+recipes[0].update(kind="line", length=11.0, angle=30.0); recipes[1].update(kind="jitter", length=12.0)
+ex = DeblurEvalSet(flood["val"][3:4], scale["flood"], name="Sen1Floods11 S2", recipes=[recipes[0]])[0]
+labels = ["Motion (straight line)", "Motion (jitter)", "Defocus", "Gaussian"]
+fig, ax = plt.subplots(2, 5, figsize=(19, 8))
+ax[1, 0].imshow(show(ex["sharp"], ex["dataset"])); ax[1, 0].set_title("Sharp original", fontsize=13)
+ax[0, 0].text(0.5, 0.5, "Blur shape (PSF)\nzoomed in\n\n↓\n\nwhat it does\nto the image", ha="center", va="center",
+              fontsize=13); 
+for j, (r, lab) in enumerate(zip(recipes, labels), 1):
+    y, psf = B.degrade(ex["sharp"], r)
+    ax[0, j].imshow(psf, cmap="magma", interpolation="nearest"); ax[0, j].set_title(f"{lab}\nPSF {psf.shape[0]}×{psf.shape[1]} px", fontsize=12)
+    ax[1, j].imshow(show(y.numpy(), ex["dataset"], ref=ex["sharp"])); ax[1, j].set_title(lab, fontsize=13)
+for a in ax.ravel(): a.axis("off")
+fig.suptitle("Blur types used to make the training and test images (Sentinel-2, 10 m, true colour)", fontsize=15)
+plt.tight_layout(); fig.savefig(FIG / "D1_1_blur_types.png", dpi=130, bbox_inches="tight"); plt.show()
 '''),
-        md("## 5. Tune the classic methods on validation (PSNR)"),
+        code(r'''
+# Sample pairs from the fixed test set: sharp original vs blurred input, both datasets, every blur type
+fig, ax = plt.subplots(2, 8, figsize=(26, 7.5))
+for row, ds in enumerate(test_sets):
+    for j, t in enumerate(B.ALL_TYPES):
+        i = pick(ds, t)
+        it = ds[i]
+        ax[row, 2 * j].imshow(show(it["sharp"], ds.name)); ax[row, 2 * j].set_title(f"{ds.name}\nsharp", fontsize=11)
+        ax[row, 2 * j + 1].imshow(show(it["blurred"], ds.name, ref=it["sharp"]))
+        ax[row, 2 * j + 1].set_title(f"blurred: {TYPE_NAMES[t]}", fontsize=11)
+for a in ax.ravel(): a.axis("off")
+fig.suptitle("Sample pairs: sharp original (the right answer) | blurred input (what the methods get)", fontsize=15)
+plt.tight_layout(); fig.savefig(FIG / "D1_2_sample_pairs.png", dpi=110, bbox_inches="tight"); plt.show()
+
+split = pd.DataFrame({"Dataset": ["HLS burn scars (6 bands, 30 m)", "Sen1Floods11 Sentinel-2 (12 bands, 10 m)"],
+                      "Train chips": [len(burn["train"]), len(flood["train"])],
+                      "Validation chips": [len(burn["val"]), len(flood["val"])],
+                      "  (used for tuning)": [len(val_sets[0]), len(val_sets[1])],
+                      "Test chips": [len(burn["test"]), len(flood["test"])]})
+split.to_csv(RESULTS / "dataset_split.csv", index=False)
+save_json({ds.name: ds.recipe_table() for ds in test_sets}, RESULTS / "test_degradations.json")
+print("test chips per blur type:", pd.Series([r["blur_type"] for ds in test_sets for r in ds.recipes]).value_counts().to_dict())
+split
+'''),
+        md("## 2. Tune the classic methods on validation (Day 2)"),
         code(r'''
 val_items = [it for ds in val_sets for it in ds]
 best = D.tune(val_items, device=DEV)
-save_json(best, RESULTS / "classic_tuned.json")
-fig, ax = plt.subplots(1, 3, figsize=(15, 3.8))
-for mode in ("true", "nominal"):
-    c = best[f"wiener_{mode}"]["curve"]; ax[0].semilogx(list(c), list(c.values()), "o-", label=f"{mode} PSF")
-    c = best[f"rl_{mode}"]["curve"]; ax[1].plot(list(c), list(c.values()), "o-", label=f"{mode} PSF")
-c = best["unsharp_none"]["curve"]; ax[2].plot(list(c), list(c.values()), "o-")
-for a, t in zip(ax, ("Wiener: K", "Richardson–Lucy: iterations", "Unsharp mask: amount")):
-    a.set_title(t); a.set_ylabel("validation PSNR (dB)"); a.grid(alpha=.3)
-ax[0].legend(); ax[1].legend(); plt.tight_layout(); fig.savefig(RESULTS / "figures" / "classic_tuning.png", dpi=120)
+save_json(best, RESULTS / "classic_tuned.json"); save_json(best, CKPT_DIR / "classic_tuned.json")
+fig, ax = plt.subplots(1, 2, figsize=(13, 4.2))
+for mode, ls in (("true", "o-"), ("nominal", "s--")):
+    c = best[f"wiener_{mode}"]["curve"]; ax[0].semilogx(list(c), list(c.values()), ls, label=f"{mode} PSF")
+    c = best[f"rl_{mode}"]["curve"]; ax[1].plot(list(c), list(c.values()), ls, label=f"{mode} PSF")
+base = np.mean([D.score(i["sharp"], i["blurred"], i["valid"], ssim=False)["psnr"] for i in val_items])
+for a, t in zip(ax, ("Wiener filter: noise constant K", "Richardson–Lucy: number of iterations")):
+    a.axhline(base, color="grey", ls=":", label="no deblurring"); a.set_title(t); a.set_ylabel("validation PSNR (dB)")
+    a.grid(alpha=.3); a.legend()
+plt.tight_layout(); fig.savefig(FIG / "D2_1_classic_tuning.png", dpi=130); plt.show()
 {k: v["param"] for k, v in best.items()}
 '''),
-        md("## 6. Score the test set once"),
+        md("## 3. Score the test set once"),
         code(r'''
 methods = D.method_table(best)
-keep = {ds.samples[i].id for ds in test_sets[1:] for i in range(len(B.BLUR_TYPES))}   # one flood chip per blur type
+keep = {ds.samples[pick(ds, t)].id for ds in test_sets for t in B.ALL_TYPES}
 rows, kept = [], {}
 for ds in test_sets:
     r, k = D.evaluate(ds, methods, device=DEV, keep=keep)
     rows += r; kept.update(k)
 df = pd.DataFrame(rows)
-df.to_csv(RESULTS / "test_per_image.csv", index=False)
+df.to_csv(RESULTS / "test_classic_per_image.csv", index=False)
 order = list(methods)
 overall = df.groupby("method")[["psnr", "ssim"]].mean().loc[order]
-by_type = df.pivot_table(index="method", columns="blur_type", values="psnr").loc[order, list(B.BLUR_TYPES)]
-by_ds = df.pivot_table(index="method", columns="dataset", values="psnr").loc[order]
+by_type = df.pivot_table(index="method", columns="blur_type", values="psnr").loc[order, list(B.ALL_TYPES)]
+ssim_type = df.pivot_table(index="method", columns="blur_type", values="ssim").loc[order, list(B.ALL_TYPES)]
 save_json({"overall": overall.to_dict("index"), "psnr_by_blur_type": by_type.to_dict("index"),
-           "psnr_by_dataset": by_ds.to_dict("index"), "tuned": {k: v["param"] for k, v in best.items()}},
+           "ssim_by_blur_type": ssim_type.to_dict("index"), "tuned": {k: v["param"] for k, v in best.items()}},
           RESULTS / "test_classic.json")
-overall.to_csv(RESULTS / "results_table.csv")
 display(overall.style.format({"psnr": "{:.2f} dB", "ssim": "{:.4f}"}))
-display(by_type.style.format("{:.2f}").set_caption("Test PSNR (dB) by blur type"))
+display(by_type.rename(columns=TYPE_NAMES).style.format("{:.2f}").set_caption("Test PSNR (dB) by blur type"))
+display(ssim_type.rename(columns=TYPE_NAMES).style.format("{:.4f}").set_caption("Test SSIM by blur type"))
 '''),
         code(r'''
-names = [m for m in order if "nominal" not in m]
-fig, ax = plt.subplots(len(keep), len(names) + 1, figsize=(3 * (len(names) + 1), 3 * len(keep)))
+# Side by side: blurry | Wiener | Richardson-Lucy | sharp, one row per blur type (flood chips, true PSF)
 items = {it["id"]: it for it in test_sets[1] if it["id"] in keep}
-for i, (cid, it) in enumerate(items.items()):
-    ax[i, 0].imshow(show(it["sharp"])); ax[i, 0].set_title(f"sharp ({it['blur_type']})")
-    for j, m in enumerate(names, 1):
-        ax[i, j].imshow(show(kept[cid][m]))
-        ax[i, j].set_title(f"{m.split(' (')[0]}\n{df[(df.id == cid) & (df.method == m)].psnr.iloc[0]:.1f} dB", fontsize=9)
+cols = [("No deblurring", "Blurry input")] + [(m, m.split(" (")[0]) for m in order if "true" in m]
+fig, ax = plt.subplots(4, len(cols) + 1, figsize=(4.2 * (len(cols) + 1), 17))
+for i, t in enumerate(B.ALL_TYPES):
+    cid = next(c for c, it in items.items() if it["blur_type"] == t); it = items[cid]
+    for j, (m, title) in enumerate(cols):
+        p = df[(df.id == cid) & (df.method == m)].psnr.iloc[0]
+        ax[i, j].imshow(show(kept[cid][m], it["dataset"], ref=it["sharp"])); ax[i, j].set_title(f"{title}\n{p:.1f} dB", fontsize=12)
+    ax[i, -1].imshow(show(it["sharp"], it["dataset"])); ax[i, -1].set_title("Sharp original", fontsize=12)
+    ax[i, 0].set_ylabel(TYPE_NAMES[t], fontsize=14); ax[i, 0].set_xticks([]); ax[i, 0].set_yticks([])
+for a in ax[:, 1:].ravel(): a.axis("off")
+for a in ax[:, 0]: [s.set_visible(False) for s in a.spines.values()]
+fig.suptitle("Classic deblurring with the true blur shape — test images (PSNR vs sharp original, higher is better)", fontsize=15)
+plt.tight_layout(); fig.savefig(FIG / "D2_2_classic_side_by_side.png", dpi=100, bbox_inches="tight"); plt.show()
+
+fig, ax = plt.subplots(figsize=(12, 4.5))
+by_type.rename(columns=TYPE_NAMES).T.plot.bar(ax=ax, rot=0, width=0.8)
+ax.set_ylabel("test PSNR (dB)"); ax.set_ylim(by_type.values.min() - 2, by_type.values.max() + 1.5); ax.grid(axis="y", alpha=.3)
+ax.set_title("Classic methods by blur type (test set)"); ax.legend(fontsize=9, ncol=2)
+plt.tight_layout(); fig.savefig(FIG / "D2_3_classic_psnr_by_type.png", dpi=130); plt.show()
+'''),
+        code(FINISH),
+    ],
+)
+
+# ─────────────────────────────────────────────────────────────── 11 Deblurring (AI models + evaluation)
+DEBLUR_AI = nb(
+    "11 · Deblurring — autoencoder vs NAFNet vs classic, and the hazard-model check",
+    """Trains two learned deblurring models on the blurred/sharp pairs from notebook 10 and compares them with the classic
+methods on the **same** test images:
+
+| Method | What it is |
+|---|---|
+| No deblurring | the blurry input as it is |
+| Wiener, Richardson–Lucy | classic, need the blur shape (true PSF = best case; nominal PSF = realistic) |
+| Plain autoencoder | simple AI baseline: squeeze the image through a bottleneck and rebuild it — no skip connections |
+| **NAFNet** | encoder–decoder **with skip connections** that only learns the correction; small enough for the Jetson |
+
+Both AI models work on one band at a time and get **no** blur shape. Then the real question for GSTP: the burn-scar and
+flood models from notebooks 01–02 are run on sharp, blurred and deblurred test images — **does deblurring bring the
+hazard IoU back?** Finally ONNX export and a speed check. Runtime on a T4: about 2–2.5 h.
+
+Needs: `MyDrive/gstp_runs/deblur/classic_tuned.json` (notebook 10) and the hazard checkpoints
+`MyDrive/gstp_runs/floods/flood_s2_best.pt`, `MyDrive/gstp_runs/wildfires/burn_scar_best.pt`.""",
+    [
+        code("MODULE = 'deblur'\n" + DEBLUR_COMMON + r'''
+from gstp.data.deblur import DeblurTrainSet, preload
+from gstp import train_deblur as T, deblur_models as DM
+from gstp.hazard_check import HazardScorer, SHARP
+best = load_json(CKPT_DIR / "classic_tuned.json")
+'''),
+        md("## 1. Training pairs: random single-band crops, a new random blur every time (Day 3)"),
+        code(r'''
+chips = preload(burn["train"], scale["burn"], BS.NODATA) + preload(flood["train"], scale["flood"])
+train_ds = DeblurTrainSet(chips, crop=128, length=8000, seed=0)
+val_items = [it for ds in val_sets for it in list(ds)[:10]]   # 10 chips per dataset for model selection
+print(len(chips), "training chips in memory |", len(val_items), "validation chips")
+'''),
+        md("## 2. Train the plain autoencoder (simple AI baseline)"),
+        code(r'''
+cfg_ae = T.DeblurTrainConfig(name="autoencoder", iterations=15000, batch_size=16, crop=128, lr=1e-3, val_every=1500)
+ae, sum_ae = T.train(train_ds, val_items, cfg_ae, CKPT_DIR)
+'''),
+        md("## 3. Train NAFNet (main model)"),
+        code(r'''
+cfg_naf = T.DeblurTrainConfig(name="nafnet", iterations=30000, batch_size=16, crop=128, lr=1e-3, val_every=2000)
+naf, sum_naf = T.train(train_ds, val_items, cfg_naf, CKPT_DIR)
+'''),
+        code(r'''
+fig, ax = plt.subplots(1, 2, figsize=(14, 4.5))
+for s, c in ((sum_ae, "tab:orange"), (sum_naf, "tab:green")):
+    h = pd.DataFrame(s["history"]); lab = "Plain autoencoder" if s["name"] == "autoencoder" else "NAFNet"
+    ax[0].plot(h.iteration, h.train_l1, "o-", color=c, label=lab); ax[1].plot(h.iteration, h.val_psnr, "o-", color=c, label=lab)
+ax[1].axhline(sum_naf["val_psnr_blurred_input"], color="grey", ls=":", label="no deblurring")
+ax[0].set_title("Training error (L1, lower is better)"); ax[1].set_title("Validation PSNR (dB, higher is better)")
+for a in ax: a.set_xlabel("training step"); a.grid(alpha=.3); a.legend()
+plt.tight_layout(); fig.savefig(FIG / "D3_1_training_curves.png", dpi=130); plt.show()
+save_json({k: {kk: vv for kk, vv in s.items()} for k, s in (("autoencoder", sum_ae), ("nafnet", sum_naf))},
+          RESULTS / "train_summaries.json")
+print({s["name"]: (s["parameters"], s["train_minutes"], round(s["best_val_psnr"], 2)) for s in (sum_ae, sum_naf)})
+'''),
+        md("## 4. One test run: all methods, PSNR/SSIM, and the hazard models on every version (Day 4)"),
+        code(r'''
+methods = D.method_table(best)
+methods["Plain autoencoder"] = lambda y, it: DM.tiled(ae, y)
+methods["NAFNet"] = lambda y, it: DM.tiled(naf, y)
+hz = {"HLS burn scars": HazardScorer(DRIVE / "wildfires" / "burn_scar_best.pt", scale["burn"], DEV, "Burn-scar U-Net"),
+      "Sen1Floods11 S2": HazardScorer(DRIVE / "floods" / "flood_s2_best.pt", scale["flood"], DEV, "Flood U-Net (S2)")}
+keep = {ds.samples[pick(ds, t)].id for ds in test_sets for t in B.ALL_TYPES}
+rows, kept = [], {}
+for ds in test_sets:
+    with torch.no_grad():
+        r, k = D.evaluate(ds, methods, device=DEV, keep=keep, on_output=hz[ds.name])
+    rows += r; kept.update(k)
+df = pd.DataFrame(rows); df.to_csv(RESULTS / "test_all_per_image.csv", index=False)
+hz_df = pd.DataFrame([row for h in hz.values() for row in h.table()]); hz_df.to_csv(RESULTS / "test_hazard_iou.csv", index=False)
+order = list(methods)
+overall = df.groupby("method")[["psnr", "ssim"]].mean().loc[order]
+by_type = df.pivot_table(index="method", columns="blur_type", values="psnr").loc[order, list(B.ALL_TYPES)]
+ssim_type = df.pivot_table(index="method", columns="blur_type", values="ssim").loc[order, list(B.ALL_TYPES)]
+by_ds = df.pivot_table(index="method", columns="dataset", values="psnr").loc[order]
+iou = hz_df[hz_df.blur_type == "all"].pivot_table(index="method", columns="hazard_model", values="iou").loc[[SHARP] + order]
+iou_type = hz_df[hz_df.blur_type != "all"].pivot_table(index=["hazard_model", "method"], columns="blur_type", values="iou")
+save_json({"overall": overall.to_dict("index"), "psnr_by_blur_type": by_type.to_dict("index"),
+           "ssim_by_blur_type": ssim_type.to_dict("index"), "psnr_by_dataset": by_ds.to_dict("index"),
+           "hazard_iou": iou.to_dict("index"), "hazard_iou_by_type": {f"{a} | {b}": v for (a, b), v in iou_type.to_dict("index").items()},
+           "n_test": {ds.name: len(ds) for ds in test_sets}}, RESULTS / "test_all.json")
+display(overall.style.format({"psnr": "{:.2f} dB", "ssim": "{:.4f}"}))
+display(by_type.rename(columns=TYPE_NAMES).style.format("{:.2f}").set_caption("Test PSNR (dB) by blur type"))
+display(iou.style.format("{:.3f}").set_caption("Hazard-model IoU on the test chips"))
+'''),
+        code(r'''
+# Comparison table as a figure (for slides)
+tab = overall.copy(); tab["PSNR gain vs blurry (dB)"] = tab.psnr - tab.loc["No deblurring", "psnr"]
+for col in iou.columns: tab[f"IoU {col}"] = iou.loc[order, col]
+fig, ax = plt.subplots(figsize=(17, 0.55 * len(tab) + 1.4)); ax.axis("off")
+cells = [[f"{r.psnr:.2f}", f"{r.ssim:.4f}", f"{r['PSNR gain vs blurry (dB)']:+.2f}"] + [f"{r[c]:.3f}" for c in tab.columns[3:]] for _, r in tab.iterrows()]
+cells.append(["—", "—", "—"] + [f"{iou.loc[SHARP, c]:.3f}" for c in iou.columns])
+t = ax.table(cellText=cells, rowLabels=list(tab.index) + [SHARP], colLabels=["PSNR (dB)", "SSIM", "Gain vs blurry"] + [f"IoU: {c}" for c in iou.columns],
+             loc="center", cellLoc="center"); t.auto_set_font_size(False); t.set_fontsize(11); t.scale(1, 1.6)
+best_row = order.index(tab.psnr.idxmax())
+for j in range(len(cells[0])): t[(best_row + 1, j)].set_facecolor("#dff0d8")
+ax.set_title(f"Deblurring test results — {sum(len(d) for d in test_sets)} test chips, all blur types", fontsize=14)
+fig.savefig(FIG / "D4_1_comparison_table.png", dpi=130, bbox_inches="tight"); plt.show()
+
+fig, ax = plt.subplots(1, 2, figsize=(17, 4.8))
+by_type.rename(columns=TYPE_NAMES).T.plot.bar(ax=ax[0], rot=0, width=0.85)
+ax[0].set_ylim(by_type.values.min() - 2, by_type.values.max() + 1.5); ax[0].set_ylabel("test PSNR (dB)")
+ax[0].set_title("Image quality by blur type"); ax[0].legend(fontsize=8, ncol=2); ax[0].grid(axis="y", alpha=.3)
+iou.plot.barh(ax=ax[1]); ax[1].set_xlabel("IoU"); ax[1].set_title("Hazard models on the deblurred images (test)")
+ax[1].invert_yaxis(); ax[1].grid(axis="x", alpha=.3); ax[1].set_xlim(max(0, iou.values.min() - 0.1), min(1, iou.values.max() + 0.03))
+plt.tight_layout(); fig.savefig(FIG / "D4_2_psnr_and_iou_by_method.png", dpi=130); plt.show()
+'''),
+        code(r'''
+# Side by side: blurry | Wiener | Richardson-Lucy | autoencoder | NAFNet | sharp  (one row per blur type)
+cols = [("No deblurring", "Blurry input")] + [(m, m.split(" (")[0]) for m in order if "true" in m] + \
+       [("Plain autoencoder", "Plain autoencoder"), ("NAFNet", "NAFNet (AI)")]
+for ds in test_sets:
+    items = {it["id"]: it for it in ds if it["id"] in keep}
+    fig, ax = plt.subplots(4, len(cols) + 1, figsize=(3.6 * (len(cols) + 1), 15.5))
+    for i, t in enumerate(B.ALL_TYPES):
+        cid = next(c for c, it in items.items() if it["blur_type"] == t); it = items[cid]
+        for j, (m, title) in enumerate(cols):
+            p = df[(df.id == cid) & (df.method == m)].psnr.iloc[0]
+            ax[i, j].imshow(show(kept[cid][m], ds.name, ref=it["sharp"])); ax[i, j].set_title(f"{title}\n{p:.1f} dB", fontsize=11)
+        ax[i, -1].imshow(show(it["sharp"], ds.name)); ax[i, -1].set_title("Sharp original", fontsize=11)
+        ax[i, 0].set_ylabel(TYPE_NAMES[t], fontsize=13)
+    for a in ax.ravel(): a.set_xticks([]); a.set_yticks([])
+    fig.suptitle(f"{ds.name} test chips — classic methods use the TRUE blur shape, AI models get no blur shape", fontsize=14)
+    plt.tight_layout(); tag = "flood" if "Flood" in ds.name else "burn"
+    fig.savefig(FIG / f"D4_3_side_by_side_{tag}.png", dpi=95, bbox_inches="tight"); plt.show()
+'''),
+        code(r'''
+# Hazard maps: what the flood / burn-scar model sees on blurred vs NAFNet-deblurred vs sharp (motion blur example)
+fig, ax = plt.subplots(2, 4, figsize=(17, 10.5))
+for row, ds in enumerate(test_sets):
+    h = hz[ds.name]
+    cand = [k for k, r in enumerate(ds.recipes) if r["blur_type"] == "motion"]
+    pos = [np.mean(ds[k]["label"] == 1) if ds[k]["label"] is not None else 0 for k in cand[:12]]
+    it = ds[cand[int(np.argmax(pos))]]
+    nf = DM.tiled(naf, torch.as_tensor(it["blurred"], device=DEV)).cpu().numpy()
+    for j, (img, title) in enumerate(((it["blurred"], "blurred input"), (nf, "NAFNet deblurred"), (it["sharp"], "sharp original"))):
+        p = h._prob(img, it["valid_data"]) >= h.threshold
+        ok = it["label"] != 255
+        tp, fp, fn = np.sum(p & (it["label"] == 1) & ok), np.sum(p & (it["label"] == 0) & ok), np.sum(~p & (it["label"] == 1) & ok)
+        ax[row, j].imshow(show(img, ds.name, crop=(slice(None), slice(None)), ref=it["sharp"]))
+        ax[row, j].imshow(np.ma.masked_where(~p, p), cmap="autumn", alpha=0.5)
+        ax[row, j].set_title(f"{h.name} on {title}\nIoU {tp / max(tp + fp + fn, 1):.3f}", fontsize=11)
+    ax[row, 3].imshow(np.ma.masked_where(it["label"] != 1, it["label"]), cmap="winter"); ax[row, 3].set_title("label (ground truth)")
 for a in ax.ravel(): a.axis("off")
-plt.tight_layout(); fig.savefig(RESULTS / "figures" / "classic_examples_test.png", dpi=110); plt.show()
+fig.suptitle("Downstream check on a motion-blurred test chip: hazard-model output (overlay) per input", fontsize=14)
+plt.tight_layout(); fig.savefig(FIG / "D4_4_hazard_maps.png", dpi=100, bbox_inches="tight"); plt.show()
+'''),
+        md("## 5. ONNX export and speed (Day 5)"),
+        code(r'''
+from gstp.models import export_onnx
+import onnxruntime as ort, time
+speed = []
+for name, m in (("autoencoder", ae), ("nafnet", naf)):
+    path = CKPT_DIR / f"deblur_{name}.onnx"
+    export_onnx(m.float().cpu(), 1, 256, str(path))
+    m.to(DEV)
+    sess = ort.InferenceSession(str(path), providers=["CPUExecutionProvider"])
+    x = np.random.rand(1, 1, 256, 256).astype("float32") * 0.3
+    sess.run(None, {"image": x}); t = time.time(); [sess.run(None, {"image": x}) for _ in range(10)]
+    speed.append({"model": name, "parameters (M)": round(DM.count_parameters(m) / 1e6, 2),
+                  "ONNX size (MB)": round(path.stat().st_size / 1e6, 1),
+                  "T4 GPU, one 512x512 band (ms)": round(T.benchmark(m, DEV), 1),
+                  "Colab CPU ONNX, one 256x256 tile (ms)": round((time.time() - t) / 10 * 1000, 1)})
+speed = pd.DataFrame(speed); speed.to_csv(RESULTS / "speed.csv", index=False)
+fig, ax = plt.subplots(figsize=(14, 1.6)); ax.axis("off")
+tb = ax.table(cellText=speed.values, colLabels=speed.columns, loc="center", cellLoc="center"); tb.auto_set_font_size(False); tb.set_fontsize(11); tb.scale(1, 1.7)
+ax.set_title("Model size and speed (Jetson speed still to be measured on the board)", fontsize=13)
+fig.savefig(FIG / "D5_1_speed_onnx.png", dpi=130, bbox_inches="tight"); plt.show()
+speed
 '''),
         code(FINISH),
     ],
@@ -1336,6 +1563,7 @@ NOTEBOOKS = {
     "08_floods_at_crisp_sites_corrected.ipynb": FLOOD_SITES,
     "09_flood_area_any_place.ipynb": FLOOD_ANY,
     "10_deblurring_data_and_classic.ipynb": DEBLUR,
+    "11_deblurring_ai_models_and_evaluation.ipynb": DEBLUR_AI,
 }
 
 if __name__ == "__main__":
